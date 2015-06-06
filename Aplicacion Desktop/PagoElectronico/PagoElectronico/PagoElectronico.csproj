@@ -107,6 +107,12 @@
     <Compile Include="Frame\RolSelection.Designer.cs">
       <DependentUpon>RolSelection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Login\Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login\Login.designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ClienteModel.cs" />
     <Compile Include="Models\CuentaModel.cs" />
     <Compile Include="Models\FuncionalidadModel.cs" />
@@ -135,12 +141,6 @@
     </Compile>
     <Compile Include="Listados\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Login\Login.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Models\Login\Login.Designer.cs">
-      <DependentUpon>Login.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\RolModel.cs" />
     <Compile Include="Models\UserModel.cs" />
