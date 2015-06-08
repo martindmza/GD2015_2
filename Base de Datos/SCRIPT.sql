@@ -74,15 +74,19 @@ DROP PROCEDURE REZAGADOS.Cambio_Contrasenia;
 DROP PROCEDURE REZAGADOS.Baja_Rol;
 DROP PROCEDURE REZAGADOS.Alta_Rol;
 DROP PROCEDURE REZAGADOS.Modificar_Nombre_Rol;
-DROP PROCEDURE REZAGADOS.Modificar_Funcionalidad;
-DROP PROCEDURE REZAGADOS.Baja_Funcionalidad;
-DROP PROCEDURE REZAGADOS.Desasignar_Rol;
-DROP PROCEDURE REZAGADOS.Agregar_Funcionalidad;
+DROP PROCEDURE REZAGADOS.Modificar_Nombre_Funcionalidad;
+DROP PROCEDURE REZAGADOS.Crear_Funcionalidad;
+DROP PROCEDURE REZAGADOS.Borrar_Funcionalidad;
 DROP PROCEDURE REZAGADOS.Asignar_Rol;
+DROP PROCEDURE REZAGADOS.Desasignar_Rol;
 DROP PROCEDURE REZAGADOS.Baja_Cuenta;
 DROP PROCEDURE REZAGADOS.Alta_Cuenta;
 DROP PROCEDURE REZAGADOS.Crear_Cuenta;
 DROP PROCEDURE REZAGADOS.Modificar_Costo_Cuenta;
+DROP PROCEDURE REZAGADOS.Alta_Tarjeta;
+DROP PROCEDURE REZAGADOS.Baja_Tarjeta;
+DROP PROCEDURE REZAGADOS.Crear_Tarjeta;
+DROP PROCEDURE REZAGADOS.Depositar;
 
 USE [GD1C2015]
 GO
@@ -874,22 +878,22 @@ UPDATE REZAGADOS.Rol SET Nombre = @Nombre_Rol WHERE Nombre = @Nombre_Viejo
 END
 GO
 
------------------------------------------MODIFICAR FUNCIONALIDAD--------------------------------------------
+-----------------------------------------MODIFICAR NOMBRE FUNCIONALIDAD--------------------------------------------
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Modificar_Funcionalidad(@Nombre_Func VARCHAR(255),@Nombre_Viejo VARCHAR(255))
+CREATE PROCEDURE REZAGADOS.Modificar_Nombre_Funcionalidad(@Nombre_Func VARCHAR(255),@Nombre_Viejo VARCHAR(255))
 AS
 BEGIN
 UPDATE REZAGADOS.Funcionalidad SET Nombre = @Nombre_Func WHERE Nombre = @Nombre_Viejo
 END
 GO
 
------------------------------------------BAJA FUNCIONALIDAD------------------------------------------------
+-----------------------------------------BORRAR FUNCIONALIDAD------------------------------------------------
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Baja_Funcionalidad(@Nombre_Func VARCHAR(255), @Nombre_Rol VARCHAR(255))
+CREATE PROCEDURE REZAGADOS.Borrar_Funcionalidad(@Nombre_Func VARCHAR(255), @Nombre_Rol VARCHAR(255))
 AS
 BEGIN TRY
 BEGIN TRANSACTION
@@ -921,11 +925,11 @@ ROLLBACK TRANSACTION
 END CATCH
 GO
 
------------------------------------------AGREGAR FUNCIONALIDAD------------------------------------------------
+-----------------------------------------CREAR FUNCIONALIDAD------------------------------------------------
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Agregar_Funcionalidad (@Nombre_Rol VARCHAR(255), @Nombre_Func VARCHAR(255))
+CREATE PROCEDURE REZAGADOS.Crear_Funcionalidad (@Nombre_Rol VARCHAR(255), @Nombre_Func VARCHAR(255))
 AS 
 Begin 
 BEGIN TRY
@@ -968,7 +972,7 @@ UPDATE REZAGADOS.Cuenta SET Estado='Inhabilitado' WHERE Cuenta.Id_Cuenta = @Nro_
 END
 GO
 
------------------------------------------ALTA ROL------------------------------------------------
+-----------------------------------------ALTA CUENTA------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1006,4 +1010,65 @@ UPDATE REZAGADOS.TipoCuenta SET Costo = @Costo WHERE Categoria=@Categoria
 END
 GO
 
-----------------------------------------------TARJETAS-------------------------------------------------------
+----------------------------------------------ALTA TARJETAS---------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Alta_Tarjeta(@Nro_Tarjeta NUMERIC(18,0))
+AS
+BEGIN
+UPDATE REZAGADOS.Tarjeta SET Habilitada=1 WHERE Tarjeta.Id_Tarjeta = @Nro_Tarjeta
+END
+GO
+
+----------------------------------------------BAJA TARJETAS---------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Baja_Tarjeta(@Nro_Tarjeta NUMERIC(18,0))
+AS
+BEGIN
+UPDATE REZAGADOS.Tarjeta SET Habilitada=0 WHERE Tarjeta.Id_Tarjeta = @Nro_Tarjeta
+END
+GO
+
+-------------------------------------------CREAR TARJETA-------------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(@Usuario NUMERIC(18,0), @Nro_Tarjeta NUMERIC(18,0), @Tipo VARCHAR (255), @Fecha DATETIME, @Fecha_Venc DATETIME, @Codigo VARCHAR(255), @Respuesta VARCHAR(255) OUTPUT)
+AS
+BEGIN
+IF EXISTS (SELECT Id_Tarjeta FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta)
+SET @Respuesta = 'Ya existe la tarjeta'
+ELSE
+INSERT INTO REZAGADOS.Tarjeta (Id_Usuario, Numero, Tipo, Codigo_Seguridad, Fecha_Emision, Vencimiento)
+VALUES (@Usuario, @Nro_Tarjeta, @Tipo, @Codigo, @Fecha, @Fecha_Venc)
+END
+GO
+
+---------------------------------------DEPOSITAR---------------------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Depositar(@Cuenta NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Nro_Tarjeta NUMERIC(18,0), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
+AS
+BEGIN
+DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
+DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
+DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cliente)
+	IF (@Fecha > (SELECT Vencimiento FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
+		SET @Respuesta = 'Tarjeta Vencida'
+	ELSE
+		IF (0=(SELECT habilitada FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
+			SET @Respuesta = 'Tarjeta Inhabilitada'
+		ELSE
+			BEGIN
+			INSERT INTO REZAGADOS.Deposito (Id_Cuenta, Id_Tarjeta, Id_Pais, Id_Moneda, Fecha, Importe)
+			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Usuario=@Usuario), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
+			SET @Respuesta = 'Deposito realizado'
+			END
+END
+GO
+
+-----------------------------------------RETIRO---------------------------------------------------------------
