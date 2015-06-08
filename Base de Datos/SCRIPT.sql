@@ -1005,3 +1005,5 @@ IF EXISTS (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Cate
 UPDATE REZAGADOS.TipoCuenta SET Costo = @Costo WHERE Categoria=@Categoria
 END
 GO
+
+----------------------------------------------TARJETAS-------------------------------------------------------
