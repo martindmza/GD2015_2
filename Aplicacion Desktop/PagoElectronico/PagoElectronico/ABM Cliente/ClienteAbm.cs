@@ -21,6 +21,7 @@ namespace ABM
         private ClienteModel clienteActivo;
         private ClienteDao clienteDao;
         private CuentaDao cuentaDao;
+        private ExtraDao extraDao;
 
         private List<ClienteModel> clientes;
 
@@ -30,14 +31,31 @@ namespace ABM
 
             this.clienteDao = new ClienteDao();
             this.cuentaDao = new CuentaDao();
+            this.extraDao = new ExtraDao();
             this.clientes = clienteDao.getClients();
 
             fillClientsTable();
+            fillDocTypes();
 
             //sets
             button3.Enabled = false;
             button4.Enabled = false;
         }
+        //-----------------------------------------------------------------------------------------------------------------
+        private void fillDocTypes()
+        {
+            KeyValuePair<int, string> firstTipo = new KeyValuePair<int,string>();
+            foreach (KeyValuePair<int, string> tipo in extraDao.getDocTypes())
+            {
+                if (comboBox1.Items.Count == 0) {
+                    firstTipo = tipo;
+                }
+                comboBox1.Items.Add(tipo);
+            }
+            comboBox1.DisplayMember = "Value";
+            comboBox1.ValueMember = "Key";
+        }
+        //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
         private void fillClientsTable() {
@@ -53,7 +71,6 @@ namespace ABM
                                         cliente.documentoTipo.ToString(),
                                         cliente.documentoNumero.ToString(),
                                         cliente.email.ToString(),
-                                        cliente.telefono.ToString(),
                                         cliente.nacimiento.ToString(),
                                         cliente.nacionalidadId.ToString(),
 										cliente.direccionCalle.ToString(),
@@ -62,20 +79,12 @@ namespace ABM
 										cliente.direccionDepto.ToString(),
                                         cliente.localidadId.ToString(),
 										cliente.paisId.ToString(),
-										cliente.usuario.nombre.ToString(),
 										cliente.habilitado.ToString()
                                         };
                 dataGridView1.Rows.Add(row);
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
-
-        //-----------------------------------------------------------------------------------------------------------------
-        private void fillClientesTableWithFilters() {
-            
-        }
-        //-----------------------------------------------------------------------------------------------------------------
-
 
 
 
@@ -91,12 +100,69 @@ namespace ABM
             checBox1.Checked = false;
         }
         //-----------------------------------------------------------------------------------------------------------------
-        
+
+        //-----------------------------------------------------------------------------------------------------------------
+        public void formResponseAdd(ClienteModel cliente)
+        {
+            clientes.Add(cliente);
+            fillClientsTable();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        public void formResponseUpdate(ClienteModel cliente)
+        {
+            clientes[clienteActivoIndex] = cliente;
+            fillClientsTable();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        public void formResponseDisable(ClienteModel cliente)
+        {
+            clientes[clienteActivoIndex] = cliente;
+            fillClientsTable();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
         //filtrar
         //-----------------------------------------------------------------------------------------------------------------
         private void button5_Click(object sender, EventArgs e)
         {
-            fillClientesTableWithFilters();
+            ClienteFiltros filtros = new ClienteFiltros();
+
+            if (textBox1.Text.Length != 0)
+            {
+                filtros.nombre = textBox1.Text;
+            }
+            if (textBox2.Text.Length != 0)
+            {
+                filtros.apellido = textBox2.Text;
+            }
+            if (textBox3.Text.Length != 0)
+            {
+                filtros.email = textBox3.Text;
+            }
+            //tipo de documento
+            if (comboBox1.SelectedItem != null)
+            {
+                String[] result = comboBox1.SelectedItem.ToString().Split(',');
+                String[] valueString = result[0].Split('[');
+                UInt32 value = UInt32.Parse(valueString[1]);
+                filtros.documentoTipo = value;
+            }
+            //nro de documento
+            if (textBox4.Text.Length != 0)
+            {
+                filtros.documentoNumero = UInt64.Parse(textBox4.Text);
+            }
+            if (checBox1.Checked)
+            {
+                filtros.habilitado = true;
+            }
+            MessageBox.Show(filtros.ToString());
+            clientes = clienteDao.getClientsByFilters(filtros);
+            fillClientsTable();
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -128,7 +194,7 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void button2_Click(object sender, EventArgs e)
         {
-            ClienteForm clienteForm = new ClienteForm(AGREGAR_CLIENTE, clienteActivo, clienteDao, null);
+            ClienteForm clienteForm = new ClienteForm(AGREGAR_CLIENTE, null, clienteDao, this, extraDao);
             clienteForm.MdiParent = this.MdiParent;
             clienteForm.Show();
         }
@@ -138,7 +204,7 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void button3_Click(object sender, EventArgs e)
         {
-            ClienteForm clienteForm = new ClienteForm(MODIFICAR_CLIENTE, clienteActivo, clienteDao, this);
+            ClienteForm clienteForm = new ClienteForm(MODIFICAR_CLIENTE, clienteActivo, clienteDao, this, extraDao);
             clienteForm.MdiParent = this.MdiParent;
             clienteForm.Show();
         }
@@ -148,9 +214,20 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void button4_Click(object sender, EventArgs e)
         {
-            ClienteForm clienteForm = new ClienteForm(DESHABILITAR_CLIENTE, clienteActivo, clienteDao, this);
+            ClienteForm clienteForm = new ClienteForm(DESHABILITAR_CLIENTE, clienteActivo, clienteDao, this, extraDao);
             clienteForm.MdiParent = this.MdiParent;
             clienteForm.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void textBox4_Leave(object sender, EventArgs e)
+        {
+            if (System.Text.RegularExpressions.Regex.IsMatch(textBox4.Text, "[^0-9]"))
+            {
+                MessageBox.Show("Ingrese solo numeros por favor");
+                textBox4.Text = "";
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

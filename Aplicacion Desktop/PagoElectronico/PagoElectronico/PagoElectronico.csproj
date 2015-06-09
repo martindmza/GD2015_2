@@ -60,6 +60,7 @@
     <Compile Include="ABM Cliente\ClienteForm.Designer.cs">
       <DependentUpon>ClienteForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ABM Cliente\ClienteFiltros.cs" />
     <Compile Include="ABM Cuenta\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,6 +93,7 @@
     </Compile>
     <Compile Include="DAO\ClienteDao.cs" />
     <Compile Include="DAO\CuentaDao.cs" />
+    <Compile Include="DAO\ExtraDao.cs" />
     <Compile Include="DAO\FuncionalidadDao.cs" />
     <Compile Include="DAO\RolDao.cs" />
     <Compile Include="DAO\UserDao.cs" />
@@ -100,6 +102,18 @@
     </Compile>
     <Compile Include="Depositos\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsExtras\LocalidadesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsExtras\LocalidadesForm.Designer.cs">
+      <DependentUpon>LocalidadesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsExtras\PaisesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsExtras\PaisesForm.Designer.cs">
+      <DependentUpon>PaisesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Frame\RolSelection.cs">
       <SubType>Form</SubType>
@@ -115,18 +129,15 @@
     </Compile>
     <Compile Include="Models\ClienteModel.cs" />
     <Compile Include="Models\CuentaModel.cs" />
+    <Compile Include="Models\DocumentoModel.cs" />
     <Compile Include="Models\FuncionalidadModel.cs" />
+    <Compile Include="Models\LocalidadModel.cs" />
+    <Compile Include="Models\PaisModel.cs" />
     <Compile Include="MyExceptions\UserNotFoundException.cs" />
     <Compile Include="Facturacion\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Facturacion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Frame\Frame.cs">
@@ -158,6 +169,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Rol\RolForm.resx">
       <DependentUpon>RolForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsExtras\LocalidadesForm.resx">
+      <DependentUpon>LocalidadesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsExtras\PaisesForm.resx">
+      <DependentUpon>PaisesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Frame\Frame.resx">
       <DependentUpon>Frame.cs</DependentUpon>

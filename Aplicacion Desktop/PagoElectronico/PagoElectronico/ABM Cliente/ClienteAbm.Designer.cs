@@ -29,23 +29,6 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.documentoTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.documentoNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.email = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.telefono = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nacimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nacionalidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionNumeroCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionPiso = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionDepto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.localidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.paisId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.usuarioNombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.habilitado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checBox1 = new System.Windows.Forms.CheckBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
@@ -63,6 +46,21 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.documentoTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.documentoNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.email = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nacimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nacionalidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionNumeroCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionPiso = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionDepto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.localidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.paisId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.habilitado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -77,7 +75,6 @@
             this.documentoTipo,
             this.documentoNumero,
             this.email,
-            this.telefono,
             this.nacimiento,
             this.nacionalidadId,
             this.direccionCalle,
@@ -86,7 +83,6 @@
             this.direccionDepto,
             this.localidadId,
             this.paisId,
-            this.usuarioNombre,
             this.habilitado});
             this.dataGridView1.Location = new System.Drawing.Point(12, 139);
             this.dataGridView1.Name = "dataGridView1";
@@ -94,91 +90,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(673, 346);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
-            // 
-            // id
-            // 
-            this.id.HeaderText = "Código";
-            this.id.Name = "id";
-            // 
-            // apellido
-            // 
-            this.apellido.HeaderText = "Apellido";
-            this.apellido.Name = "apellido";
-            // 
-            // nombre
-            // 
-            this.nombre.HeaderText = "Nombre";
-            this.nombre.Name = "nombre";
-            // 
-            // documentoTipo
-            // 
-            this.documentoTipo.HeaderText = "Doc Tipo";
-            this.documentoTipo.Name = "documentoTipo";
-            // 
-            // documentoNumero
-            // 
-            this.documentoNumero.HeaderText = "Documento";
-            this.documentoNumero.Name = "documentoNumero";
-            // 
-            // email
-            // 
-            this.email.HeaderText = "E-Mail";
-            this.email.Name = "email";
-            // 
-            // telefono
-            // 
-            this.telefono.HeaderText = "Teléfono";
-            this.telefono.Name = "telefono";
-            // 
-            // nacimiento
-            // 
-            this.nacimiento.HeaderText = "Nacimiento";
-            this.nacimiento.Name = "nacimiento";
-            // 
-            // nacionalidadId
-            // 
-            this.nacionalidadId.HeaderText = "Nacionalidad";
-            this.nacionalidadId.Name = "nacionalidadId";
-            // 
-            // direccionCalle
-            // 
-            this.direccionCalle.HeaderText = "Calle";
-            this.direccionCalle.Name = "direccionCalle";
-            // 
-            // direccionNumeroCalle
-            // 
-            this.direccionNumeroCalle.HeaderText = "N°";
-            this.direccionNumeroCalle.Name = "direccionNumeroCalle";
-            // 
-            // direccionPiso
-            // 
-            this.direccionPiso.HeaderText = "Piso";
-            this.direccionPiso.Name = "direccionPiso";
-            // 
-            // direccionDepto
-            // 
-            this.direccionDepto.HeaderText = "Departamento";
-            this.direccionDepto.Name = "direccionDepto";
-            // 
-            // localidadId
-            // 
-            this.localidadId.HeaderText = "Localidad";
-            this.localidadId.Name = "localidadId";
-            // 
-            // paisId
-            // 
-            this.paisId.HeaderText = "Pais";
-            this.paisId.Name = "paisId";
-            // 
-            // usuarioNombre
-            // 
-            this.usuarioNombre.HeaderText = "Usuario";
-            this.usuarioNombre.Name = "usuarioNombre";
-            // 
-            // habilitado
-            // 
-            this.habilitado.HeaderText = "Habilitado";
-            this.habilitado.Name = "habilitado";
             // 
             // groupBox1
             // 
@@ -203,7 +114,7 @@
             // checBox1
             // 
             this.checBox1.AutoSize = true;
-            this.checBox1.Location = new System.Drawing.Point(493, 57);
+            this.checBox1.Location = new System.Drawing.Point(496, 57);
             this.checBox1.Name = "checBox1";
             this.checBox1.Size = new System.Drawing.Size(78, 17);
             this.checBox1.TabIndex = 5;
@@ -216,13 +127,14 @@
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(100, 20);
             this.textBox4.TabIndex = 4;
+            this.textBox4.Leave += new System.EventHandler(this.textBox4_Leave);
             // 
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(349, 23);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(64, 21);
+            this.comboBox1.Size = new System.Drawing.Size(100, 21);
             this.comboBox1.TabIndex = 3;
             // 
             // label5
@@ -341,6 +253,81 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
+            // id
+            // 
+            this.id.HeaderText = "Código";
+            this.id.Name = "id";
+            // 
+            // apellido
+            // 
+            this.apellido.HeaderText = "Apellido";
+            this.apellido.Name = "apellido";
+            // 
+            // nombre
+            // 
+            this.nombre.HeaderText = "Nombre";
+            this.nombre.Name = "nombre";
+            // 
+            // documentoTipo
+            // 
+            this.documentoTipo.HeaderText = "Doc Tipo";
+            this.documentoTipo.Name = "documentoTipo";
+            // 
+            // documentoNumero
+            // 
+            this.documentoNumero.HeaderText = "Documento";
+            this.documentoNumero.Name = "documentoNumero";
+            // 
+            // email
+            // 
+            this.email.HeaderText = "E-Mail";
+            this.email.Name = "email";
+            // 
+            // nacimiento
+            // 
+            this.nacimiento.HeaderText = "Nacimiento";
+            this.nacimiento.Name = "nacimiento";
+            // 
+            // nacionalidadId
+            // 
+            this.nacionalidadId.HeaderText = "Nacionalidad";
+            this.nacionalidadId.Name = "nacionalidadId";
+            // 
+            // direccionCalle
+            // 
+            this.direccionCalle.HeaderText = "Calle";
+            this.direccionCalle.Name = "direccionCalle";
+            // 
+            // direccionNumeroCalle
+            // 
+            this.direccionNumeroCalle.HeaderText = "N°";
+            this.direccionNumeroCalle.Name = "direccionNumeroCalle";
+            // 
+            // direccionPiso
+            // 
+            this.direccionPiso.HeaderText = "Piso";
+            this.direccionPiso.Name = "direccionPiso";
+            // 
+            // direccionDepto
+            // 
+            this.direccionDepto.HeaderText = "Departamento";
+            this.direccionDepto.Name = "direccionDepto";
+            // 
+            // localidadId
+            // 
+            this.localidadId.HeaderText = "Localidad";
+            this.localidadId.Name = "localidadId";
+            // 
+            // paisId
+            // 
+            this.paisId.HeaderText = "Pais";
+            this.paisId.Name = "paisId";
+            // 
+            // habilitado
+            // 
+            this.habilitado.HeaderText = "Habilitado";
+            this.habilitado.Name = "habilitado";
+            // 
             // ClienteAbm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -382,13 +369,13 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.CheckBox checBox1;
+        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
         private System.Windows.Forms.DataGridViewTextBoxColumn apellido;
         private System.Windows.Forms.DataGridViewTextBoxColumn nombre;
         private System.Windows.Forms.DataGridViewTextBoxColumn documentoTipo;
         private System.Windows.Forms.DataGridViewTextBoxColumn documentoNumero;
         private System.Windows.Forms.DataGridViewTextBoxColumn email;
-        private System.Windows.Forms.DataGridViewTextBoxColumn telefono;
         private System.Windows.Forms.DataGridViewTextBoxColumn nacimiento;
         private System.Windows.Forms.DataGridViewTextBoxColumn nacionalidadId;
         private System.Windows.Forms.DataGridViewTextBoxColumn direccionCalle;
@@ -397,9 +384,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn direccionDepto;
         private System.Windows.Forms.DataGridViewTextBoxColumn localidadId;
         private System.Windows.Forms.DataGridViewTextBoxColumn paisId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn usuarioNombre;
         private System.Windows.Forms.DataGridViewTextBoxColumn habilitado;
-        private System.Windows.Forms.Button button5;
 
     }
 }
