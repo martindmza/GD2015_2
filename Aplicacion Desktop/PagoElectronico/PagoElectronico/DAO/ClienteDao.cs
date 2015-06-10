@@ -88,9 +88,10 @@ namespace DAO
             return clientes;
         }
 
-        public UInt32 addNewCliente(ClienteModel cliente) {
-
-            return 99;
+        public ClienteModel addNewCliente(ClienteModel cliente)
+        {
+            cliente.id = 99;
+            return cliente;
         }
 
         public ClienteModel updateCliente(ClienteModel cliente){
