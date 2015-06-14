@@ -170,7 +170,7 @@ namespace ABM
                                             domCalle.Text, UInt32.Parse(domNumero.Text),
                                             UInt32.Parse(domPiso.Text),domDepartamento.Text,
                                             localidadId,paisId);
-                    cliente.id = clienteDao.addNewCliente(cliente);
+                    cliente = clienteDao.addNewCliente(cliente);
                     MessageBox.Show("Cliente creado exitosamente");
                     parent.formResponseAdd(cliente);
                     break;
