@@ -9,11 +9,19 @@ using System.Windows.Forms;
 using Includes;
 using ABM;
 using MyExceptions;
+using Depositos;
+using Retiros;
+using Transferencias;
+using Facturacion;
+using Tarjetas;
 
 namespace Frame
 {
     public partial class Frame : Form
     {
+
+        private const int OPERACION_TIPO_ABM = 0;
+        private const int OPERACION_TIPO_SELECCION = 1;
 
         //______________________________________________________________________________________________________________________
         public Frame()
@@ -76,19 +84,73 @@ namespace Frame
         //---------------------------------------------------------------------------------------------------------------------
         private void clientesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form abmroles = new ClienteAbm();
-            abmroles.MdiParent = this;
-            abmroles.Show();
+            Form f = new ClienteAbm(OPERACION_TIPO_ABM);
+            f.MdiParent = this;
+            f.Show();
         }
-        //---------------------------------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------------------------------
 
-        //---------------------------------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------------------------------
         private void rolesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form abmroles = new RolAbm();
-            abmroles.MdiParent = this;
-            abmroles.Show();
+            Form f = new RolAbm();
+            f.MdiParent = this;
+            f.Show();
         }
-        //---------------------------------------------------------------------------------------------------------------------        
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void cuentasToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Form f = new CuentaAbm();
+            f.MdiParent = this;
+            f.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void depósitosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form f = new DepositosAbm();
+            f.MdiParent = this;
+            f.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void retirosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form f = new RetirosAbm();
+            f.MdiParent = this;
+            f.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void transferenciasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form f = new TransferenciaAbm();
+            f.MdiParent = this;
+            f.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void facturaciónDeCostosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form f = new FacturacionAbm();
+            f.MdiParent = this;
+            f.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void tarjetasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form f = new TarjetasAbm();
+            f.MdiParent = this;
+            f.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
     }
 }

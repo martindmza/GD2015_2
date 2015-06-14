@@ -34,12 +34,16 @@ namespace Frame
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Login.Login.rolSelected = Login.Login.userLogued.roles[listBox1.SelectedIndex];
-            parentFrame.enableMenu();
-            parentFrame.setRolLogued();
-            MdiParent.Enabled = true;
-            this.Dispose();
-            GC.Collect();
+            try
+            {
+                Login.Login.rolSelected = Login.Login.userLogued.roles[listBox1.SelectedIndex];
+                parentFrame.enableMenu();
+                parentFrame.setRolLogued();
+                MdiParent.Enabled = true;
+                this.Dispose();
+                GC.Collect();
+            }
+            catch (Exception ern) { }
         }
 
         private void RolSelection_Load(object sender, EventArgs e)

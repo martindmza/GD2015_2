@@ -18,30 +18,49 @@ namespace FormsExtras
         private List<PaisModel> paises;
         private Int32 paisActivoIndex;
         private PaisModel paisActivo;
-        private ClienteForm parentForm; 
+
+        private ClienteForm parentFormCliente;
+        private CuentaForm parentFormCuenta;
+
         private int operacionTipo;
 
         public PaisesForm(ClienteForm parentForm, int operacionTipo)
         {
+            init(operacionTipo);
+            this.parentFormCliente = parentForm;
+            parentForm.Enabled = false;
+        }
+
+        public PaisesForm(CuentaForm parentFormCuenta, int operacionTipo)
+        {
+            init(operacionTipo);
+            this.parentFormCuenta = parentFormCuenta;
+            parentFormCuenta.Enabled = false;
+        }
+
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void init(int operacionTipo)
+        {
             InitializeComponent();
             extraDao = new ExtraDao();
-            
+
             paises = extraDao.getPaises();
-            this.parentForm = parentForm;
             this.operacionTipo = operacionTipo;
 
-            if (operacionTipo == 0) {
+            if (operacionTipo == 0)
+            {
                 this.Text = "Seleccionar País";
             }
-            else if (operacionTipo == 1) {
+            else if (operacionTipo == 1)
+            {
                 this.Text = "Seleccionar Nacionalidad";
             }
 
             button1.Enabled = false;
-            parentForm.Enabled = false;
-
             fillData();
         }
+        //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
         private void fillData(){
@@ -82,12 +101,31 @@ namespace FormsExtras
         {
             if (operacionTipo == 0)
             {
-                parentForm.setPaisSeleccionado(paisActivo);
+                if (parentFormCliente != null) {
+                    parentFormCliente.setPaisSeleccionado(paisActivo);
+                }
+                if (parentFormCuenta != null)
+                {
+                    parentFormCuenta.setPaisSeleccionado(paisActivo);
+                }
             }
             else {
-                parentForm.setNacionalidadSeleccionado(paisActivo);
+                if (parentFormCliente != null)
+                {
+                    parentFormCliente.setNacionalidadSeleccionado(paisActivo);
+                }
             }
-            parentForm.Enabled = true;
+
+            if (parentFormCliente != null)
+            {
+                parentFormCliente.Enabled = true;
+            }
+            if (parentFormCuenta != null)
+            {
+                parentFormCuenta.Enabled = true;
+            }
+
+            
             this.Close();
             this.Dispose();
             GC.Collect();
@@ -98,7 +136,14 @@ namespace FormsExtras
         //Cancel Button Click
         private void button2_Click(object sender, EventArgs e)
         {
-            parentForm.Enabled = true;
+            if (parentFormCliente != null)
+            {
+                parentFormCliente.Enabled = true;
+            }
+            if (parentFormCuenta != null)
+            {
+                parentFormCuenta.Enabled = true;
+            }
             this.Close();
             this.Dispose();
             GC.Collect();
@@ -110,22 +155,29 @@ namespace FormsExtras
         //-----------------------------------------------------------------------------------------------------------------
         private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            int filaActiva = this.dataGridView1.CurrentCell.RowIndex;
-            String idPaisActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
-
-            int count = 0;
-            foreach (PaisModel pais in paises)
+            try
             {
-                if (idPaisActivo.Equals(pais.id.ToString()))
-                {
-                    paisActivo = pais;
-                    paisActivoIndex = count;
-                    break;
-                }
-                count++;
-            }
+                int filaActiva = this.dataGridView1.CurrentCell.RowIndex;
+                String idPaisActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
 
-            button1.Enabled = true;
+                int count = 0;
+                foreach (PaisModel pais in paises)
+                {
+                    if (idPaisActivo.Equals(pais.id.ToString()))
+                    {
+                        paisActivo = pais;
+                        paisActivoIndex = count;
+                        break;
+                    }
+                    count++;
+                }
+
+                button1.Enabled = true;
+            }
+            catch (NullReferenceException errTarj)
+            {
+                button1.Enabled = false;
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 

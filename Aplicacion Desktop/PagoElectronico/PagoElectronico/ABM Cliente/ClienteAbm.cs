@@ -17,16 +17,42 @@ namespace ABM
         private const int MODIFICAR_CLIENTE = 1;
         private const int DESHABILITAR_CLIENTE = 2;
 
+        int operacionTipo;
+
         private Int32 clienteActivoIndex;
         private ClienteModel clienteActivo;
         private ClienteDao clienteDao;
         private CuentaDao cuentaDao;
         private ExtraDao extraDao;
 
+        private CuentaAbm parentCuenta;
+        private CuentaForm parentCuentaForm;
+
         private List<ClienteModel> clientes;
 
-        public ClienteAbm()
+        public ClienteAbm(int operacionTipo, CuentaAbm parentCuenta)
         {
+
+            init(operacionTipo);
+            this.parentCuenta = parentCuenta;
+            parentCuenta.Enabled = false;
+        }
+
+        public ClienteAbm(int operacionTipo, CuentaForm parentCuentaForm)
+        {
+            init(operacionTipo);
+            this.parentCuentaForm = parentCuentaForm;
+            parentCuentaForm.Enabled = false;
+        }
+
+        public ClienteAbm(int operacionTipo)
+        {
+            init(operacionTipo);
+        }
+
+        private void init(int operacionTipo) {
+
+            this.operacionTipo = operacionTipo;
             InitializeComponent();
 
             this.clienteDao = new ClienteDao();
@@ -40,17 +66,34 @@ namespace ABM
             //sets
             button3.Enabled = false;
             button4.Enabled = false;
+            comboBox1.SelectedItem = comboBox1.Items[0];
+
+            if (operacionTipo == 0)
+            {
+                elegir.Visible = false;
+                buttonCancelar.Visible = false;
+            }
+            else if (operacionTipo == 1)
+            {
+                elegir.Visible = true;
+                buttonCancelar.Visible = true;
+                ControlBox = false;
+                button2.Visible = false;
+                button3.Visible = false;
+                button4.Visible = false;
+            }
         }
+
+
         //-----------------------------------------------------------------------------------------------------------------
         private void fillDocTypes()
         {
-            KeyValuePair<int, string> firstTipo = new KeyValuePair<int,string>();
-            foreach (KeyValuePair<int, string> tipo in extraDao.getDocTypes())
+            KeyValuePair<UInt32, String> empty = new KeyValuePair<UInt32, String>(0,"");
+            comboBox1.Items.Add(empty);
+
+            foreach (DocumentoModel tipo in extraDao.getDocTypes())
             {
-                if (comboBox1.Items.Count == 0) {
-                    firstTipo = tipo;
-                }
-                comboBox1.Items.Add(tipo);
+                comboBox1.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
             }
             comboBox1.DisplayMember = "Value";
             comboBox1.ValueMember = "Key";
@@ -68,36 +111,21 @@ namespace ABM
                 row = new String[] {    cliente.id.ToString(),
                                         cliente.apellido.ToString(),
                                         cliente.nombre.ToString(),
-                                        cliente.documentoTipo.ToString(),
-                                        cliente.documentoNumero.ToString(),
+                                        cliente.documento.nombre.ToString(),
+                                        cliente.documento.numero.ToString(),
                                         cliente.email.ToString(),
                                         cliente.nacimiento.ToString(),
-                                        cliente.nacionalidadId.ToString(),
+                                        cliente.nacionalidad.nacionalidad.ToString(),
 										cliente.direccionCalle.ToString(),
 										cliente.direccionNumeroCalle.ToString(),
 										cliente.direccionPiso.ToString(),
 										cliente.direccionDepto.ToString(),
-                                        cliente.localidadId.ToString(),
-										cliente.paisId.ToString(),
+                                        cliente.localidad.nombre.ToString(),
+										cliente.pais.nombre.ToString(),
 										cliente.habilitado.ToString()
                                         };
                 dataGridView1.Rows.Add(row);
             }
-        }
-        //-----------------------------------------------------------------------------------------------------------------
-
-
-
-        //Event Handler***
-        //Limpiar filtros
-        //-----------------------------------------------------------------------------------------------------------------
-        private void button1_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "";
-            textBox2.Text = "";
-            textBox3.Text = "";
-            textBox4.Text = "";
-            checBox1.Checked = false;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -122,6 +150,19 @@ namespace ABM
         {
             clientes[clienteActivoIndex] = cliente;
             fillClientsTable();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //Event Handler***
+        //-----------------------------------------------------------------------------------------------------------------
+        //Limpiar filtros
+        private void button1_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            checBox1.Checked = false;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -160,7 +201,6 @@ namespace ABM
             {
                 filtros.habilitado = true;
             }
-            MessageBox.Show(filtros.ToString());
             clientes = clienteDao.getClientsByFilters(filtros);
             fillClientsTable();
         }
@@ -170,23 +210,32 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            int filaActiva = this.dataGridView1.CurrentCell.RowIndex;
-            String idClienteActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
-
-            int count = 0;
-            foreach (ClienteModel cliente in clientes)
+            try
             {
-                if (idClienteActivo.Equals(cliente.id.ToString()))
-                {
-                    clienteActivo = cliente;
-                    clienteActivoIndex = count;
-                    break;
-                }
-                count++;
-            }
+                int filaActiva = this.dataGridView1.CurrentCell.RowIndex;
+                String idClienteActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
 
-            button3.Enabled = true;
-            button4.Enabled = true;
+                int count = 0;
+                foreach (ClienteModel cliente in clientes)
+                {
+                    if (idClienteActivo.Equals(cliente.id.ToString()))
+                    {
+                        clienteActivo = cliente;
+                        clienteActivoIndex = count;
+                        break;
+                    }
+                    count++;
+                }
+
+                
+                button3.Enabled = true;
+                button4.Enabled = true;
+                elegir.Enabled = true;
+            }
+            catch (NullReferenceException errTarj)
+            {
+                elegir.Enabled = false;
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -228,6 +277,45 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros por favor");
                 textBox4.Text = "";
             }
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        //elegir un cliente
+        private void elegir_Click(object sender, EventArgs e)
+        {
+            if (parentCuenta != null)
+            {
+                parentCuenta.formResponseCliente(clienteActivo);
+                parentCuenta.Enabled = true;
+            }
+            if (parentCuentaForm != null)
+            {
+                parentCuentaForm.formResponseCliente(clienteActivo);
+                parentCuentaForm.Enabled = true;
+            }
+
+            this.Close();
+            this.Dispose();
+            GC.Collect();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonCancelar_Click(object sender, EventArgs e)
+        {
+            if (parentCuenta != null)
+            {
+                parentCuenta.Enabled = true;
+            }
+            if (parentCuentaForm != null)
+            {
+                parentCuentaForm.Enabled = true;
+            }
+
+            this.Close();
+            this.Dispose();
+            GC.Collect();
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

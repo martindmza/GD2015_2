@@ -20,10 +20,10 @@ namespace ABM
         private ClienteAbm parent;
         private ExtraDao extraDao;
 
-        private UInt32 nacionalidadId = 0;
-        private UInt32 localidadId = 0;
-        private UInt32 paisId = 0;
-        private UInt32 docTipoId = 0;
+        private PaisModel pais;
+        private PaisModel nacionalidad;
+        private LocalidadModel localidad;
+        private DocumentoModel documento;
 
         private const int SELECCIONAR_PAIS = 0;
         private const int SELECCIONAR_NACIONALIDAD = 1;
@@ -41,36 +41,57 @@ namespace ABM
             this.extraDao = extraDao;
             this.parent = parent;
 
+            fillDocTypes();
+            fillData();
+
             switch (operacionTipo)
             {
                 case 0:
                     button3.Enabled = false;
-                    checkBox1.Visible = false;
                     this.Text = "Crear Nuevo Cliente";
                     break;
                 case 1:
                     button3.Enabled = false;
-                    fillData();
                     this.Text = "Modificar Cliente";
                     break;
                 case 2:
-                    button2.Enabled = false;
-                    fillData();
                     this.Text = "Dar de Baja Cliente";
+                    this.button2.Visible = false;
+                    this.button3.Text = "Dar de Baja";
+                    disableInputs();
                     break;
             }
-            fillDocTypes();
 
+            checkBox1.Enabled = false;
             id.Enabled = false;
             parent.Enabled = false;
         }
 
         //-----------------------------------------------------------------------------------------------------------------
+        private void disableInputs()
+        {
+            docNumero.Enabled = false;
+            docTipo.Enabled = false;
+            apellido.Enabled = false;
+            nombre.Enabled = false;
+            nacimiento.Enabled = false;
+            email.Enabled = false;
+            button1.Enabled = false;
+            button4.Enabled = false;
+            button6.Enabled = false;
+            domCalle.Enabled = false;
+            domDepartamento.Enabled = false;
+            domNumero.Enabled = false;
+            domPiso.Enabled = false;
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
         private void fillDocTypes()
         {
-            foreach (KeyValuePair<int, string> tipo in extraDao.getDocTypes())
+            foreach (DocumentoModel tipo in extraDao.getDocTypes())
             {
-                docTipo.Items.Add(tipo);
+                docTipo.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
             }
             docTipo.DisplayMember = "Value";
             docTipo.ValueMember = "Key";
@@ -80,21 +101,60 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void fillData() {
 
-            nacimiento.Value = new DateTime(1990, 1, 1);
-
             if (cliente == null)
             {
-                domCalle.Text = "";
-                domNumero.Text = "";
-                domPiso.Text = "";
-                domDepartamento.Text = "";
-               
+                nacimiento.Value = new DateTime(1990, 1, 1);
+                docTipo.SelectedItem = docTipo.Items[0];
+                checkBox1.Checked = true;
+
             }
             else {
+
                 id.Text = cliente.id.ToString();
-                docNumero.Text = cliente.documentoNumero.ToString();
+
+                for (int i = 0;i<docTipo.Items.Count;i++)
+                {
+                    String[] result = docTipo.Items[i].ToString().Split(',');
+                    String[] valueString = result[0].Split('[');
+                    UInt32 value = UInt32.Parse(valueString[1]);
+
+                    if (value == cliente.documento.tipo ) {
+                        docTipo.SelectedItem = docTipo.Items[i];
+                        break;
+                    }
+                }
+
+                docNumero.Text = cliente.documento.numero.ToString();
                 apellido.Text = cliente.apellido;
                 nombre.Text = cliente.nombre;
+                nacimiento.Value = cliente.nacimiento;
+                email.Text = cliente.email;
+                checkBox1.Checked = cliente.habilitado;
+                
+                if (cliente.direccionCalle != null && cliente.direccionCalle.Length != 0) {
+                    domCalle.Text = cliente.direccionCalle;
+                }
+                if (cliente.direccionNumeroCalle != 0)
+                {
+                    domNumero .Text = cliente.direccionNumeroCalle.ToString();
+                }
+                if (cliente.direccionPiso != 0)
+                {
+                    domPiso.Text = cliente.direccionPiso.ToString();
+                }
+                if (cliente.direccionDepto != null && cliente.direccionDepto.Length != 0)
+                {
+                    domDepartamento.Text = cliente.direccionDepto;
+                }
+
+                nacionalidadText.Text = cliente.nacionalidad.nacionalidad;
+                paisText.Text = cliente.pais.nombre;
+                localidadText.Text = cliente.localidad.nombre;
+
+                nacionalidad = cliente.nacionalidad;
+                pais = cliente.pais;
+                localidad = cliente.localidad;
+                documento = cliente.documento;
             }
             
 
@@ -102,17 +162,17 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        public void setPaisSeleccionado(PaisModel pais) {
-            this.paisText.Text = pais.nombre;
-            this.paisId = pais.id;
+        public void setPaisSeleccionado(PaisModel paisSeleccionado) {
+            this.paisText.Text = paisSeleccionado.nombre;
+            this.pais = paisSeleccionado;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        public void setNacionalidadSeleccionado(PaisModel pais)
+        public void setNacionalidadSeleccionado(PaisModel nacionalidad)
         {
-            this.nacionalidadText.Text = pais.nacionalidad;
-            this.nacionalidadId = pais.id;
+            this.nacionalidadText.Text = nacionalidad.nacionalidad;
+            this.nacionalidad = nacionalidad;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -120,7 +180,7 @@ namespace ABM
         public void setLocalidadSeleccionado(LocalidadModel localidad)
         {
             this.localidadText.Text = localidad.nombre;
-            this.localidadId = localidad.id;
+            this.localidad = localidad;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -129,16 +189,12 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void requireds_TextChanged(object sender, EventArgs e)
         {
-            /*
-            MessageBox.Show( (docNumero.Text.Length != 0).ToString() + " ; " + (docTipo.SelectedItem != null).ToString() +
-                " ; " + (apellido.Text.Length != 0).ToString() + " ; " +  (nombre.Text.Length != 0).ToString() +
-                " ; " + (email.Text.Length != 0).ToString()  + " ; " + (nacionalidadText.Text.Length != 0).ToString() +
-                " ; " + (paisId != 0 ).ToString() + " ; " + (localidadId != 0).ToString());
-            */
-            if (docNumero.Text.Length != 0 && docTipo.SelectedItem != null &&
-                apellido.Text.Length != 0 && nombre.Text.Length != 0 && 
-                email.Text.Length != 0 && nacionalidadText.Text.Length != 0 &&
-                paisId != 0 && localidadId != 0)
+            if (docNumero.Text.Length != 0 && 
+                apellido.Text.Length != 0  && nombre.Text.Length != 0           && 
+                email.Text.Length != 0     && nacionalidadText.Text.Length != 0 &&
+                paisText.Text.Length != 0  && localidadText.Text.Length != 0    &&
+                domCalle.Text.Length != 0  && domNumero.Text.Length != 0        &&
+                domPiso.Text.Length != 0   && domDepartamento.Text.Length != 0)
             {
                 button3.Enabled = true;
             }
@@ -152,36 +208,32 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void button3_Click(object sender, EventArgs e)
         {
+            String[] result = docTipo.SelectedItem.ToString().Split(',');
+            String[] valueString = result[0].Split('[');
+            UInt32 docTipoSelected = UInt32.Parse(valueString[1]);
 
-            if (docTipo.SelectedItem != null)
-            {
-                String[] result = docTipo.SelectedItem.ToString().Split(',');
-                String[] valueString = result[0].Split('[');
-                UInt32 value = UInt32.Parse(valueString[1]);
-                docTipoId = value;
-            }
+            DocumentoModel documentoToSend = extraDao.getDocTypeById(docTipoSelected);
+            documentoToSend.numero = UInt64.Parse(docNumero.Text);
 
             switch (operacionTipo)
             {
                 case 0:
-                    cliente = new ClienteModel(apellido.Text,nombre.Text, docTipoId,
-                                            UInt64.Parse(docNumero.Text),
-                                            nacimiento.Value, email.Text, nacionalidadId,
+                    cliente = new ClienteModel(apellido.Text,nombre.Text, documentoToSend,
+                                            nacimiento.Value, email.Text, nacionalidad,
                                             domCalle.Text, UInt32.Parse(domNumero.Text),
                                             UInt32.Parse(domPiso.Text),domDepartamento.Text,
-                                            localidadId,paisId);
-                    cliente.id = clienteDao.addNewCliente(cliente);
+                                            localidad,pais);
+
+                    cliente = clienteDao.addNewCliente(cliente);
                     MessageBox.Show("Cliente creado exitosamente");
                     parent.formResponseAdd(cliente);
                     break;
                 case 1:
-                    cliente = clienteDao.updateCliente(new ClienteModel(UInt32.Parse(id.Text), apellido.Text, nombre.Text,
-                                            UInt32.Parse(docTipo.SelectedValue.ToString()),
-                                            UInt64.Parse(docNumero.Text),
-                                            nacimiento.Value, email.Text, nacionalidadId,
+                    cliente = new ClienteModel(apellido.Text, nombre.Text, documentoToSend,
+                                            nacimiento.Value, email.Text, nacionalidad,
                                             domCalle.Text, UInt32.Parse(domNumero.Text),
                                             UInt32.Parse(domPiso.Text), domDepartamento.Text,
-                                            localidadId, paisId));
+                                            localidad, pais);
                     MessageBox.Show("Cliente modificado exitosamente");
                     parent.formResponseUpdate(cliente);
                     break;
@@ -216,6 +268,10 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros");
                 docNumero.Text = "";
             }
+            else if (docNumero.Text.Length != 0)
+            {
+                Int64 doc = Int64.Parse(docNumero.Text);
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -227,6 +283,10 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros");
                 domNumero.Text = "";
             }
+            else if (domNumero.Text.Length != 0)
+            {
+                Int32 num = Int32.Parse(domNumero.Text);
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -237,6 +297,10 @@ namespace ABM
             {
                 MessageBox.Show("Ingrese solo numeros");
                 domPiso.Text = "";
+            }
+            else if (domPiso.Text.Length != 0)
+            {
+                Int32 num = Int32.Parse(domPiso.Text);
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -261,7 +325,7 @@ namespace ABM
         }
         //-----------------------------------------------------------------------------------------------------------------
 
-        ////-----------------------------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------------------------------
         //Pais
         private void button6_Click(object sender, EventArgs e)
         {

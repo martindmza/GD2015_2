@@ -18,5 +18,9 @@ namespace Models
             this.nombre = nombre;
             this.nacionalidad = nacionalidad;
         }
+
+        public String ToString() {
+            return "{ " + id + "; " + nombre + "; " + nacionalidad + " }";
+        }
     }
 }

@@ -14,5 +14,10 @@ namespace Models
             this.id = id;
             this.nombre = nombre;
         }
+
+        public String ToString()
+        {
+            return "{ " + id.ToString() + "; " + nombre + " }";
+        }
     }
 }

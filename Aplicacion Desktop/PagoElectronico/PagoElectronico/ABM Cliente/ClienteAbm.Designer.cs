@@ -29,6 +29,21 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.documentoTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.documentoNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.email = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nacimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nacionalidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionNumeroCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionPiso = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionDepto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.localidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.paisId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.habilitado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.checBox1 = new System.Windows.Forms.CheckBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
@@ -46,21 +61,8 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.documentoTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.documentoNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.email = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nacimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nacionalidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionNumeroCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionPiso = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionDepto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.localidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.paisId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.habilitado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.elegir = new System.Windows.Forms.Button();
+            this.buttonCancelar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +92,81 @@
             this.dataGridView1.Size = new System.Drawing.Size(673, 346);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
+            // 
+            // id
+            // 
+            this.id.HeaderText = "Código";
+            this.id.Name = "id";
+            // 
+            // apellido
+            // 
+            this.apellido.HeaderText = "Apellido";
+            this.apellido.Name = "apellido";
+            // 
+            // nombre
+            // 
+            this.nombre.HeaderText = "Nombre";
+            this.nombre.Name = "nombre";
+            // 
+            // documentoTipo
+            // 
+            this.documentoTipo.HeaderText = "Doc Tipo";
+            this.documentoTipo.Name = "documentoTipo";
+            // 
+            // documentoNumero
+            // 
+            this.documentoNumero.HeaderText = "Documento";
+            this.documentoNumero.Name = "documentoNumero";
+            // 
+            // email
+            // 
+            this.email.HeaderText = "E-Mail";
+            this.email.Name = "email";
+            // 
+            // nacimiento
+            // 
+            this.nacimiento.HeaderText = "Nacimiento";
+            this.nacimiento.Name = "nacimiento";
+            // 
+            // nacionalidadId
+            // 
+            this.nacionalidadId.HeaderText = "Nacionalidad";
+            this.nacionalidadId.Name = "nacionalidadId";
+            // 
+            // direccionCalle
+            // 
+            this.direccionCalle.HeaderText = "Calle";
+            this.direccionCalle.Name = "direccionCalle";
+            // 
+            // direccionNumeroCalle
+            // 
+            this.direccionNumeroCalle.HeaderText = "N°";
+            this.direccionNumeroCalle.Name = "direccionNumeroCalle";
+            // 
+            // direccionPiso
+            // 
+            this.direccionPiso.HeaderText = "Piso";
+            this.direccionPiso.Name = "direccionPiso";
+            // 
+            // direccionDepto
+            // 
+            this.direccionDepto.HeaderText = "Departamento";
+            this.direccionDepto.Name = "direccionDepto";
+            // 
+            // localidadId
+            // 
+            this.localidadId.HeaderText = "Localidad";
+            this.localidadId.Name = "localidadId";
+            // 
+            // paisId
+            // 
+            this.paisId.HeaderText = "Pais";
+            this.paisId.Name = "paisId";
+            // 
+            // habilitado
+            // 
+            this.habilitado.HeaderText = "Habilitado";
+            this.habilitado.Name = "habilitado";
             // 
             // groupBox1
             // 
@@ -253,86 +330,34 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
-            // id
+            // elegir
             // 
-            this.id.HeaderText = "Código";
-            this.id.Name = "id";
+            this.elegir.Location = new System.Drawing.Point(591, 491);
+            this.elegir.Name = "elegir";
+            this.elegir.Size = new System.Drawing.Size(94, 23);
+            this.elegir.TabIndex = 5;
+            this.elegir.Text = "Elegir";
+            this.elegir.UseVisualStyleBackColor = true;
+            this.elegir.Click += new System.EventHandler(this.elegir_Click);
             // 
-            // apellido
+            // buttonCancelar
             // 
-            this.apellido.HeaderText = "Apellido";
-            this.apellido.Name = "apellido";
-            // 
-            // nombre
-            // 
-            this.nombre.HeaderText = "Nombre";
-            this.nombre.Name = "nombre";
-            // 
-            // documentoTipo
-            // 
-            this.documentoTipo.HeaderText = "Doc Tipo";
-            this.documentoTipo.Name = "documentoTipo";
-            // 
-            // documentoNumero
-            // 
-            this.documentoNumero.HeaderText = "Documento";
-            this.documentoNumero.Name = "documentoNumero";
-            // 
-            // email
-            // 
-            this.email.HeaderText = "E-Mail";
-            this.email.Name = "email";
-            // 
-            // nacimiento
-            // 
-            this.nacimiento.HeaderText = "Nacimiento";
-            this.nacimiento.Name = "nacimiento";
-            // 
-            // nacionalidadId
-            // 
-            this.nacionalidadId.HeaderText = "Nacionalidad";
-            this.nacionalidadId.Name = "nacionalidadId";
-            // 
-            // direccionCalle
-            // 
-            this.direccionCalle.HeaderText = "Calle";
-            this.direccionCalle.Name = "direccionCalle";
-            // 
-            // direccionNumeroCalle
-            // 
-            this.direccionNumeroCalle.HeaderText = "N°";
-            this.direccionNumeroCalle.Name = "direccionNumeroCalle";
-            // 
-            // direccionPiso
-            // 
-            this.direccionPiso.HeaderText = "Piso";
-            this.direccionPiso.Name = "direccionPiso";
-            // 
-            // direccionDepto
-            // 
-            this.direccionDepto.HeaderText = "Departamento";
-            this.direccionDepto.Name = "direccionDepto";
-            // 
-            // localidadId
-            // 
-            this.localidadId.HeaderText = "Localidad";
-            this.localidadId.Name = "localidadId";
-            // 
-            // paisId
-            // 
-            this.paisId.HeaderText = "Pais";
-            this.paisId.Name = "paisId";
-            // 
-            // habilitado
-            // 
-            this.habilitado.HeaderText = "Habilitado";
-            this.habilitado.Name = "habilitado";
+            this.buttonCancelar.Location = new System.Drawing.Point(491, 491);
+            this.buttonCancelar.Name = "buttonCancelar";
+            this.buttonCancelar.Size = new System.Drawing.Size(94, 23);
+            this.buttonCancelar.TabIndex = 6;
+            this.buttonCancelar.Text = "Cancelar";
+            this.buttonCancelar.UseVisualStyleBackColor = true;
+            this.buttonCancelar.Visible = false;
+            this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
             // 
             // ClienteAbm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(697, 517);
+            this.Controls.Add(this.buttonCancelar);
+            this.Controls.Add(this.elegir);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button4);
@@ -385,6 +410,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn localidadId;
         private System.Windows.Forms.DataGridViewTextBoxColumn paisId;
         private System.Windows.Forms.DataGridViewTextBoxColumn habilitado;
+        private System.Windows.Forms.Button elegir;
+        private System.Windows.Forms.Button buttonCancelar;
 
     }
 }

@@ -43,6 +43,7 @@ namespace Login
             catch (UserNotFoundException err)
             {
                 MessageBox.Show("Contraseña incorrecta :" + err);
+
             }
 
             try {

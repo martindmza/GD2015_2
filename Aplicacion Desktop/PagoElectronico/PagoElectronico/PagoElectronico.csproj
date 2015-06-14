@@ -61,11 +61,17 @@
       <DependentUpon>ClienteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Cliente\ClienteFiltros.cs" />
-    <Compile Include="ABM Cuenta\Form1.cs">
+    <Compile Include="ABM Cuenta\CuentaAbm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ABM Cuenta\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="ABM Cuenta\CuentaAbm.Designer.cs">
+      <DependentUpon>CuentaAbm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Cuenta\CuentaForm.Designer.cs">
+      <DependentUpon>CuentaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM de Usuario\Form1.cs">
       <SubType>Form</SubType>
@@ -93,15 +99,34 @@
     </Compile>
     <Compile Include="DAO\ClienteDao.cs" />
     <Compile Include="DAO\CuentaDao.cs" />
+    <Compile Include="DAO\DepositoDao.cs" />
+    <Compile Include="DAO\estadoDao.cs" />
     <Compile Include="DAO\ExtraDao.cs" />
+    <Compile Include="DAO\FacturaDao.cs" />
     <Compile Include="DAO\FuncionalidadDao.cs" />
+    <Compile Include="DAO\RetiroDao.cs" />
     <Compile Include="DAO\RolDao.cs" />
+    <Compile Include="DAO\TarjetaDeCreditoDao.cs" />
+    <Compile Include="DAO\TranscaccionDao.cs" />
+    <Compile Include="DAO\TransferenciaDao.cs" />
     <Compile Include="DAO\UserDao.cs" />
-    <Compile Include="Depositos\Form1.cs">
+    <Compile Include="Depositos\DepositosAbm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Depositos\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Depositos\DepositosAbm.Designer.cs">
+      <DependentUpon>DepositosAbm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Depositos\DepositosComprobante.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Depositos\DepositosComprobante.Designer.cs">
+      <DependentUpon>DepositosComprobante.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Facturacion\FacturaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Facturacion\FacturaForm.Designer.cs">
+      <DependentUpon>FacturaForm.cs</DependentUpon>
     </Compile>
     <Compile Include="FormsExtras\LocalidadesForm.cs">
       <SubType>Form</SubType>
@@ -115,6 +140,12 @@
     <Compile Include="FormsExtras\PaisesForm.Designer.cs">
       <DependentUpon>PaisesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormsExtras\TarjetaDeCreditoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsExtras\TarjetaDeCreditoForm.Designer.cs">
+      <DependentUpon>TarjetaDeCreditoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Frame\RolSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,18 +158,28 @@
     <Compile Include="Login\Login.designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\BancoModel.cs" />
     <Compile Include="Models\ClienteModel.cs" />
     <Compile Include="Models\CuentaModel.cs" />
+    <Compile Include="Models\CuentaTipoModel.cs" />
+    <Compile Include="Models\DepositoModel.cs" />
     <Compile Include="Models\DocumentoModel.cs" />
+    <Compile Include="Models\EstadoModel.cs" />
+    <Compile Include="Models\FacturaModel.cs" />
     <Compile Include="Models\FuncionalidadModel.cs" />
     <Compile Include="Models\LocalidadModel.cs" />
     <Compile Include="Models\PaisModel.cs" />
+    <Compile Include="Models\RetiroModel.cs" />
+    <Compile Include="Models\TarjetaDeCreditoModel.cs" />
+    <Compile Include="Models\TransaccionModel.cs" />
+    <Compile Include="Models\TransaccionTipoModel.cs" />
+    <Compile Include="Models\TransferenciaModel.cs" />
     <Compile Include="MyExceptions\UserNotFoundException.cs" />
-    <Compile Include="Facturacion\Form1.cs">
+    <Compile Include="Facturacion\FacturacionAbm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Facturacion\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Facturacion\FacturacionAbm.Designer.cs">
+      <DependentUpon>FacturacionAbm.cs</DependentUpon>
     </Compile>
     <Compile Include="Frame\Frame.cs">
       <SubType>Form</SubType>
@@ -164,17 +205,38 @@
     <EmbeddedResource Include="ABM Cliente\ClienteForm.resx">
       <DependentUpon>ClienteForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\CuentaAbm.resx">
+      <DependentUpon>CuentaAbm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Cuenta\CuentaForm.resx">
+      <DependentUpon>CuentaForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ABM Rol\RolAbm.resx">
       <DependentUpon>RolAbm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Rol\RolForm.resx">
       <DependentUpon>RolForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Depositos\DepositosAbm.resx">
+      <DependentUpon>DepositosAbm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Depositos\DepositosComprobante.resx">
+      <DependentUpon>DepositosComprobante.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Facturacion\FacturacionAbm.resx">
+      <DependentUpon>FacturacionAbm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Facturacion\FacturaForm.resx">
+      <DependentUpon>FacturaForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormsExtras\LocalidadesForm.resx">
       <DependentUpon>LocalidadesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormsExtras\PaisesForm.resx">
       <DependentUpon>PaisesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsExtras\TarjetaDeCreditoForm.resx">
+      <DependentUpon>TarjetaDeCreditoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Frame\Frame.resx">
       <DependentUpon>Frame.cs</DependentUpon>
@@ -186,6 +248,21 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Retiros\ChequeForm.resx">
+      <DependentUpon>ChequeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Retiros\RetirosAbm.resx">
+      <DependentUpon>RetirosAbm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tarjetas\TarjetasAbm.resx">
+      <DependentUpon>TarjetasAbm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tarjetas\TarjetasForm.resx">
+      <DependentUpon>TarjetasForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transferencias\TransferenciaAbm.resx">
+      <DependentUpon>TransferenciaAbm.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -200,17 +277,35 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Retiros\Form1.cs">
+    <Compile Include="Retiros\ChequeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Retiros\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Retiros\ChequeForm.Designer.cs">
+      <DependentUpon>ChequeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Transferencias\Form1.cs">
+    <Compile Include="Retiros\RetirosAbm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Transferencias\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Retiros\RetirosAbm.Designer.cs">
+      <DependentUpon>RetirosAbm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetasAbm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetasAbm.Designer.cs">
+      <DependentUpon>TarjetasAbm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetasForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tarjetas\TarjetasForm.Designer.cs">
+      <DependentUpon>TarjetasForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Transferencias\TransferenciaAbm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transferencias\TransferenciaAbm.Designer.cs">
+      <DependentUpon>TransferenciaAbm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

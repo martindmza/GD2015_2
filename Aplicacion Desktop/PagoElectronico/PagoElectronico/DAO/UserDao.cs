@@ -22,7 +22,12 @@ namespace DAO
         //-----------------------------------------------------------------------------------------------------------------
         public UserModel loguin(String usuario, String password) {
 
-            UserModel user = new UserModel(1,"admin","admin",true,0);
+            PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
+            LocalidadModel l1 = new LocalidadModel(1, "Haedo");
+            DocumentoModel d1 = new DocumentoModel(1, "DNI", 34284430);
+            ClienteModel c1 = new ClienteModel(1, "Amaya", "Hector", d1, new DateTime(1995, 1, 1), "martin.d.mza@gmail.com", p1, "Calle1", 111, 1, "A", l1, p1);
+
+            UserModel user = new UserModel(1,"admin","admin",true,1,c1);
 
             /*
             UserModel user = null;

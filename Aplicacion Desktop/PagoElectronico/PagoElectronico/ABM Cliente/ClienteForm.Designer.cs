@@ -47,9 +47,11 @@
             this.nacionalidadText = new System.Windows.Forms.TextBox();
             this.domNumero = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
             this.button6 = new System.Windows.Forms.Button();
             this.paisText = new System.Windows.Forms.TextBox();
-            this.pais = new System.Windows.Forms.Label();
+            this.paislabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.domPiso = new System.Windows.Forms.TextBox();
             this.localidadText = new System.Windows.Forms.TextBox();
@@ -58,7 +60,6 @@
             this.email = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.id = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
@@ -70,8 +71,7 @@
             this.label16 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -199,7 +199,6 @@
             this.docTipo.Name = "docTipo";
             this.docTipo.Size = new System.Drawing.Size(122, 21);
             this.docTipo.TabIndex = 2;
-            this.docTipo.SelectedIndexChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // apellido
             // 
@@ -233,6 +232,7 @@
             this.domNumero.Name = "domNumero";
             this.domNumero.Size = new System.Drawing.Size(122, 20);
             this.domNumero.TabIndex = 1;
+            this.domNumero.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.domNumero.Leave += new System.EventHandler(this.domNumero_Leave);
             // 
             // groupBox1
@@ -241,7 +241,7 @@
             this.groupBox1.Controls.Add(this.label20);
             this.groupBox1.Controls.Add(this.button6);
             this.groupBox1.Controls.Add(this.paisText);
-            this.groupBox1.Controls.Add(this.pais);
+            this.groupBox1.Controls.Add(this.paislabel);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label8);
@@ -259,6 +259,24 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Domicilio";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(507, 91);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(11, 13);
+            this.label21.TabIndex = 9;
+            this.label21.Text = "*";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(214, 91);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(11, 13);
+            this.label20.TabIndex = 9;
+            this.label20.Text = "*";
             // 
             // button6
             // 
@@ -279,14 +297,14 @@
             this.paisText.TabIndex = 9;
             this.paisText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
-            // pais
+            // paislabel
             // 
-            this.pais.AutoSize = true;
-            this.pais.Location = new System.Drawing.Point(319, 94);
-            this.pais.Name = "pais";
-            this.pais.Size = new System.Drawing.Size(32, 13);
-            this.pais.TabIndex = 3;
-            this.pais.Text = "País:";
+            this.paislabel.AutoSize = true;
+            this.paislabel.Location = new System.Drawing.Point(319, 94);
+            this.paislabel.Name = "paislabel";
+            this.paislabel.Size = new System.Drawing.Size(32, 13);
+            this.paislabel.TabIndex = 3;
+            this.paislabel.Text = "País:";
             // 
             // button1
             // 
@@ -304,6 +322,7 @@
             this.domPiso.Name = "domPiso";
             this.domPiso.Size = new System.Drawing.Size(122, 20);
             this.domPiso.TabIndex = 1;
+            this.domPiso.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.domPiso.Leave += new System.EventHandler(this.domPiso_Leave);
             // 
             // localidadText
@@ -322,6 +341,7 @@
             this.domDepartamento.Name = "domDepartamento";
             this.domDepartamento.Size = new System.Drawing.Size(122, 20);
             this.domDepartamento.TabIndex = 1;
+            this.domDepartamento.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // domCalle
             // 
@@ -329,6 +349,7 @@
             this.domCalle.Name = "domCalle";
             this.domCalle.Size = new System.Drawing.Size(122, 20);
             this.domCalle.TabIndex = 1;
+            this.domCalle.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // email
             // 
@@ -357,16 +378,6 @@
             this.button3.Text = "Aceptar";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(457, 23);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(73, 17);
-            this.checkBox1.TabIndex = 5;
-            this.checkBox1.Text = "Habilitado";
-            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // id
             // 
@@ -398,6 +409,7 @@
             // 
             // nacimiento
             // 
+            this.nacimiento.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.nacimiento.Location = new System.Drawing.Point(140, 170);
             this.nacimiento.Name = "nacimiento";
             this.nacimiento.Size = new System.Drawing.Size(122, 20);
@@ -467,23 +479,15 @@
             this.label19.TabIndex = 9;
             this.label19.Text = "*";
             // 
-            // label20
+            // checkBox1
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(214, 91);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(11, 13);
-            this.label20.TabIndex = 9;
-            this.label20.Text = "*";
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(507, 91);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(11, 13);
-            this.label21.TabIndex = 9;
-            this.label21.Text = "*";
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(457, 23);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(73, 17);
+            this.checkBox1.TabIndex = 5;
+            this.checkBox1.Text = "Habilitado";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // ClienteForm
             // 
@@ -559,14 +563,13 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox id;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.DateTimePicker nacimiento;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox paisText;
-        private System.Windows.Forms.Label pais;
+        private System.Windows.Forms.Label paislabel;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label20;
@@ -576,5 +579,6 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

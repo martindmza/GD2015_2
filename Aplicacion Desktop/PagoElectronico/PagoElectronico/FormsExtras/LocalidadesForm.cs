@@ -79,22 +79,29 @@ namespace FormsExtras
         //-----------------------------------------------------------------------------------------------------------------
         private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            int filaActiva = this.dataGridView1.CurrentCell.RowIndex;
-            String idPaisActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
-
-            int count = 0;
-            foreach (LocalidadModel localidad in localidades)
+            try
             {
-                if (idPaisActivo.Equals(localidad.id.ToString()))
-                {
-                    localidadActivo = localidad;
-                    localidadActivoIndex = count;
-                    break;
-                }
-                count++;
-            }
+                int filaActiva = this.dataGridView1.CurrentCell.RowIndex;
+                String idPaisActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
 
-            button1.Enabled = true;
+                int count = 0;
+                foreach (LocalidadModel localidad in localidades)
+                {
+                    if (idPaisActivo.Equals(localidad.id.ToString()))
+                    {
+                        localidadActivo = localidad;
+                        localidadActivoIndex = count;
+                        break;
+                    }
+                    count++;
+                }
+
+                button1.Enabled = true;
+            }
+            catch (NullReferenceException errTarj)
+            {
+                button1.Enabled = false;
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

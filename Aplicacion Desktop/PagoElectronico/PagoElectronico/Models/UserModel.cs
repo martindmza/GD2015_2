@@ -15,11 +15,13 @@ namespace Models
         public Decimal id { get; set; }
         public String nombre { get; set; }
         public String password { get; set; }
-        public Boolean habilitado { get; set; }
+        public Boolean habilitado = true;
         public Decimal intentosFallidos { get; set; }
         public List<RolModel> roles { get; set; }
         public UserDao dao { get; set; }
         public RolDao rolDao { get; set; }
+        public List<CuentaModel> cuentas { get; set; }
+        public ClienteModel cliente { get; set; }
 
         public UserModel() { incializar(); }
 
@@ -48,9 +50,21 @@ namespace Models
             incializar();
         }
 
+        public UserModel(Decimal id, String nombre, String password, Boolean habilitado, Decimal intentosFallidos,ClienteModel cliente)
+        {
+            this.id = id;
+            this.nombre = nombre;
+            this.password = password;
+            this.habilitado = habilitado;
+            this.intentosFallidos = intentosFallidos;
+            this.cliente = cliente;
+            incializar();
+        }
+
         private void incializar()
         {
             roles = new List<RolModel>();
+            cuentas = new List<CuentaModel>();
             dao = new UserDao();
             rolDao = new RolDao();
         }
@@ -63,5 +77,8 @@ namespace Models
             }
         }
         //---------------------------------------------------------------------------------------------------------------
+
+
+
     }
 }
