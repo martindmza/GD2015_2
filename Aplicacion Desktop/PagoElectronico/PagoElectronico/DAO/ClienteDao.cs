@@ -11,7 +11,7 @@ namespace DAO
     public class ClienteDao
     {
 
-        public ClienteDao() : AbstractDAO
+        public ClienteDao() 
         {
             //this.connector = Conexion.getInstance();
         }
