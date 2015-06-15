@@ -439,7 +439,7 @@ VALUES ('Administrador'),('Cliente')
 --------------------------------------FUNCIONALIDAD---------------------------------------------
 
 INSERT INTO REZAGADOS.Funcionalidad (Nombre)
-VALUES ('ABM de Rol'), ('Registro de Usuario'), ('ABM de Cliente'), ('ABM de Cuenta'), ('Deposito'), ('Retiro de Efectivo'), ('Transferencias entre cuentas'), ('Facturaci髇 de Costos'), ('Consulta de saldos'), ('Listado Estad韘tico')
+VALUES ('ABM de Rol'), ('Registro de Usuario'), ('ABM de Cliente'), ('ABM de Cuenta'), ('Deposito'), ('Retiro de Efectivo'), ('Transferencias entre cuentas'), ('Facturaci贸n de Costos'), ('Consulta de saldos'), ('Listado Estad铆stico')
 
 -------------------------------------ROLXFUNCIONALIDAD------------------------------------------
 
@@ -451,7 +451,7 @@ UNION
 SELECT R.Id_Rol, F.Id_Funcionalidad
 FROM REZAGADOS.Rol R, REZAGADOS.Funcionalidad F
 WHERE	R.Nombre = 'Cliente' AND
-		F.Nombre IN ('ABM de Cliente', 'ABM de Cuenta', 'Deposito', 'Retiro de Efectivo', 'Transferencias entre cuentas', 'Facturaci髇 de Costos', 'Consulta de saldos')
+		F.Nombre IN ('ABM de Cliente', 'ABM de Cuenta', 'Deposito', 'Retiro de Efectivo', 'Transferencias entre cuentas', 'Facturaci贸n de Costos', 'Consulta de saldos')
 
 ------------------------------------------USUARIO--------------------------------------------------
 ---------------------------------EL-USERNAME-SERA-EL-MAIL------------------------------------------
@@ -530,7 +530,7 @@ VALUES ('Oro', 10, 10), ('Plata', 5, 20), ('Bronce', 5, 30), ('Gratis', 0, 0)
 --------------------------------------------TIPOITEM-----------------------------------------------
 
 INSERT INTO REZAGADOS.TipoItem (Tipo)
-VALUES ('Comisi髇 por transferencia.'), ('Creacion de cuenta'), ('Retiro'), ('Cheque')
+VALUES ('Comisi贸n por transferencia.'), ('Creacion de cuenta'), ('Retiro'), ('Cheque')
 
 ------------------------------------------FACUTRA--------------------------------------------------
 
@@ -703,7 +703,7 @@ AS
 		DECLARE @Contrasenia VARCHAR(255) = (SELECT Contrasenia FROM REZAGADOS.Usuario WHERE Nombre = @Nombre)
 		UPDATE REZAGADOS.Usuario SET Habilitada=1 WHERE Id_Usuario=@Id_Usuario
 		UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos = 0 WHERE Id_Usuario = @Id_Usuario
-		SET @Respuesta = 'Usuario dado de alta, contrase馻: ' + (@Contrasenia);
+		SET @Respuesta = 'Usuario dado de alta, contrase帽a: ' + (@Contrasenia);
 		END
 GO
 
@@ -812,7 +812,7 @@ IF(@Habilitado = 1)
 		UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos=(Cantidad_Intentos_Fallidos+1) WHERE Nombre = @Usuario;
 		SET @Cantidad_Intentos_Fallidos = (@Cantidad_Intentos_Fallidos + 1);
 		DECLARE @Cantidad_Intentos_Fallidos_String NVARCHAR(255) = @Cantidad_Intentos_Fallidos;
-		SET @Respuesta = 'Contrase馻 incorrecta, vuelva a intentarlo. Cantidad de intentos fallidos: ' + (@Cantidad_Intentos_Fallidos_String);
+		SET @Respuesta = 'Contrase帽a incorrecta, vuelva a intentarlo. Cantidad de intentos fallidos: ' + (@Cantidad_Intentos_Fallidos_String);
 		END
 	END
 	ELSE
@@ -830,7 +830,7 @@ SET @Respuesta = 'No existe el usuario, vuelva a intentarlo';
 END
 GO
 
------------------------------------------CAMBIO CONTRASE袮------------------------------------------------
+-----------------------------------------CAMBIO CONTRASE脩A------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -839,7 +839,7 @@ AS
 BEGIN
 	UPDATE REZAGADOS.Usuario SET Contrasenia = @ContraseniaNueva	WHERE Id_Usuario = @Id_Usuario;
 	UPDATE REZAGADOS.Usuario SET Contrasenia_Modificada = 1 WHERE Id_Usuario = @Id_Usuario;
-	SET @Respuesta = 'Contrase馻 cambiada correctamente!'
+	SET @Respuesta = 'Contrase帽a cambiada correctamente!'
 END
 GO
 
@@ -993,7 +993,7 @@ BEGIN
 IF NOT EXISTS (SELECT COUNT(*) FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Id_Cuenta)
 BEGIN
 INSERT INTO REZAGADOS.Cuenta(Id_Cuenta, Id_Usuario, Id_Pais, Id_Tipo_Cuenta, Id_Moneda, Estado, Fecha_Creacion)
-VALUES (@Id_Cuenta, @Id_Usuario, (SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais), (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo), (SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda), 'Pendiente de activaci髇', @Fecha)
+VALUES (@Id_Cuenta, @Id_Usuario, (SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais), (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo), (SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda), 'Pendiente de activaci贸n', @Fecha)
 END
 END
 GO
@@ -1072,3 +1072,70 @@ END
 GO
 
 -----------------------------------------RETIRO---------------------------------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.RetiroEfectivo(@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Nro_Documento NUMERIC(18,0), @Cuenta NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
+AS
+BEGIN
+	IF ((@Tipo_Documento <> (SELECT Id_Tipo_Documento FROM Cliente WHERE Id_Usuario = @Usuario)) OR (@Nro_Documento <> (SELECT Nro_Documento FROM Cliente WHERE Id_Usuario = @Usuario)))
+	    SET @Respuesta = 'Documento ingresado diferente al documento del usuario logueado'
+	ELSE	
+		IF ((SELECT Estado FROM Cuenta WHERE @Usuario=Id_Usuario) = 'Inhabilitado')
+			SET @Respuesta = 'Cuenta inhabilitada'
+		ELSE
+			IF ((SELECT Saldo from Cuenta WHERE @Cuenta=Id_Cuenta)<=0)
+				SET @Respuesta = 'Cuenta sin saldo'
+			ELSE
+				IF ((SELECT Saldo from Cuenta WHERE @Cuenta=Id_Cuenta)>=@Importe)
+					SET @Respuesta = 'Importe mayor al saldo'
+				ELSE
+					IF (@Moneda <> 'Dolar')
+						SET @Respuesta = 'Importe no expresado en dolares'
+					ELSE
+						BEGIN
+							INSERT INTO REZAGADOS.Retiro (Id_Cuenta, Fecha, Id_Moneda, Importe)
+							VALUES (@Cuenta, @Fecha, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Importe)
+
+							INSERT INTO REZAGADOS.Cheque (Fecha, Id_Moneda, Importe)
+							VALUES (@Fecha, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Importe)
+							SET @Respuesta = 'Retiro realizado y Cheque generado'
+						END
+END
+GO
+
+----------------------------------------------TRANSFERENCIA_ENTRE_CUENTAS-------------------------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Cuenta_Origen NUMERIC(18,0), @Cuenta_Destino NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
+AS
+BEGIN
+	IF (@Cuenta_Origen NOT IN (SELECT Id_Cuenta from Cuenta WHERE @Usuario=Id_Usuario))
+		SET @Respuesta = 'Cuenta origen no pertenece al cliente'
+	ELSE
+		IF (((SELECT Estado FROM Cuenta WHERE @Usuario=Id_Usuario) = 'Cerrrada') OR
+			((SELECT Estado FROM Cuenta WHERE @Usuario=Id_Usuario) = 'Pendiente de activacion'))
+			SET @Respuesta = 'Cuenta destino cerrada o pendiente de activacion'
+		ELSE
+			IF (@Importe<=0)
+				SET @Respuesta = 'Importe menor o igual a cero'
+			ELSE
+				IF ((SELECT Saldo from Cuenta WHERE @Cuenta_Origen=Id_Cuenta)>=@Importe)
+					SET @Respuesta = 'Importe mayor al saldo'
+				ELSE
+						UPDATE REZAGADOS.Cuenta SET
+						Saldo=Saldo-@Importe
+						WHERE Id_Cuenta=@Cuenta_Origen	
+						UPDATE REZAGADOS.Cuenta SET
+						Saldo=Saldo+@Importe
+						WHERE Id_Cuenta=@Cuenta_Destino						
+						
+						IF ((SELECT Id_Usuario from Cuenta WHERE @Cuenta_Origen=Id_Cuenta)=(SELECT Id_Usuario from Cuenta WHERE @Cuenta_Destino=Id_Cuenta))
+						BEGIN
+							SET @Respuesta = 'Transferencia realizada sin costo'
+						END
+						ELSE
+							BEGIN
+								SET @Respuesta = 'Transferencia realizada con costo'
+							END
+END
+GO
