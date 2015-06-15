@@ -87,6 +87,9 @@ DROP PROCEDURE REZAGADOS.Alta_Tarjeta;
 DROP PROCEDURE REZAGADOS.Baja_Tarjeta;
 DROP PROCEDURE REZAGADOS.Crear_Tarjeta;
 DROP PROCEDURE REZAGADOS.Depositar;
+DROP PROCEDURE REZAGADOS.RetiroEfectivo;
+DROP PROCEDURE REZAGADOS.TransferenciaEntreCuentas;
+
 
 USE [GD1C2015]
 GO
@@ -1071,7 +1074,7 @@ DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cli
 END
 GO
 
------------------------------------------RETIRO---------------------------------------------------------------
+-----------------------------------------RETIRO EFECTIVO--------------------------------------------------------------
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.RetiroEfectivo(@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Nro_Documento NUMERIC(18,0), @Cuenta NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
@@ -1103,7 +1106,7 @@ BEGIN
 END
 GO
 
-----------------------------------------------TRANSFERENCIA_ENTRE_CUENTAS-------------------------------------------------------
+----------------------------------------------TRANSFERENCIA ENTRE CUENTAS-------------------------------------------------------
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Cuenta_Origen NUMERIC(18,0), @Cuenta_Destino NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
