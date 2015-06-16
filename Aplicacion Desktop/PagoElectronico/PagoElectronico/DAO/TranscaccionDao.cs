@@ -34,5 +34,11 @@ namespace DAO
             return transacciones;
         }
 
+        public TransaccionModel insertTransaccion(TransaccionModel transaccion, FacturaModel factura) { 
+
+            transaccion.id = 99;
+            return transaccion;
+        }
+
     }
 }

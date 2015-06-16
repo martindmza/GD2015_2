@@ -10,13 +10,18 @@ namespace Models
         public UInt32 id;
         public DateTime fecha;
         public List<TransaccionModel> transacciones;
-        public Double total;
 
-        public FacturaModel( DateTime fecha, List<TransaccionModel> transacciones,Double total)
+        public FacturaModel( DateTime fecha, List<TransaccionModel> transacciones)
         {
             this.fecha = fecha;
             this.transacciones = transacciones;
-            this.total = total;
+        }
+
+        public FacturaModel(UInt32 id,DateTime fecha, List<TransaccionModel> transacciones)
+        {
+            this.id = id;
+            this.fecha = fecha;
+            this.transacciones = transacciones;
         }
     }
 }

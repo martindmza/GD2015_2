@@ -61,10 +61,10 @@
       <DependentUpon>ClienteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Cliente\ClienteFiltros.cs" />
-    <Compile Include="ABM Cuenta\ConsultaDeSaldos.cs">
+    <Compile Include="Consulta Saldos\ConsultaDeSaldos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ABM Cuenta\ConsultaDeSaldos.Designer.cs">
+    <Compile Include="Consulta Saldos\ConsultaDeSaldos.Designer.cs">
       <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Cuenta\CuentaAbm.cs">
@@ -96,12 +96,6 @@
     </Compile>
     <Compile Include="ABM Rol\RolForm.Designer.cs">
       <DependentUpon>RolForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consulta Saldos\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Consulta Saldos\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="DAO\AbstractDAO.cs" />
     <Compile Include="DAO\ClienteDao.cs" />
@@ -214,7 +208,7 @@
     <EmbeddedResource Include="ABM Cliente\ClienteForm.resx">
       <DependentUpon>ClienteForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ABM Cuenta\ConsultaDeSaldos.resx">
+    <EmbeddedResource Include="Consulta Saldos\ConsultaDeSaldos.resx">
       <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Cuenta\CuentaAbm.resx">
