@@ -103,6 +103,7 @@
     <Compile Include="Consulta Saldos\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="DAO\AbstractDAO.cs" />
     <Compile Include="DAO\ClienteDao.cs" />
     <Compile Include="DAO\CuentaDao.cs" />
     <Compile Include="DAO\DepositoDao.cs" />
@@ -158,6 +159,8 @@
     <Compile Include="Frame\RolSelection.Designer.cs">
       <DependentUpon>RolSelection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Herramientas\Config.cs" />
+    <Compile Include="Herramientas\SqlConnector.cs" />
     <Compile Include="Login\Login.cs">
       <SubType>Form</SubType>
     </Compile>
