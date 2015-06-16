@@ -40,9 +40,10 @@
             this.retirosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transferenciasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.facturaciónDeCostosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tarjetasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.tarjetasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.consultaDeSaldosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -73,7 +74,8 @@
             this.retirosToolStripMenuItem,
             this.transferenciasToolStripMenuItem,
             this.facturaciónDeCostosToolStripMenuItem,
-            this.tarjetasToolStripMenuItem});
+            this.tarjetasToolStripMenuItem,
+            this.consultaDeSaldosToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(900, 24);
@@ -146,6 +148,13 @@
             this.facturaciónDeCostosToolStripMenuItem.Text = "Facturación de Costos";
             this.facturaciónDeCostosToolStripMenuItem.Click += new System.EventHandler(this.facturaciónDeCostosToolStripMenuItem_Click);
             // 
+            // tarjetasToolStripMenuItem
+            // 
+            this.tarjetasToolStripMenuItem.Name = "tarjetasToolStripMenuItem";
+            this.tarjetasToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.tarjetasToolStripMenuItem.Text = "Tarjetas";
+            this.tarjetasToolStripMenuItem.Click += new System.EventHandler(this.tarjetasToolStripMenuItem_Click);
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -165,12 +174,12 @@
             this.label4.Size = new System.Drawing.Size(0, 16);
             this.label4.TabIndex = 6;
             // 
-            // tarjetasToolStripMenuItem
+            // consultaDeSaldosToolStripMenuItem
             // 
-            this.tarjetasToolStripMenuItem.Name = "tarjetasToolStripMenuItem";
-            this.tarjetasToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
-            this.tarjetasToolStripMenuItem.Text = "Tarjetas";
-            this.tarjetasToolStripMenuItem.Click += new System.EventHandler(this.tarjetasToolStripMenuItem_Click);
+            this.consultaDeSaldosToolStripMenuItem.Name = "consultaDeSaldosToolStripMenuItem";
+            this.consultaDeSaldosToolStripMenuItem.Size = new System.Drawing.Size(119, 20);
+            this.consultaDeSaldosToolStripMenuItem.Text = "Consulta de Saldos";
+            this.consultaDeSaldosToolStripMenuItem.Click += new System.EventHandler(this.consultaDeSaldosToolStripMenuItem_Click);
             // 
             // Frame
             // 
@@ -212,6 +221,7 @@
         private System.Windows.Forms.ToolStripMenuItem transferenciasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem facturaciónDeCostosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tarjetasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem consultaDeSaldosToolStripMenuItem;
 
     }
 }

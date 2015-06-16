@@ -47,8 +47,7 @@ namespace FormsExtras
             string[] row;
             foreach (TarjetaDeCreditoModel tarjeta in tarjetas)
             {
-                row = new String[] {    tarjeta.numero.ToString(),
-                                        tarjeta.tipo.ToString()
+                row = new String[] {    tarjeta.numero.ToString()
                                         };
                 dataGridView1.Rows.Add(row);
             }

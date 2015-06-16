@@ -26,15 +26,16 @@ namespace DAO
             EstadoModel e1 = new EstadoModel(1, "abierta");
             EstadoModel e2 = new EstadoModel(2, "cerrada");
             ClienteModel cliente = new ClienteModel(1,"Amaya","Martin");
+            ClienteModel cliente2 = new ClienteModel(1, "Pepe", "Hongo");
 
             CuentaModel c1 = new CuentaModel(1, p1, oro, 1, "dolar", e1, new DateTime(2000, 1, 1), new DateTime(2005, 1, 1), cliente);
             CuentaModel c2 = new CuentaModel(2, p2, plata, 1, "dolar", e2, new DateTime(1999, 1, 1), new DateTime(2001, 1, 1), cliente);
             CuentaModel c3 = new CuentaModel(3, p3, bronce, 1, "dolar", e1, new DateTime(1998, 1, 1), new DateTime(2003, 1, 1), cliente);
             CuentaModel c4 = new CuentaModel(4, p4, gratarola, 1, "dolar", e2, new DateTime(1996, 1, 1), new DateTime(2010, 1, 1), cliente);
-            CuentaModel c5 = new CuentaModel(5, p1, oro, 1, "dolar", e1, new DateTime(2000, 1, 1), new DateTime(2005, 1, 1), cliente);
-            CuentaModel c6 = new CuentaModel(6, p2, plata, 1, "dolar", e2, new DateTime(1999, 1, 1), new DateTime(2001, 1, 1), cliente);
-            CuentaModel c7 = new CuentaModel(7, p3, bronce, 1, "dolar", e1, new DateTime(1998, 1, 1), new DateTime(2003, 1, 1), cliente);
-            CuentaModel c8 = new CuentaModel(8, p4, gratarola, 1, "dolar", e2, new DateTime(1996, 1, 1), new DateTime(2010, 1, 1), cliente);
+            CuentaModel c5 = new CuentaModel(5, p1, oro, 1, "dolar", e1, new DateTime(2000, 1, 1), new DateTime(2005, 1, 1), cliente2);
+            CuentaModel c6 = new CuentaModel(6, p2, plata, 1, "dolar", e2, new DateTime(1999, 1, 1), new DateTime(2001, 1, 1), cliente2);
+            CuentaModel c7 = new CuentaModel(7, p3, bronce, 1, "dolar", e1, new DateTime(1998, 1, 1), new DateTime(2003, 1, 1), cliente2);
+            CuentaModel c8 = new CuentaModel(8, p4, gratarola, 1, "dolar", e2, new DateTime(1996, 1, 1), new DateTime(2010, 1, 1), cliente2);
 
             c1.saldo = 15000;
             c2.saldo = 90000;
@@ -43,10 +44,10 @@ namespace DAO
             cuentas.Add(c2);
             cuentas.Add(c3);
             cuentas.Add(c4);
-            cuentas.Add(c1);
-            cuentas.Add(c2);
-            cuentas.Add(c3);
-            cuentas.Add(c4);
+            cuentas.Add(c5);
+            cuentas.Add(c6);
+            cuentas.Add(c7);
+            cuentas.Add(c8);
 
             return cuentas;
         }

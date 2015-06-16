@@ -268,10 +268,17 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros");
                 docNumero.Text = "";
             }
-            else if (docNumero.Text.Length != 0)
+            try
             {
-                Int64 doc = Int64.Parse(docNumero.Text);
+                if (Double.Parse(docNumero.Text) <= 0)
+                {
+                    MessageBox.Show("El valor no puede ser cero");
+                    docNumero.Text = "";
+                }
             }
+            catch (FormatException erf) { }
+            catch (NullReferenceException eru) { }
+            catch (Exception erg) { }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -283,10 +290,17 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros");
                 domNumero.Text = "";
             }
-            else if (domNumero.Text.Length != 0)
+            try
             {
-                Int32 num = Int32.Parse(domNumero.Text);
+                if (Double.Parse(domNumero.Text) <= 0)
+                {
+                    MessageBox.Show("El valor no puede ser cero");
+                    domNumero.Text = "";
+                }
             }
+            catch (FormatException erf) { }
+            catch (NullReferenceException eru) { }
+            catch (Exception erg) { }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -298,10 +312,16 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros");
                 domPiso.Text = "";
             }
-            else if (domPiso.Text.Length != 0)
+            try
             {
-                Int32 num = Int32.Parse(domPiso.Text);
+                if (Double.Parse(domPiso.Text) <= 0)
+                {
+                    domPiso.Text = "";
+                }
             }
+            catch (FormatException erf) { }
+            catch (NullReferenceException eru) { }
+            catch (Exception erg) { }
         }
         //-----------------------------------------------------------------------------------------------------------------
 

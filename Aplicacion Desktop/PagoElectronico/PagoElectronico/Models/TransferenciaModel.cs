@@ -26,5 +26,17 @@ namespace Models
             this.monedaId = monedaId;
             this.monedaNombre = monedaNombre;
         }
+
+        public TransferenciaModel(UInt32 id,CuentaModel cuentaOrigen, CuentaModel cuentaDestino, Double importe,
+                                   UInt32 monedaId, String monedaNombre,Double costo)
+        {
+            this.id = id;
+            this.cuentaOrigen = cuentaOrigen;
+            this.cuentaDestino = cuentaDestino;
+            this.importe = importe;
+            this.monedaId = monedaId;
+            this.monedaNombre = monedaNombre;
+            this.costo = costo;
+        }
     }
 }

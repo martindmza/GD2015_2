@@ -31,13 +31,15 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.numero = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.codigo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.emision = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.vencimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.habilitada = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.buttonQuitar = new System.Windows.Forms.Button();
             this.buttonModificar = new System.Windows.Forms.Button();
             this.buttonAgregar = new System.Windows.Forms.Button();
+            this.buttonBuscar = new System.Windows.Forms.Button();
+            this.numeroText = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,14 +50,13 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.numero,
             this.codigo,
-            this.tipo,
             this.emision,
             this.vencimiento,
             this.habilitada});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 12);
+            this.dataGridView1.Location = new System.Drawing.Point(12, 43);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(783, 294);
+            this.dataGridView1.Size = new System.Drawing.Size(702, 301);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
             // 
@@ -72,13 +73,6 @@
             this.codigo.Name = "codigo";
             this.codigo.ReadOnly = true;
             this.codigo.Width = 140;
-            // 
-            // tipo
-            // 
-            this.tipo.HeaderText = "Tipo";
-            this.tipo.Name = "tipo";
-            this.tipo.ReadOnly = true;
-            this.tipo.Width = 90;
             // 
             // emision
             // 
@@ -103,7 +97,7 @@
             // 
             // buttonQuitar
             // 
-            this.buttonQuitar.Location = new System.Drawing.Point(558, 312);
+            this.buttonQuitar.Location = new System.Drawing.Point(478, 350);
             this.buttonQuitar.Name = "buttonQuitar";
             this.buttonQuitar.Size = new System.Drawing.Size(75, 23);
             this.buttonQuitar.TabIndex = 2;
@@ -113,7 +107,7 @@
             // 
             // buttonModificar
             // 
-            this.buttonModificar.Location = new System.Drawing.Point(639, 312);
+            this.buttonModificar.Location = new System.Drawing.Point(559, 350);
             this.buttonModificar.Name = "buttonModificar";
             this.buttonModificar.Size = new System.Drawing.Size(75, 23);
             this.buttonModificar.TabIndex = 2;
@@ -123,7 +117,7 @@
             // 
             // buttonAgregar
             // 
-            this.buttonAgregar.Location = new System.Drawing.Point(720, 312);
+            this.buttonAgregar.Location = new System.Drawing.Point(640, 350);
             this.buttonAgregar.Name = "buttonAgregar";
             this.buttonAgregar.Size = new System.Drawing.Size(75, 23);
             this.buttonAgregar.TabIndex = 2;
@@ -131,11 +125,40 @@
             this.buttonAgregar.UseVisualStyleBackColor = true;
             this.buttonAgregar.Click += new System.EventHandler(this.buttonAgregar_Click);
             // 
+            // buttonBuscar
+            // 
+            this.buttonBuscar.Location = new System.Drawing.Point(171, 17);
+            this.buttonBuscar.Name = "buttonBuscar";
+            this.buttonBuscar.Size = new System.Drawing.Size(75, 20);
+            this.buttonBuscar.TabIndex = 3;
+            this.buttonBuscar.Text = "Buscar";
+            this.buttonBuscar.UseVisualStyleBackColor = true;
+            this.buttonBuscar.Click += new System.EventHandler(this.buttonBuscar_Click);
+            // 
+            // numeroText
+            // 
+            this.numeroText.Location = new System.Drawing.Point(65, 17);
+            this.numeroText.Name = "numeroText";
+            this.numeroText.Size = new System.Drawing.Size(100, 20);
+            this.numeroText.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(47, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Número:";
+            // 
             // TarjetasAbm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(806, 343);
+            this.ClientSize = new System.Drawing.Size(725, 381);
+            this.Controls.Add(this.buttonBuscar);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.numeroText);
             this.Controls.Add(this.buttonAgregar);
             this.Controls.Add(this.buttonModificar);
             this.Controls.Add(this.buttonQuitar);
@@ -149,6 +172,7 @@
             this.Text = "Mis Tarjetas de Crédito";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -156,13 +180,15 @@
 
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button buttonQuitar;
+        private System.Windows.Forms.Button buttonModificar;
+        private System.Windows.Forms.Button buttonAgregar;
         private System.Windows.Forms.DataGridViewTextBoxColumn numero;
         private System.Windows.Forms.DataGridViewTextBoxColumn codigo;
-        private System.Windows.Forms.DataGridViewTextBoxColumn tipo;
         private System.Windows.Forms.DataGridViewTextBoxColumn emision;
         private System.Windows.Forms.DataGridViewTextBoxColumn vencimiento;
         private System.Windows.Forms.DataGridViewTextBoxColumn habilitada;
-        private System.Windows.Forms.Button buttonModificar;
-        private System.Windows.Forms.Button buttonAgregar;
+        private System.Windows.Forms.Button buttonBuscar;
+        private System.Windows.Forms.TextBox numeroText;
+        private System.Windows.Forms.Label label1;
     }
 }
