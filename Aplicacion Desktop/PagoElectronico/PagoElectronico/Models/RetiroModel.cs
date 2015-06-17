@@ -26,5 +26,29 @@ namespace Models
             this.monedaNombre = monedaNombre;
             this.fecha = fecha;
         }
+
+        public RetiroModel(UInt32 id,CuentaModel cuenta, Double importe, UInt32 monedaId,
+                                String monedaNombre, DateTime fecha)
+        {
+            this.id = id;
+            this.cuenta = cuenta;
+            this.importe = importe;
+            this.monedaId = monedaId;
+            this.monedaNombre = monedaNombre;
+            this.fecha = fecha;
+        }
+
+        public RetiroModel(UInt32 id, CuentaModel cuenta, Double importe, UInt32 monedaId,
+                                String monedaNombre, DateTime fecha, UInt32 chequeId, BancoModel banco)
+        {
+            this.id = id;
+            this.cuenta = cuenta;
+            this.importe = importe;
+            this.monedaId = monedaId;
+            this.monedaNombre = monedaNombre;
+            this.fecha = fecha;
+            this.chequeId = chequeId;
+            this.banco = banco;
+        }
     }
 }
