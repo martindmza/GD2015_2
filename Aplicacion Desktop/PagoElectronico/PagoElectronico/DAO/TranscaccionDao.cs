@@ -12,7 +12,7 @@ namespace DAO
         public List<TransaccionModel> getTransaccionesPendientesByCliente(ClienteModel cliente) {
 
             List<TransaccionModel> transacciones = new List<TransaccionModel>();
-/*
+
             PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
             CuentaTipoModel oro = new CuentaTipoModel(1, "oro", 10, 1000);
             CuentaTipoModel plata = new CuentaTipoModel(2, "plata", 10, 500);
@@ -30,8 +30,14 @@ namespace DAO
             transacciones.Add(new TransaccionModel(2, 0, c1, t2, 1555, DateTime.Today));
             transacciones.Add(new TransaccionModel(3, 0, c2, t3, 600, DateTime.Today));
             transacciones.Add(new TransaccionModel(4, 0, c2, t1, 700, DateTime.Today));
-*/
+
             return transacciones;
+        }
+
+        public TransaccionModel insertTransaccion(TransaccionModel transaccion, FacturaModel factura) { 
+
+            transaccion.id = 99;
+            return transaccion;
         }
 
     }
