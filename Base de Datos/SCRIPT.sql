@@ -1142,3 +1142,93 @@ BEGIN
 							END
 END
 GO
+
+
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Funcionalidad_Rol]
+@id int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT f.Id_Funcionalidad ID, f.Nombre NOMBRE , f.Habilitada HABILITADA
+	FROM [REZAGADOS].Funcionalidad f 
+	inner join [REZAGADOS].FuncionalidadXRol rf 
+	on f.Id_Funcionalidad = rf.Id_Funcionalidad
+	WHERE rf.Id_Rol = @id
+END
+
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Rol_Usuario]
+@id int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT r.Id_Rol ID, r.Nombre NOMBRE
+	FROM [REZAGADOS].Rol r 
+	inner join [REZAGADOS].UsuarioXRol ur 
+	on r.Id_Rol = ur.Id_Rol
+	WHERE ur.Id_Usuario = @id
+END
+
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Rol]
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT r.Id_Rol ID, r.Nombre NOMBRE
+	FROM [REZAGADOS].Rol r 
+END
+
+
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Pais]
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT p.Id_Pais ID, p.Descripcion NOMBRE
+	FROM [REZAGADOS].Pais p 
+END
+
+
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Top5Depositos (@Cuenta NUMERIC(18,0))
+AS
+BEGIN
+    SELECT TOP 5 D.Id_Deposito, D.Codigo, D.Id_Cuenta, D.Id_Tarjeta, D. Id_Pais, D.Id_Moneda, D.Fecha, D.Importe, T.Numero AS 'Numero Tjta'
+    FROM REZAGADOS.Deposito D, REZAGADOS.Tarjeta T
+    WHERE D.Id_Cuenta = @Cuenta
+    AND D.Id_Tarjeta = T.Id_Tarjeta
+    ORDER BY Fecha DESC, Id_Deposito DESC
+END
+GO
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Top5Retiros (@Cuenta NUMERIC(18,0))
+AS
+BEGIN
+
+SELECT TOP 5 R.Id_Retiro, R.Id_Cuenta, R.Fecha, R.Id_Cuenta, R.Importe, C.Id_Cheque, C.Id_Retiro, C.Id_Banco, C.Fecha, C.Id_Moneda, C.Importe, C.Num_Egreso, C.Num_Item
+FROM REZAGADOS.Retiro R, REZAGADOS.Cheque C
+WHERE R.Id_Cuenta = @Cuenta
+AND R.Id_Retiro = C.Id_Retiro
+ORDER BY R.Fecha DESC, C.Id_Retiro DESC
+END
+GO
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Top10Transferencias (@Cuenta_Emi NUMERIC(18,0))
+AS
+BEGIN
+    SELECT TOP 10 T.Id_Transferencia, T.Id_Cuenta_Emi, T.Id_Cuenta_Dest, T.Fecha, T.Id_Moneda, T.Importe
+    FROM REZAGADOS.Transferencia T
+    WHERE T.Id_Cuenta_Emi = @Cuenta_Emi
+    ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
+END
+GO
