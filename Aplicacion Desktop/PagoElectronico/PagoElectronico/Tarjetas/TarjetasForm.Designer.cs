@@ -35,18 +35,20 @@
             this.label5 = new System.Windows.Forms.Label();
             this.buttonAceptar = new System.Windows.Forms.Button();
             this.buttonCancelar = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.numeroText = new System.Windows.Forms.TextBox();
+            this.clienteText = new System.Windows.Forms.TextBox();
             this.trigger1 = new System.Windows.Forms.Button();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.emisionText = new System.Windows.Forms.DateTimePicker();
+            this.vencimientoText = new System.Windows.Forms.DateTimePicker();
+            this.codigoSeguridadText = new System.Windows.Forms.TextBox();
+            this.clienteNameLabel = new System.Windows.Forms.Label();
+            this.checkBoxHabilitada = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(82, 41);
+            this.label1.Location = new System.Drawing.Point(82, 17);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 13);
             this.label1.TabIndex = 0;
@@ -55,7 +57,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(88, 74);
+            this.label2.Location = new System.Drawing.Point(88, 50);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 13);
             this.label2.TabIndex = 0;
@@ -64,7 +66,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(82, 102);
+            this.label3.Location = new System.Drawing.Point(82, 78);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(46, 13);
             this.label3.TabIndex = 0;
@@ -73,7 +75,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(61, 131);
+            this.label4.Location = new System.Drawing.Point(61, 107);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(68, 13);
             this.label4.TabIndex = 0;
@@ -82,7 +84,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(20, 168);
+            this.label5.Location = new System.Drawing.Point(20, 144);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(109, 13);
             this.label5.TabIndex = 0;
@@ -90,82 +92,114 @@
             // 
             // buttonAceptar
             // 
-            this.buttonAceptar.Location = new System.Drawing.Point(365, 263);
+            this.buttonAceptar.Location = new System.Drawing.Point(373, 186);
             this.buttonAceptar.Name = "buttonAceptar";
             this.buttonAceptar.Size = new System.Drawing.Size(75, 23);
             this.buttonAceptar.TabIndex = 1;
             this.buttonAceptar.Text = "Aceptar";
             this.buttonAceptar.UseVisualStyleBackColor = true;
+            this.buttonAceptar.Click += new System.EventHandler(this.buttonAceptar_Click);
             // 
             // buttonCancelar
             // 
-            this.buttonCancelar.Location = new System.Drawing.Point(284, 263);
+            this.buttonCancelar.Location = new System.Drawing.Point(292, 186);
             this.buttonCancelar.Name = "buttonCancelar";
             this.buttonCancelar.Size = new System.Drawing.Size(75, 23);
             this.buttonCancelar.TabIndex = 1;
             this.buttonCancelar.Text = "Cancelar";
             this.buttonCancelar.UseVisualStyleBackColor = true;
+            this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
             // 
-            // textBox1
+            // numeroText
             // 
-            this.textBox1.Location = new System.Drawing.Point(135, 38);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(139, 20);
-            this.textBox1.TabIndex = 2;
+            this.numeroText.Location = new System.Drawing.Point(135, 14);
+            this.numeroText.Name = "numeroText";
+            this.numeroText.Size = new System.Drawing.Size(109, 20);
+            this.numeroText.TabIndex = 2;
+            this.numeroText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
+            this.numeroText.Leave += new System.EventHandler(this.numeroText_Leave);
             // 
-            // textBox2
+            // clienteText
             // 
-            this.textBox2.Enabled = false;
-            this.textBox2.Location = new System.Drawing.Point(135, 71);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(109, 20);
-            this.textBox2.TabIndex = 2;
+            this.clienteText.Enabled = false;
+            this.clienteText.Location = new System.Drawing.Point(135, 47);
+            this.clienteText.Name = "clienteText";
+            this.clienteText.Size = new System.Drawing.Size(79, 20);
+            this.clienteText.TabIndex = 2;
+            this.clienteText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // trigger1
             // 
-            this.trigger1.Location = new System.Drawing.Point(251, 70);
+            this.trigger1.Location = new System.Drawing.Point(220, 46);
             this.trigger1.Name = "trigger1";
             this.trigger1.Size = new System.Drawing.Size(24, 20);
             this.trigger1.TabIndex = 3;
             this.trigger1.Text = "...";
             this.trigger1.UseVisualStyleBackColor = true;
+            this.trigger1.Click += new System.EventHandler(this.trigger1_Click);
             // 
-            // dateTimePicker1
+            // emisionText
             // 
-            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker1.Location = new System.Drawing.Point(134, 102);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(102, 20);
-            this.dateTimePicker1.TabIndex = 4;
+            this.emisionText.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.emisionText.Location = new System.Drawing.Point(134, 78);
+            this.emisionText.Name = "emisionText";
+            this.emisionText.Size = new System.Drawing.Size(102, 20);
+            this.emisionText.TabIndex = 4;
+            this.emisionText.ValueChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
-            // dateTimePicker2
+            // vencimientoText
             // 
-            this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTimePicker2.Location = new System.Drawing.Point(134, 131);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(102, 20);
-            this.dateTimePicker2.TabIndex = 4;
+            this.vencimientoText.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.vencimientoText.Location = new System.Drawing.Point(134, 107);
+            this.vencimientoText.Name = "vencimientoText";
+            this.vencimientoText.Size = new System.Drawing.Size(102, 20);
+            this.vencimientoText.TabIndex = 4;
+            this.vencimientoText.ValueChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
-            // textBox3
+            // codigoSeguridadText
             // 
-            this.textBox3.Location = new System.Drawing.Point(134, 165);
-            this.textBox3.MaxLength = 3;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(51, 20);
-            this.textBox3.TabIndex = 2;
+            this.codigoSeguridadText.Location = new System.Drawing.Point(134, 141);
+            this.codigoSeguridadText.MaxLength = 3;
+            this.codigoSeguridadText.Name = "codigoSeguridadText";
+            this.codigoSeguridadText.Size = new System.Drawing.Size(51, 20);
+            this.codigoSeguridadText.TabIndex = 2;
+            this.codigoSeguridadText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
+            this.codigoSeguridadText.Leave += new System.EventHandler(this.validarNumeroSeguridad);
+            // 
+            // clienteNameLabel
+            // 
+            this.clienteNameLabel.AutoSize = true;
+            this.clienteNameLabel.Location = new System.Drawing.Point(250, 50);
+            this.clienteNameLabel.Name = "clienteNameLabel";
+            this.clienteNameLabel.Size = new System.Drawing.Size(91, 13);
+            this.clienteNameLabel.TabIndex = 5;
+            this.clienteNameLabel.Text = "$$$$$$$$$$$$$$";
+            // 
+            // checkBoxHabilitada
+            // 
+            this.checkBoxHabilitada.AutoSize = true;
+            this.checkBoxHabilitada.Enabled = false;
+            this.checkBoxHabilitada.Location = new System.Drawing.Point(365, 13);
+            this.checkBoxHabilitada.Name = "checkBoxHabilitada";
+            this.checkBoxHabilitada.Size = new System.Drawing.Size(73, 17);
+            this.checkBoxHabilitada.TabIndex = 6;
+            this.checkBoxHabilitada.Text = "Habilitada";
+            this.checkBoxHabilitada.UseVisualStyleBackColor = true;
             // 
             // TarjetasForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 298);
+            this.ClientSize = new System.Drawing.Size(454, 221);
             this.ControlBox = false;
-            this.Controls.Add(this.dateTimePicker2);
-            this.Controls.Add(this.dateTimePicker1);
+            this.Controls.Add(this.checkBoxHabilitada);
+            this.Controls.Add(this.clienteNameLabel);
+            this.Controls.Add(this.vencimientoText);
+            this.Controls.Add(this.emisionText);
             this.Controls.Add(this.trigger1);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.clienteText);
+            this.Controls.Add(this.codigoSeguridadText);
+            this.Controls.Add(this.numeroText);
             this.Controls.Add(this.buttonCancelar);
             this.Controls.Add(this.buttonAceptar);
             this.Controls.Add(this.label5);
@@ -191,11 +225,13 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button buttonAceptar;
         private System.Windows.Forms.Button buttonCancelar;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox numeroText;
+        private System.Windows.Forms.TextBox clienteText;
         private System.Windows.Forms.Button trigger1;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.DateTimePicker dateTimePicker2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.DateTimePicker emisionText;
+        private System.Windows.Forms.DateTimePicker vencimientoText;
+        private System.Windows.Forms.TextBox codigoSeguridadText;
+        private System.Windows.Forms.Label clienteNameLabel;
+        private System.Windows.Forms.CheckBox checkBoxHabilitada;
     }
 }

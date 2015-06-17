@@ -85,11 +85,13 @@ namespace Facturacion
                     {
                         //SetPrice
                         if (transaccionesSeleccionadas.Exists(i => i == t)) {
+                            dataGridView1.Rows[filaActiva].DefaultCellStyle.BackColor = Color.White;
                             transaccionesSeleccionadas.Remove(t);
                             dataGridView1.Rows[filaActiva].Selected = false;
                         }
                         else
                         {
+                            dataGridView1.Rows[filaActiva].DefaultCellStyle.BackColor = Color.LightGray;
                             transaccionesSeleccionadas.Add(t);
                             dataGridView1.Rows[filaActiva].Selected = true;
 
@@ -117,27 +119,17 @@ namespace Facturacion
         //-----------------------------------------------------------------------------------------------------------------
         private void facturar_Click(object sender, EventArgs e)
         {
-           
+            FacturaModel factura = new FacturaModel(extraDao.getDayToday(), transaccionesSeleccionadas);
 
-            FacturaModel factura = new FacturaModel(extraDao.getDayToday(), transaccionesSeleccionadas,total);
-
-            if (factura.id != 0)
+            if (factura != null)
             {
-                Form f = new FacturaForm(factura);
+                Form f = new FacturaForm(factura,total,this);
                 f.MdiParent = this.MdiParent;
                 f.Show();
-
-                this.Close();
-                this.Dispose();
-                GC.Collect();
             }
             else {
                 MessageBox.Show("No se pudo crear la operación");
             }
-
-            
-
-
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

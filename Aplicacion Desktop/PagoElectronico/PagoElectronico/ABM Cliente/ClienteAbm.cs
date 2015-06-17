@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Models;
 using DAO;
+using Tarjetas;
 
 namespace ABM
 {
@@ -27,12 +28,12 @@ namespace ABM
 
         private CuentaAbm parentCuenta;
         private CuentaForm parentCuentaForm;
+        private TarjetasForm parentTarjetaForm;
 
         private List<ClienteModel> clientes;
 
         public ClienteAbm(int operacionTipo, CuentaAbm parentCuenta)
         {
-
             init(operacionTipo);
             this.parentCuenta = parentCuenta;
             parentCuenta.Enabled = false;
@@ -43,6 +44,13 @@ namespace ABM
             init(operacionTipo);
             this.parentCuentaForm = parentCuentaForm;
             parentCuentaForm.Enabled = false;
+        }
+
+        public ClienteAbm(int operacionTipo, TarjetasForm parentTarjetaForm)
+        {
+            init(operacionTipo);
+            this.parentTarjetaForm = parentTarjetaForm;
+            parentTarjetaForm.Enabled = false;
         }
 
         public ClienteAbm(int operacionTipo)
@@ -88,13 +96,12 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void fillDocTypes()
         {
-            KeyValuePair<Decimal, String> empty = new KeyValuePair<Decimal, String>(0, "");
+            KeyValuePair<UInt32, String> empty = new KeyValuePair<UInt32, String>(0,"");
             comboBox1.Items.Add(empty);
-            DocumentoDAO dao = new DocumentoDAO();
-            
-            foreach (DocumentoModel tipo in dao.getListado())
+
+            foreach (DocumentoModel tipo in extraDao.getDocTypes())
             {
-                comboBox1.Items.Add(new KeyValuePair<Decimal, String>(tipo.tipo, tipo.nombre));
+                comboBox1.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
             }
             comboBox1.DisplayMember = "Value";
             comboBox1.ValueMember = "Key";
@@ -116,6 +123,7 @@ namespace ABM
                                         cliente.documento.numero.ToString(),
                                         cliente.email.ToString(),
                                         cliente.nacimiento.ToString(),
+                                        cliente.nacionalidad.nacionalidad.ToString(),
 										cliente.direccionCalle.ToString(),
 										cliente.direccionNumeroCalle.ToString(),
 										cliente.direccionPiso.ToString(),
@@ -295,6 +303,11 @@ namespace ABM
                 parentCuentaForm.Enabled = true;
             }
 
+            if (parentTarjetaForm != null) {
+                parentTarjetaForm.formResponseCliente(clienteActivo);
+                parentTarjetaForm.Enabled = true;
+            }
+
             this.Close();
             this.Dispose();
             GC.Collect();
@@ -311,6 +324,10 @@ namespace ABM
             if (parentCuentaForm != null)
             {
                 parentCuentaForm.Enabled = true;
+            }
+            if (parentTarjetaForm != null)
+            {
+                parentTarjetaForm.Enabled = true;
             }
 
             this.Close();

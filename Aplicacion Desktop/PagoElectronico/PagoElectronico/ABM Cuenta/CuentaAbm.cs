@@ -33,6 +33,7 @@ namespace ABM
         private RetirosAbm parentRetiros;
         private TransferenciaAbm parentTransferenciaOrigen;
         private TransferenciaAbm parentTransferenciaDestino;
+        private ConsultaDeSaldos parentConsultaDeSaldos;
 
         private const int OPEN_CLIENTE_ABM_TO_SELECT = 1;
 
@@ -46,6 +47,13 @@ namespace ABM
             initToSelect(true);
             this.parentDepositos = parentDepositos;
             this.parentDepositos.Enabled = false;
+        }
+
+        public CuentaAbm(ConsultaDeSaldos parentConsultaDeSaldos)
+        {
+            initToSelect(true);
+            this.parentConsultaDeSaldos = parentConsultaDeSaldos;
+            this.parentConsultaDeSaldos.Enabled = false;
         }
 
         public CuentaAbm(RetirosAbm parentRetiros)
@@ -289,6 +297,11 @@ namespace ABM
                 parentTransferenciaDestino.formResponseCuentaDestino(cuentaActiva);
                 parentTransferenciaDestino.Enabled = true;
             }
+            if (parentConsultaDeSaldos != null)
+            {
+                parentConsultaDeSaldos.formResponseCuenta(cuentaActiva);
+                parentConsultaDeSaldos.Enabled = true;
+            }
             
             this.Close();
             this.Dispose();
@@ -313,7 +326,11 @@ namespace ABM
             if (parentTransferenciaOrigen != null)
             {
                 parentTransferenciaOrigen.Enabled = true;
-            } 
+            }
+            if (parentConsultaDeSaldos != null)
+            {
+                parentConsultaDeSaldos.Enabled = true;
+            }
 
             this.Close();
             this.Dispose();

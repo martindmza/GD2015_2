@@ -32,7 +32,7 @@ namespace Frame
             //Busco los roles del usuario
             try
             {
-                Login.Login.userLogued.getMisRoles();
+                Login.Login.userLogued.getRoles();
             }
             catch (Exception err2)
             {
@@ -148,6 +148,15 @@ namespace Frame
         private void tarjetasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form f = new TarjetasAbm();
+            f.MdiParent = this;
+            f.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void consultaDeSaldosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form f = new ConsultaDeSaldos();
             f.MdiParent = this;
             f.Show();
         }

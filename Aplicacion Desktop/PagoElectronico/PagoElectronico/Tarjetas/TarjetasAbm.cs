@@ -49,8 +49,7 @@ namespace Tarjetas
             {
                 row = new String[] {    tarjeta.numero.ToString(),
                                         tarjeta.codigoSeguridad.ToString(),
-                                        tarjeta.tipo.ToString(),
-                                        tarjeta.emision.ToShortTimeString(),
+                                        tarjeta.emision.ToShortDateString(),
                                         tarjeta.vencimiento.ToShortDateString(),
                                         tarjeta.habilitada.ToString()
                                         };
@@ -96,7 +95,7 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonModificar_Click(object sender, EventArgs e)
         {
-            Form f = new TarjetasForm(MODIFICAR, this, null);
+            Form f = new TarjetasForm(MODIFICAR, this, tarjetaActiva);
             f.MdiParent = this.MdiParent;
             f.Show();
         }
@@ -105,7 +104,7 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonQuitar_Click(object sender, EventArgs e)
         {
-            Form f = new TarjetasForm(DESHABILITAR, this, null);
+            Form f = new TarjetasForm(DESHABILITAR, this, tarjetaActiva);
             f.MdiParent = this.MdiParent;
             f.Show();
         }
@@ -140,6 +139,24 @@ namespace Tarjetas
                 buttonModificar.Enabled = false;
                 buttonQuitar.Enabled = false;
             }
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonBuscar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(numeroText.Text, "[^0-9]"))
+                {
+                    MessageBox.Show("Ingrese solo números");
+                }
+            }
+            catch (NullReferenceException eru) { }
+            catch (Exception erg) { }
+
+            tarjetas = dao.getTarjetasByClienteAndNumero(cliente,numeroText.Text);
+            fillData();
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

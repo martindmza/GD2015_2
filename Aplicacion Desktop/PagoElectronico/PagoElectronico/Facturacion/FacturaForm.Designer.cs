@@ -38,8 +38,6 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
             this.fechaText = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.numeroText = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.clienteText = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -62,7 +60,7 @@
             this.label1.BackColor = System.Drawing.SystemColors.Highlight;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(9, 86);
+            this.label1.Location = new System.Drawing.Point(9, 52);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(603, 19);
             this.label1.TabIndex = 1;
@@ -111,10 +109,10 @@
             this.importe,
             this.fecha});
             this.dataGridView1.Enabled = false;
-            this.dataGridView1.Location = new System.Drawing.Point(9, 108);
+            this.dataGridView1.Location = new System.Drawing.Point(9, 74);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(603, 223);
+            this.dataGridView1.Size = new System.Drawing.Size(603, 257);
             this.dataGridView1.TabIndex = 0;
             // 
             // label2
@@ -135,28 +133,10 @@
             this.fechaText.TabIndex = 6;
             this.fechaText.Text = "$$$$$$$$$$$$$$$";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 27);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(47, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Número:";
-            // 
-            // numeroText
-            // 
-            this.numeroText.AutoSize = true;
-            this.numeroText.Location = new System.Drawing.Point(58, 27);
-            this.numeroText.Name = "numeroText";
-            this.numeroText.Size = new System.Drawing.Size(97, 13);
-            this.numeroText.TabIndex = 6;
-            this.numeroText.Text = "$$$$$$$$$$$$$$$";
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 55);
+            this.label6.Location = new System.Drawing.Point(12, 27);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(42, 13);
             this.label6.TabIndex = 6;
@@ -165,7 +145,7 @@
             // clienteText
             // 
             this.clienteText.AutoSize = true;
-            this.clienteText.Location = new System.Drawing.Point(58, 55);
+            this.clienteText.Location = new System.Drawing.Point(58, 27);
             this.clienteText.Name = "clienteText";
             this.clienteText.Size = new System.Drawing.Size(97, 13);
             this.clienteText.TabIndex = 6;
@@ -197,10 +177,8 @@
             this.Controls.Add(this.fechaText);
             this.Controls.Add(this.totalText);
             this.Controls.Add(this.clienteText);
-            this.Controls.Add(this.numeroText);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.buttonAcpetar);
             this.Controls.Add(this.label1);
@@ -211,6 +189,7 @@
             this.Name = "FacturaForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Factura";
+            this.Leave += new System.EventHandler(this.FacturaForm_Leave);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -229,8 +208,6 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label fechaText;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label numeroText;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label clienteText;
         private System.Windows.Forms.Label label3;

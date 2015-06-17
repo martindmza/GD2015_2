@@ -89,11 +89,9 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void fillDocTypes()
         {
-            DocumentoDAO dao = new DocumentoDAO();
-            
-            foreach (DocumentoModel tipo in dao.getListado())
+            foreach (DocumentoModel tipo in extraDao.getDocTypes())
             {
-                docTipo.Items.Add(new KeyValuePair<Decimal, String>(tipo.tipo, tipo.nombre));
+                docTipo.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
             }
             docTipo.DisplayMember = "Value";
             docTipo.ValueMember = "Key";
@@ -149,11 +147,11 @@ namespace ABM
                     domDepartamento.Text = cliente.direccionDepto;
                 }
 
-                nacionalidadText.Text = cliente.pais.nacionalidad;
+                nacionalidadText.Text = cliente.nacionalidad.nacionalidad;
                 paisText.Text = cliente.pais.nombre;
                 localidadText.Text = cliente.localidad.nombre;
 
-                nacionalidad = cliente.pais;
+                nacionalidad = cliente.nacionalidad;
                 pais = cliente.pais;
                 localidad = cliente.localidad;
                 documento = cliente.documento;
@@ -214,7 +212,7 @@ namespace ABM
             String[] valueString = result[0].Split('[');
             UInt32 docTipoSelected = UInt32.Parse(valueString[1]);
 
-            DocumentoModel documentoToSend = new DocumentoDAO().dameTuModelo(docTipoSelected);
+            DocumentoModel documentoToSend = extraDao.getDocTypeById(docTipoSelected);
             documentoToSend.numero = UInt64.Parse(docNumero.Text);
 
             switch (operacionTipo)
@@ -270,10 +268,17 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros");
                 docNumero.Text = "";
             }
-            else if (docNumero.Text.Length != 0)
+            try
             {
-                Int64 doc = Int64.Parse(docNumero.Text);
+                if (Double.Parse(docNumero.Text) <= 0)
+                {
+                    MessageBox.Show("El valor no puede ser cero");
+                    docNumero.Text = "";
+                }
             }
+            catch (FormatException erf) { }
+            catch (NullReferenceException eru) { }
+            catch (Exception erg) { }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -285,10 +290,17 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros");
                 domNumero.Text = "";
             }
-            else if (domNumero.Text.Length != 0)
+            try
             {
-                Int32 num = Int32.Parse(domNumero.Text);
+                if (Double.Parse(domNumero.Text) <= 0)
+                {
+                    MessageBox.Show("El valor no puede ser cero");
+                    domNumero.Text = "";
+                }
             }
+            catch (FormatException erf) { }
+            catch (NullReferenceException eru) { }
+            catch (Exception erg) { }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -300,10 +312,16 @@ namespace ABM
                 MessageBox.Show("Ingrese solo numeros");
                 domPiso.Text = "";
             }
-            else if (domPiso.Text.Length != 0)
+            try
             {
-                Int32 num = Int32.Parse(domPiso.Text);
+                if (Double.Parse(domPiso.Text) <= 0)
+                {
+                    domPiso.Text = "";
+                }
             }
+            catch (FormatException erf) { }
+            catch (NullReferenceException eru) { }
+            catch (Exception erg) { }
         }
         //-----------------------------------------------------------------------------------------------------------------
 

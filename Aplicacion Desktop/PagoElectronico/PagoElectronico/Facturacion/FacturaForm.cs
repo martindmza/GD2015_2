@@ -14,12 +14,20 @@ namespace Facturacion
     public partial class FacturaForm : Form
     {
         private FacturaDao facturaDao;
-        private FacturaModel factura;
+        private TranscaccionDao transaccionDao;
+        private FacturacionAbm parent;
 
-        public FacturaForm(FacturaModel factura)
+        private FacturaModel factura;
+        private Double total;
+
+        public FacturaForm(FacturaModel factura,Double total, FacturacionAbm parent)
         {
             facturaDao = new FacturaDao();
+            transaccionDao = new TranscaccionDao();
             this.factura = factura;
+            this.total = total;
+            this.parent = parent;
+            parent.Enabled = false;
 
             InitializeComponent();
             fillData();
@@ -41,18 +49,42 @@ namespace Facturacion
                 dataGridView1.Rows.Add(row);
             }
 
-            numeroText.Text = factura.id.ToString();
             fechaText.Text = factura.fecha.ToShortTimeString();
             clienteText.Text = factura.transacciones[0].cuenta.propietario.apellido + ", " +
                                 factura.transacciones[0].cuenta.propietario.nombre;
-            totalText.Text = factura.total.ToString();
+            totalText.Text = this.total.ToString();
         }
 
         private void buttonAcpetar_Click(object sender, EventArgs e)
         {
+            try
+            {
+                this.factura = facturaDao.crearFactura(factura);
+
+                foreach (TransaccionModel t in factura.transacciones)
+                {
+                    transaccionDao.insertTransaccion(t, factura);
+                }
+
+                MessageBox.Show("Facturación Realizada exitosamente");
+
+                parent.Close();
+                parent.Dispose();
+
+            }
+            catch (Exception err) {
+                MessageBox.Show("no se pudo completar la operacion" + err);
+                parent.Enabled = true;
+            }
+
             this.Close();
             this.Dispose();
             GC.Collect();
+        }
+
+        private void FacturaForm_Leave(object sender, EventArgs e)
+        {
+            parent.Enabled = true;
         }
     }
 }
