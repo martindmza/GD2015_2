@@ -2,29 +2,72 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
+using DAO;
 
 namespace Models
 {
-    public class ClienteModel
+    public class ClienteModel: BasicaModel
     {
 
-        public UInt32 id { get; set; }
+        public const String APELLIDO = "APELLIDO";
+        public const String DOCUMENTO = "DOCUMENTO";
+        public const String NACIMIENTO = "FECHA_NACIMIENTO";
+        public const String EMAIL = "EMAIL";
+        public const String NACIONALIDAD = "NACIONALIDAD";
+        public const String DIRECCION_CALLE = "DIRECCION_CALLE";
+        public const String DIRECCION_NRO_CALLE = "DIRECCION_NRO";
+        public const String DIRECCION_DEPTO = "DIRECCION_DEPTO";
+        public const String DIRECCION_PISO = "DIRECCION_PISO";
+        public const String LOCALIDAD = "LOCALIDAD";
+        public const String PAIS = "PAIS";
+        /********************/
+        public Decimal id { get; set; }
         public String apellido { get; set; }
         public String nombre { get; set; }
         public DateTime nacimiento { get; set; }
         public String email { get; set; }
         public String direccionCalle {get; set;}
-        public UInt32 direccionNumeroCalle { get; set; }
-        public UInt32 direccionPiso { get; set; }
+        public Decimal direccionNumeroCalle { get; set; }
+        public Decimal direccionPiso { get; set; }
         public String direccionDepto {get; set;}
         public Boolean habilitado = true;
 
         public PaisModel pais { get; set; }
-        public PaisModel nacionalidad { get; set; }
         public LocalidadModel localidad { get; set; }
         public DocumentoModel documento { get; set; }
+        public TipoDocumentoModel tipoDocumento { get; set; }
         public List<CuentaModel> cuentas = new List<CuentaModel>();
         public UserModel usuario;
+
+        public ClienteModel(DataRow fila)
+            : base(fila)
+        {
+            this.tipoDocumento = this.getTipoDocumento();
+            this.pais = this.getPais();
+            this.localidad = this.getLocalidad();
+            this.cuentas = this.getListaDeCuentas();
+        }
+
+        private LocalidadModel getLocalidad()
+        {
+            return null;
+        }
+
+        private List<CuentaModel> getListaDeCuentas()
+        {
+            return new CuentaDao().getCuentasByCliente(this);
+        }
+
+        private TipoDocumentoModel getTipoDocumento()
+        {
+            return null;
+        }
+
+        private PaisModel getPais()
+        {
+            return null;
+        }
 
         public ClienteModel(String apellido, String nombre, DocumentoModel documento,
             DateTime nacimiento, String email, PaisModel nacionalidad, String direccionCalle, UInt32 direccionNumeroCalle,
@@ -35,7 +78,7 @@ namespace Models
             this.documento = documento;
             this.nacimiento = nacimiento;
             this.email = email;
-            this.nacionalidad = nacionalidad;
+            //this.nacionalidad = nacionalidad;
             this.direccionCalle = direccionCalle;
             this.direccionNumeroCalle = direccionNumeroCalle;
             this.direccionPiso = direccionPiso;
@@ -54,7 +97,7 @@ namespace Models
             this.documento = documento;
             this.nacimiento = nacimiento;
             this.email = email;
-            this.nacionalidad = nacionalidad;
+            //this.nacionalidad = nacionalidad;
             this.direccionCalle = direccionCalle;
             this.direccionNumeroCalle = direccionNumeroCalle;
             this.direccionPiso = direccionPiso;
@@ -77,13 +120,35 @@ namespace Models
                             documento.ToString() + "; " +
                             nacimiento.ToString() + "; " +
                             email + "; " +
-                            nacionalidad.ToString() + "; " +
+                            pais.nacionalidad.ToString() + "; " +
                             direccionCalle + "; " +
                             direccionNumeroCalle + "; " +
                             direccionPiso + "; " +
                             direccionDepto + "; " +
                             localidad.ToString() + "; " +
                             pais.ToString() + " }";
+        }
+
+
+        public override void mapeoFilaAModel(System.Data.DataRow fila)
+        {
+            this.id = (Decimal)fila[ID];
+            this.nombre = fila[NOMBRE].ToString();
+            this.apellido = fila[APELLIDO].ToString();
+            
+           // this.documento = fila[DOCUMENTO].ToString();
+            this.nacimiento = fila[NACIMIENTO] != DBNull.Value ? DateTime.Parse(fila[NACIMIENTO].ToString()) : DateTime.MinValue;
+            
+            this.email = fila[EMAIL].ToString();
+            
+            this.direccionCalle = fila[DIRECCION_CALLE].ToString();
+            this.direccionNumeroCalle = (Decimal)fila[DIRECCION_NRO_CALLE];
+            this.direccionPiso = (Decimal)fila[DIRECCION_PISO];
+            this.direccionDepto = fila[DIRECCION_DEPTO].ToString();
+            this.localidad = new LocalidadModel(0, fila[LOCALIDAD].ToString());
+            this.pais = new PaisDAO().dameTuModelo((Decimal)fila[PAIS]);
+            //this.nacionalidad = pais.nacionalidad;
+            this.direccionCalle = fila[DIRECCION_CALLE].ToString();
         }
 
     }

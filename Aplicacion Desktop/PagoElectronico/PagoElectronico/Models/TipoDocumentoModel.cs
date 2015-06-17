@@ -6,12 +6,11 @@ using System.Data;
 
 namespace Models
 {
-    public class EstadoModel: BasicaModel
+    public class TipoDocumentoModel:BasicaModel
     {
-        public EstadoModel()
+        public TipoDocumentoModel(DataRow fila)
+            : base(fila)
         {
-        }
-        public EstadoModel(DataRow fila):base(fila) {
         }
     }
 }

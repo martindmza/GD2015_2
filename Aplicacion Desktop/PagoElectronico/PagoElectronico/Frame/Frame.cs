@@ -32,7 +32,7 @@ namespace Frame
             //Busco los roles del usuario
             try
             {
-                Login.Login.userLogued.getRoles();
+                Login.Login.userLogued.getMisRoles();
             }
             catch (Exception err2)
             {

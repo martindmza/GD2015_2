@@ -98,13 +98,18 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="DAO\AbstractDAO.cs" />
+    <Compile Include="DAO\BasicaDAO.cs" />
     <Compile Include="DAO\ClienteDao.cs" />
     <Compile Include="DAO\CuentaDao.cs" />
+    <Compile Include="DAO\CuentaTipoDAO.cs" />
     <Compile Include="DAO\DepositoDao.cs" />
-    <Compile Include="DAO\estadoDao.cs" />
+    <Compile Include="DAO\DocumentoDAO.cs" />
+    <Compile Include="DAO\EstadoDao.cs" />
     <Compile Include="DAO\ExtraDao.cs" />
     <Compile Include="DAO\FacturaDao.cs" />
     <Compile Include="DAO\FuncionalidadDao.cs" />
+    <Compile Include="DAO\LocalidadDAO.cs" />
+    <Compile Include="DAO\PaisDAO.cs" />
     <Compile Include="DAO\RetiroDao.cs" />
     <Compile Include="DAO\RolDao.cs" />
     <Compile Include="DAO\TarjetaDeCreditoDao.cs" />
@@ -161,7 +166,9 @@
     <Compile Include="Login\Login.designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\AbstractModel.cs" />
     <Compile Include="Models\BancoModel.cs" />
+    <Compile Include="Models\BasicaModel.cs" />
     <Compile Include="Models\ClienteModel.cs" />
     <Compile Include="Models\CuentaModel.cs" />
     <Compile Include="Models\CuentaTipoModel.cs" />
@@ -174,6 +181,7 @@
     <Compile Include="Models\PaisModel.cs" />
     <Compile Include="Models\RetiroModel.cs" />
     <Compile Include="Models\TarjetaDeCreditoModel.cs" />
+    <Compile Include="Models\TipoDocumentoModel.cs" />
     <Compile Include="Models\TransaccionModel.cs" />
     <Compile Include="Models\TransaccionTipoModel.cs" />
     <Compile Include="Models\TransferenciaModel.cs" />

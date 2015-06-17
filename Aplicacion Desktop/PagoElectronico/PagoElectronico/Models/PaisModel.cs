@@ -2,25 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Models
 {
-    public class PaisModel
+    public class PaisModel : BasicaModel
     {
-        public UInt32 id;
-        public String nombre;
         public String nacionalidad;
+        public const String NACIONALIDAD = "NACIONALIDAD";
 
-
-        public PaisModel(UInt32 id, String nombre, String nacionalidad)
+        public PaisModel()
         {
-            this.id = id;
-            this.nombre = nombre;
-            this.nacionalidad = nacionalidad;
+        }
+        public PaisModel(DataRow fila)
+            : base(fila)
+        {
         }
 
-        public String ToString() {
+        public String ToString()
+        {
             return "{ " + id + "; " + nombre + "; " + nacionalidad + " }";
+        }
+
+        public override void mapeoFilaAModel(DataRow fila)
+        {
+            base.mapeoFilaAModel(fila);
+            //this.nacionalidad = fila[NACIONALIDAD].ToString();
         }
     }
 }

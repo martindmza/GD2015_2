@@ -22,7 +22,7 @@ namespace ABM
         private CuentaDao cuentaDao;
         private ClienteDao clienteDao;
         private ClienteModel cliente;
-        private estadoDao estadoDao;
+        private EstadoDao estadoDao;
         private EstadoModel estado;
         private List<CuentaTipoModel> tipos;
         private CuentaTipoModel tipoActivo;
@@ -42,7 +42,7 @@ namespace ABM
             this.cuentaDao = new CuentaDao();
             this.clienteDao = new ClienteDao();
             this.extraDao = new ExtraDao();
-            this.estadoDao = new estadoDao();
+            this.estadoDao = new EstadoDao();
             this.parentCuenta = parentCuenta;
 
 
@@ -92,13 +92,13 @@ namespace ABM
             //tipos de cuentas
             foreach (CuentaTipoModel tipo in tipos)
             {
-                tipoCuenta.Items.Add(new KeyValuePair<UInt32, String>(tipo.id, tipo.nombre));
+                tipoCuenta.Items.Add(new KeyValuePair<Decimal, String>(tipo.id, tipo.nombre));
             }
             tipoCuenta.DisplayMember = "Value";
             tipoCuenta.ValueMember = "Key";
 
             //tipos de moneda
-            KeyValuePair<UInt32, String> dolares = new KeyValuePair<UInt32, String>(1,"Dolares");
+            KeyValuePair<Decimal, String> dolares = new KeyValuePair<Decimal, String>(1,"Dolares");
             moneda.Items.Add(dolares);
             moneda.DisplayMember = "Value";
             moneda.ValueMember = "Key";
@@ -117,7 +117,7 @@ namespace ABM
                 tipoCuenta.SelectedItem = tipoCuenta.Items[0];
                 tipoActivo = tipos[0];
                 moneda.SelectedItem = moneda.Items[0];
-                estado = estadoDao.getEstadoById(1);
+                estado = estadoDao.dameTuModelo(1);
             }
             else
             {

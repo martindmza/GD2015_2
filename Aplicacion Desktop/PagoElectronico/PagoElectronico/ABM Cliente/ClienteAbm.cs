@@ -88,12 +88,13 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void fillDocTypes()
         {
-            KeyValuePair<UInt32, String> empty = new KeyValuePair<UInt32, String>(0,"");
+            KeyValuePair<Decimal, String> empty = new KeyValuePair<Decimal, String>(0, "");
             comboBox1.Items.Add(empty);
-
-            foreach (DocumentoModel tipo in extraDao.getDocTypes())
+            DocumentoDAO dao = new DocumentoDAO();
+            
+            foreach (DocumentoModel tipo in dao.getListado())
             {
-                comboBox1.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
+                comboBox1.Items.Add(new KeyValuePair<Decimal, String>(tipo.tipo, tipo.nombre));
             }
             comboBox1.DisplayMember = "Value";
             comboBox1.ValueMember = "Key";
@@ -115,7 +116,6 @@ namespace ABM
                                         cliente.documento.numero.ToString(),
                                         cliente.email.ToString(),
                                         cliente.nacimiento.ToString(),
-                                        cliente.nacionalidad.nacionalidad.ToString(),
 										cliente.direccionCalle.ToString(),
 										cliente.direccionNumeroCalle.ToString(),
 										cliente.direccionPiso.ToString(),

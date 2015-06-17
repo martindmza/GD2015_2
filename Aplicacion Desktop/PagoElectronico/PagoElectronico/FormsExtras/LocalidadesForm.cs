@@ -24,8 +24,7 @@ namespace FormsExtras
         {
             InitializeComponent();
 
-            extraDao = new ExtraDao();
-            localidades = extraDao.getLocalidades();
+            localidades = new LocalidadDAO().getListado();
             fillData();
 
             this.parentForm = parentForm;

@@ -2,22 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Models
 {
-    public class LocalidadModel
+    public class LocalidadModel:BasicaModel
     {
-        public UInt32 id {get ;set; }
-        public String nombre { get; set; }
-
-        public LocalidadModel(UInt32 id , String nombre) { 
-            this.id = id;
-            this.nombre = nombre;
+        public LocalidadModel()
+        {
+        }
+        public LocalidadModel(DataRow fila):base(fila) { 
         }
 
         public String ToString()
         {
             return "{ " + id.ToString() + "; " + nombre + " }";
         }
+        public LocalidadModel(Decimal id, String nombre)
+        {
+            this.id = 0;
+            this.nombre = nombre;
+        }
+
     }
 }

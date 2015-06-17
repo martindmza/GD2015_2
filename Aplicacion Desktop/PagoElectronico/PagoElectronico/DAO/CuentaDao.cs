@@ -3,85 +3,92 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Models;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace DAO
 {
-    class CuentaDao
+    public class CuentaDao: AbstractDAO
     {
 
         public List<CuentaModel> getCuentas()
         {
 
             List<CuentaModel> cuentas = new List<CuentaModel>();
-
-            PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
-            PaisModel p2 = new PaisModel(2, "Chile", "Chileno");
-            PaisModel p3 = new PaisModel(3, "Uruguay", "Uruguayo");
-            PaisModel p4 = new PaisModel(4, "Paraguay", "Paraguayo");
-            PaisModel p5 = new PaisModel(5, "Perú", "Peruano");
-            CuentaTipoModel oro = new CuentaTipoModel(1, "oro", 10, 1000);
-            CuentaTipoModel plata = new CuentaTipoModel(2, "plata", 10, 500);
-            CuentaTipoModel bronce = new CuentaTipoModel(3, "bronce", 10, 200);
-            CuentaTipoModel gratarola = new CuentaTipoModel(4, "gratarola", 10, 0);
-            EstadoModel e1 = new EstadoModel(1, "abierta");
-            EstadoModel e2 = new EstadoModel(2, "cerrada");
-            ClienteModel cliente = new ClienteModel(1,"Amaya","Martin");
-
-            CuentaModel c1 = new CuentaModel(1, p1, oro, 1, "dolar", e1, new DateTime(2000, 1, 1), new DateTime(2005, 1, 1), cliente);
-            CuentaModel c2 = new CuentaModel(2, p2, plata, 1, "dolar", e2, new DateTime(1999, 1, 1), new DateTime(2001, 1, 1), cliente);
-            CuentaModel c3 = new CuentaModel(3, p3, bronce, 1, "dolar", e1, new DateTime(1998, 1, 1), new DateTime(2003, 1, 1), cliente);
-            CuentaModel c4 = new CuentaModel(4, p4, gratarola, 1, "dolar", e2, new DateTime(1996, 1, 1), new DateTime(2010, 1, 1), cliente);
-            CuentaModel c5 = new CuentaModel(5, p1, oro, 1, "dolar", e1, new DateTime(2000, 1, 1), new DateTime(2005, 1, 1), cliente);
-            CuentaModel c6 = new CuentaModel(6, p2, plata, 1, "dolar", e2, new DateTime(1999, 1, 1), new DateTime(2001, 1, 1), cliente);
-            CuentaModel c7 = new CuentaModel(7, p3, bronce, 1, "dolar", e1, new DateTime(1998, 1, 1), new DateTime(2003, 1, 1), cliente);
-            CuentaModel c8 = new CuentaModel(8, p4, gratarola, 1, "dolar", e2, new DateTime(1996, 1, 1), new DateTime(2010, 1, 1), cliente);
-
-            c1.saldo = 15000;
-            c2.saldo = 90000;
-
-            cuentas.Add(c1);
-            cuentas.Add(c2);
-            cuentas.Add(c3);
-            cuentas.Add(c4);
-            cuentas.Add(c1);
-            cuentas.Add(c2);
-            cuentas.Add(c3);
-            cuentas.Add(c4);
-
+            DataTable dataRoles = this.getCuentasDeBase();
+            foreach (DataRow cuentaBase in dataRoles.Rows)
+            {
+                CuentaModel rolModel = new CuentaModel(cuentaBase);
+                cuentas.Add(rolModel);
+            }
             return cuentas;
         }
 
 
         public List<CuentaModel> getCuentasByCliente(ClienteModel cliente) {
-
             List<CuentaModel> cuentas = new List<CuentaModel>();
-
-            PaisModel p1 = new PaisModel(1,"Argentina","Argentino");
-            PaisModel p2 = new PaisModel(2, "Chile", "Chileno");
-            PaisModel p3 = new PaisModel(3, "Uruguay", "Uruguayo");
-            PaisModel p4 = new PaisModel(4, "Paraguay", "Paraguayo");
-            PaisModel p5 = new PaisModel(5, "Perú", "Peruano");
-            CuentaTipoModel oro = new CuentaTipoModel(1, "oro", 10, 1000);
-            CuentaTipoModel plata = new CuentaTipoModel(2, "plata", 10, 500);
-            CuentaTipoModel bronce = new CuentaTipoModel(3, "bronce", 10, 200);
-            CuentaTipoModel gratarola = new CuentaTipoModel(4, "gratarola", 10, 0);
-            EstadoModel e1 = new EstadoModel(1, "abierta");
-            EstadoModel e2 = new EstadoModel(2, "cerrada");
-
-            CuentaModel c1 = new CuentaModel(1, p1, oro, 1, "dolar", e1, new DateTime(2000, 1, 1), new DateTime(2005, 1, 1), cliente);
-            CuentaModel c2 = new CuentaModel(2, p2, plata, 1, "dolar", e2, new DateTime(1999, 1, 1), new DateTime(2001, 1, 1), cliente);
-            CuentaModel c3 = new CuentaModel(3, p3, bronce, 1, "dolar", e1, new DateTime(1998, 1, 1), new DateTime(2003, 1, 1), cliente);
-            CuentaModel c4 = new CuentaModel(4, p4, gratarola, 1, "dolar", e2, new DateTime(1996, 1, 1), new DateTime(2000, 1, 1), cliente);
-            
-            c1.saldo = 15000;
-            c2.saldo = 90000;
-
-            cuentas.Add(c1);
-            cuentas.Add(c2);
-            cuentas.Add(c3);
-            cuentas.Add(c4);
-
+            DataTable dataRoles = this.getCuentasDeBasePorIdCliente(cliente.id);
+            foreach(DataRow cuentaBase in dataRoles.Rows){
+                CuentaModel rolModel = new CuentaModel(cuentaBase);
+                cuentas.Add(rolModel);
+            }
             return cuentas;
+        }
+
+        public List<CuentaModel> getCuentasByUsuario(UserModel usuario)
+        {
+            List<CuentaModel> cuentas = new List<CuentaModel>();
+            DataTable dataRoles = this.getCuentasDeBasePorIdUsuario(usuario.id);
+            if (dataRoles != null)
+            {
+                foreach (DataRow cuentaBase in dataRoles.Rows)
+                {
+                    CuentaModel rolModel = new CuentaModel(cuentaBase);
+                    cuentas.Add(rolModel);
+                }
+            }
+            return cuentas;
+        }
+
+        private DataTable getCuentasDeBase()
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Listar_Cuenta"))
+            {
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
+        }
+
+        private DataTable getCuentasDeBasePorIdCliente(decimal idCliente)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Listar_Cuenta_Cliente"))
+            {
+                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Int).Value = idCliente;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
+        }
+
+        private DataTable getCuentasDeBasePorIdUsuario(decimal idUsuario)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Listar_Cuenta_Usuario"))
+            {
+                command.Parameters.Add("@Id_Usuario", System.Data.SqlDbType.Int).Value = idUsuario;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
         }
 
         public List<CuentaTipoModel> getCuentaTypes()

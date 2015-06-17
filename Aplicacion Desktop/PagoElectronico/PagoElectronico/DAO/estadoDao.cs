@@ -3,33 +3,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Models;
+using System.Data;
 
 namespace DAO
 {
-    class estadoDao
+    public class EstadoDao: BasicaDAO<EstadoModel>
     {
         public List<EstadoModel> getEstados()
         {
-
-            List<EstadoModel> estados = new List<EstadoModel>();
-            EstadoModel e1 = new EstadoModel(1, "abierta");
-            EstadoModel e2 = new EstadoModel(2, "cerrada");
-
-            estados.Add(e1);
-            estados.Add(e1);
-            return estados;
+            List<EstadoModel> lista = new List<EstadoModel>();
+            DataTable data = this.getListaDeBase();
+            foreach (DataRow rolBase in data.Rows)
+            {
+                EstadoModel rolModel = new EstadoModel(rolBase);
+                lista.Add(rolModel);
+            }
+            return lista;
         }
 
-        public EstadoModel getEstadoById(UInt32 id)
+        public EstadoModel dameTuModelo(Decimal id)
         {
+            List<EstadoModel> lista = new List<EstadoModel>();
+            DataTable data = this.getBasicaDeBasePorID(id);
+            foreach (DataRow paisBase in data.Rows)
+            {
+                EstadoModel rolModel = new EstadoModel(paisBase);
+                lista.Add(rolModel);
+            }
+            if (lista.Count > 0)
+            {
+                return lista.First();
+            }
+            return null;
+        }
 
-            List<EstadoModel> estados = new List<EstadoModel>();
-            EstadoModel e1 = new EstadoModel(1, "abierta");
-            EstadoModel e2 = new EstadoModel(2, "cerrada");
+        public override string getProcedureEncontrarPorId()
+        {
+            return "Buscar_Estado_Id";
+        }
 
-            estados.Add(e1);
-            estados.Add(e1);
-            return estados[(int)id];
+        public override string getProcedureListar()
+        {
+            return "Listar_Estado";
+        }
+
+        public override EstadoModel getModeloBasico(DataRow fila)
+        {
+            return new EstadoModel(fila);
         }
     }
 }
