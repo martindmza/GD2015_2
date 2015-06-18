@@ -91,11 +91,11 @@
     <Compile Include="ABM Rol\RolForm.Designer.cs">
       <DependentUpon>RolForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consulta Saldos\Form1.cs">
+    <Compile Include="Consulta Saldos\ConsultaDeSaldos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Consulta Saldos\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Consulta Saldos\ConsultaDeSaldos.Designer.cs">
+      <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
     </Compile>
     <Compile Include="DAO\AbstractDAO.cs" />
     <Compile Include="DAO\BasicaDAO.cs" />
@@ -184,6 +184,7 @@
     <Compile Include="Models\TipoDocumentoModel.cs" />
     <Compile Include="Models\TransaccionModel.cs" />
     <Compile Include="Models\TransaccionTipoModel.cs" />
+    <Compile Include="Models\TransferenciaModel.cs" />
     <Compile Include="MyExceptions\UserNotFoundException.cs" />
     <Compile Include="Facturacion\FacturacionAbm.cs">
       <SubType>Form</SubType>
@@ -226,6 +227,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Rol\RolForm.resx">
       <DependentUpon>RolForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Consulta Saldos\ConsultaDeSaldos.resx">
+      <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Depositos\DepositosAbm.resx">
       <DependentUpon>DepositosAbm.cs</DependentUpon>
