@@ -89,7 +89,8 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void fillDocTypes()
         {
-            foreach (DocumentoModel tipo in extraDao.getDocTypes())
+            DocumentoDAO docDao = new DocumentoDAO();
+            foreach (DocumentoModel tipo in docDao.getListado())
             {
                 docTipo.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
             }
@@ -147,11 +148,11 @@ namespace ABM
                     domDepartamento.Text = cliente.direccionDepto;
                 }
 
-                nacionalidadText.Text = cliente.nacionalidad.nacionalidad;
+                nacionalidadText.Text = cliente.pais.nacionalidad;
                 paisText.Text = cliente.pais.nombre;
                 localidadText.Text = cliente.localidad.nombre;
 
-                nacionalidad = cliente.nacionalidad;
+                nacionalidad = cliente.pais;
                 pais = cliente.pais;
                 localidad = cliente.localidad;
                 documento = cliente.documento;
@@ -211,8 +212,9 @@ namespace ABM
             String[] result = docTipo.SelectedItem.ToString().Split(',');
             String[] valueString = result[0].Split('[');
             UInt32 docTipoSelected = UInt32.Parse(valueString[1]);
-
-            DocumentoModel documentoToSend = extraDao.getDocTypeById(docTipoSelected);
+             DocumentoDAO docDao = new DocumentoDAO();
+           
+            DocumentoModel documentoToSend = docDao.dameTuModelo(docTipoSelected);
             documentoToSend.numero = UInt64.Parse(docNumero.Text);
 
             switch (operacionTipo)

@@ -98,8 +98,8 @@ namespace ABM
         {
             KeyValuePair<UInt32, String> empty = new KeyValuePair<UInt32, String>(0,"");
             comboBox1.Items.Add(empty);
-
-            foreach (DocumentoModel tipo in extraDao.getDocTypes())
+            DocumentoDAO docDao = new DocumentoDAO();
+            foreach (DocumentoModel tipo in docDao.getListado())
             {
                 comboBox1.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
             }
@@ -123,7 +123,7 @@ namespace ABM
                                         cliente.documento.numero.ToString(),
                                         cliente.email.ToString(),
                                         cliente.nacimiento.ToString(),
-                                        cliente.nacionalidad.nacionalidad.ToString(),
+                                        cliente.pais.nacionalidad.ToString(),
 										cliente.direccionCalle.ToString(),
 										cliente.direccionNumeroCalle.ToString(),
 										cliente.direccionPiso.ToString(),
