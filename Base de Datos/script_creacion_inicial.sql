@@ -798,51 +798,54 @@ END
 GO
 
 -----------------------------------------LOGIN------------------------------------------------
-
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Login (@Usuario NVARCHAR(255), @Pass NVARCHAR(255), @Respuesta NVARCHAR(255) OUTPUT, @Respuesta_Contra NVARCHAR(255) OUTPUT)
+
+CREATE PROCEDURE [REZAGADOS].[Login] (@Usuario NVARCHAR(255), @Pass NVARCHAR(255), @Respuesta NVARCHAR(255) OUTPUT, @Respuesta_Contra NVARCHAR(255) OUTPUT)
 AS 
 BEGIN                  
-DECLARE @Existe_Usuario INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario);                                     
-IF (@Existe_Usuario = 1)
-BEGIN             
-DECLARE @Habilitado INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario AND Habilitada = 1);
-IF(@Habilitado = 1)
-	BEGIN                            
-	DECLARE @Cantidad_Intentos_Fallidos INT = (SELECT Cantidad_Intentos_Fallidos FROM REZAGADOS.Usuario WHERE Nombre = @Usuario); 
-	IF (@Cantidad_Intentos_Fallidos < 3)
-	BEGIN
-		DECLARE @Existe_Usuario_Contrasenia INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario and Contrasenia = @Pass);
-		IF (@Existe_Usuario_Contrasenia = 1)
-		BEGIN
-			UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos=0 WHERE Nombre = @Usuario;
-			DECLARE @Existe_Rol INT = (SELECT COUNT(R.Id_Rol) FROM REZAGADOS.Usuario U, REZAGADOS.UsuarioXRol R WHERE U.Nombre = @Usuario AND U.Id_Usuario = R.Id_Usuario)				
-			IF (@Existe_Rol = 0)
-			SET @Respuesta = 'El usuario no tiene asignado un rol, o el rol ha sido inhabilitado'
-			ELSE								
-			SET @Respuesta = 'Abrir Sesion'
+	DECLARE @Existe_Usuario INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario);                                     
+	IF (@Existe_Usuario = 1)
+	BEGIN             
+		DECLARE @Habilitado INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario AND Habilitada = 1);
+		IF(@Habilitado = 1)
+		BEGIN                            
+			DECLARE @Cantidad_Intentos_Fallidos INT = (SELECT Cantidad_Intentos_Fallidos FROM REZAGADOS.Usuario WHERE Nombre = @Usuario); 
+			IF (@Cantidad_Intentos_Fallidos < 3)
+			BEGIN
+				DECLARE @Existe_Usuario_Contrasenia INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario and Contrasenia = @Pass);
+				IF (@Existe_Usuario_Contrasenia = 1)
+				BEGIN
+					UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos=0 WHERE Nombre = @Usuario;
+					DECLARE @Existe_Rol INT = (SELECT COUNT(R.Id_Rol) FROM REZAGADOS.Usuario U, REZAGADOS.UsuarioXRol R WHERE U.Nombre = @Usuario AND U.Id_Usuario = R.Id_Usuario)				
+					IF (@Existe_Rol = 0)
+						SET @Respuesta = 'El usuario no tiene asignado un rol, o el rol ha sido inhabilitado'
+					ELSE
+					BEGIN								
+						SET @Respuesta = 'Abrir Sesion'
+						SET @Respuesta_Contra = (SELECT U.Id_Usuario FROM REZAGADOS.Usuario U WHERE U.Nombre = @Usuario)				
+					END
+				END
+				ELSE
+				BEGIN
+					UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos=(Cantidad_Intentos_Fallidos+1) WHERE Nombre = @Usuario;
+					SET @Cantidad_Intentos_Fallidos = (@Cantidad_Intentos_Fallidos + 1);
+					DECLARE @Cantidad_Intentos_Fallidos_String NVARCHAR(255) = @Cantidad_Intentos_Fallidos;
+					SET @Respuesta = 'Contraseña incorrecta, vuelva a intentarlo. Cantidad de intentos fallidos: ' + (@Cantidad_Intentos_Fallidos_String);
+				END
+			END
+			ELSE
+			BEGIN
+				DECLARE @Id_User NUMERIC(18,0) = (SELECT Id_Usuario FROM REZAGADOS.Usuario WHERE Nombre = @Usuario)
+				UPDATE REZAGADOS.Usuario SET Habilitada = 0 WHERE @Id_User = Id_Usuario
+				SET @Respuesta = 'Su usuario esta bloqueado, por sobrepasar la cantidad de logueos incorrectos';
+			END  
 		END
 		ELSE
-		BEGIN
-		UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos=(Cantidad_Intentos_Fallidos+1) WHERE Nombre = @Usuario;
-		SET @Cantidad_Intentos_Fallidos = (@Cantidad_Intentos_Fallidos + 1);
-		DECLARE @Cantidad_Intentos_Fallidos_String NVARCHAR(255) = @Cantidad_Intentos_Fallidos;
-		SET @Respuesta = 'Contraseña incorrecta, vuelva a intentarlo. Cantidad de intentos fallidos: ' + (@Cantidad_Intentos_Fallidos_String);
-		END
+		SET @Respuesta = 'El Usuario se encuentra inhabilitado'
 	END
-	ELSE
-		BEGIN
-		DECLARE @Id_User NUMERIC(18,0) = (SELECT Id_Usuario FROM REZAGADOS.Usuario WHERE Nombre = @Usuario)
-		UPDATE REZAGADOS.Usuario SET Habilitada = 0 WHERE @Id_User = Id_Usuario
-		SET @Respuesta = 'Su usuario esta bloqueado, por sobrepasar la cantidad de logueos incorrectos';
-		END  
-	END
-	ELSE
-	SET @Respuesta = 'El Usuario se encuentra inhabilitado'
-END
-ELSE 
-SET @Respuesta = 'No existe el usuario, vuelva a intentarlo';                              
+	ELSE 
+		SET @Respuesta = 'No existe el usuario, vuelva a intentarlo';                              
 END
 GO
 
