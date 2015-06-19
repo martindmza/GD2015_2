@@ -96,7 +96,13 @@ DROP PROCEDURE [REZAGADOS].[Listar_Pais];
 DROP PROCEDURE REZAGADOS.Top5Depositos;
 DROP PROCEDURE REZAGADOS.Top5Retiros;
 DROP PROCEDURE REZAGADOS.Top10Transferencias;
-
+DROP PROCEDURE REZAGADOS.Buscar_User_ID;
+DROP PROCEDURE REZAGADOS.Listar_Cuenta_Usuario;
+DROP PROCEDURE REZAGADOS.Listar_Cliente_ID_Usuario;
+DROP PROCEDURE REZAGADOS.Listar_Cliente;
+DROP PROCEDURE REZAGADOS.Listar_Cuenta;
+DROP PROCEDURE REZAGADOS.Buscar_Pais_Id;
+DROP PROCEDURE REZAGADOS.Listar_Cuenta_Cliente;
 
 USE [GD1C2015]
 GO
@@ -1255,5 +1261,124 @@ BEGIN
     FROM REZAGADOS.Transferencia T
     WHERE T.Id_Cuenta_Emi = @Cuenta_Emi
     ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
+END
+GO
+----------------------------------------Buscar_User_ID-----------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Buscar_User_ID]
+@Id numeric(18, 0) = null
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT u.Id_Usuario ID, u.Nombre NOMBRE, u.Contrasenia PASS, u.Cantidad_Intentos_Fallidos INTENTOS_FALLIDOS, 
+			u.contrasenia_modificada PASS_MODIFICADA, u.fecha_creacion FECHA_CREACION, u.fecha_ult_modif FECHA_ULT_MODIFICACION,
+			u.pregunta PREGUNTA, u.respuesta RESPUESTA, u.habilitada HABILITADA
+	FROM [REZAGADOS].Usuario u 
+	WHERE u.Id_usuario = @Id
+END
+GO
+
+---------------------------------Listar_Cuenta_Usuario---------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta_Usuario]
+@Id_Usuario int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT c.Id_Cuenta ID, c.Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION, c.Id_Cuenta CUENTA,
+	c.Id_Moneda MONEDA, c.Id_Pais PAIS, c.Id_Tipo_Cuenta TIPO_CUENTA, c.Saldo SALDO
+	FROM  [REZAGADOS].Cuenta c 
+	WHERE c.Id_Usuario = @Id_Usuario
+END
+GO
+
+-----------------------------Listar_Cliente_ID_Usuario-------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Cliente_ID_Usuario]
+@Id_Usuario int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO,
+	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Departamento DIRECCION_DEPTO, 
+	c.Direccion_Numero_Calle DIRECCION_NRO, c.Direccion_Piso DIRECCION_PISO,
+	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Id_Tipo_Documento DOCUMENTO, c.Localidad LOCALIDAD, c.Nro_Documento NRO_DOCUMENTO,
+	c.Id_Pais PAIS, c.Mail EMAIL
+	FROM  [REZAGADOS].Cliente c 
+	WHERE c.Id_Usuario = @Id_Usuario
+END
+GO
+
+--------------------------------------Listar_Cliente----------------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Cliente]
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO,
+	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Departamento DIRECCION_DEPTO, 
+	c.Direccion_Numero_Calle DIRECCION_NRO, c.Direccion_Piso DIRECCION_PISO,
+	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Id_Tipo_Documento DOCUMENTO, c.Localidad LOCALIDAD, c.Nro_Documento NRO_DOCUMENTO,
+	c.Id_Pais PAIS, c.Mail EMAIL
+	FROM  [REZAGADOS].Cliente c 
+END
+GO
+
+-----------------------------------Listar_Cuenta------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta]
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT c.Id_Cuenta ID, c.Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION, c.Id_Cuenta CUENTA,
+	c.Id_Moneda MONEDA, c.Id_Pais PAIS, c.Id_Tipo_Cuenta TIPO_CUENTA, c.Saldo SALDO
+	FROM  [REZAGADOS].Cuenta c 
+END
+GO
+
+--------------------------------Buscar_Pais_Id-------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Buscar_Pais_Id]
+@Id int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT p.Id_Pais ID, p.Descripcion NOMBRE
+	FROM [REZAGADOS].Pais p 
+	WHERE p.Id_Pais = @Id
+END
+GO
+--------------------------------Listar_Cuenta_Cliente---------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta_Cliente]
+@Id_Cliente int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT c.Id_Cuenta ID, c.Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION, c.Id_Cuenta CUENTA,
+	c.Id_Moneda MONEDA, c.Id_Pais PAIS, c.Id_Tipo_Cuenta TIPO_CUENTA, c.Saldo SALDO
+	FROM  [REZAGADOS].Cuenta c INNER JOIN Usuario u on c.Id_Usuario = u.Id_Usuario INNER JOIN Cliente cli on u.Id_Usuario = cli.Id_Usuario
+	WHERE cli.Id_Cliente = @Id_Cliente
 END
 GO
