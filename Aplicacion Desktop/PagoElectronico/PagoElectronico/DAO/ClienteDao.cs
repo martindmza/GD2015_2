@@ -12,10 +12,8 @@ namespace DAO
 {
     public class ClienteDao: AbstractDAO
     {
-
         public ClienteDao() 
         {
-            //this.connector = Conexion.getInstance();
         }
 
         public List<ClienteModel> getClients()
@@ -41,7 +39,6 @@ namespace DAO
             if (dt.Rows.Count > 0)
                 return dt;
             return null;
-
         }
 
         public ClienteModel getClienteById(Decimal id)

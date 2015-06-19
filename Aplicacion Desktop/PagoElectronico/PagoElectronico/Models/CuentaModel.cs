@@ -13,7 +13,7 @@ namespace Models
         public const String PAIS = "PAIS";
         public const String CUENTATIPO = "TIPO_CUENTA";
         public const String MONEDA_ID = "MONEDA";
-        public const String MONEDA_NOMBRE = "MONEDA_NOMBRE";
+        public const String MONEDA_NOMBRE = "MONEDA";
         public const String ESTADO = "ESTADO";
         public const String FECHA_CREACION = "FECHA_CREACION";
         public const String FECHA_CIERRE = "FECHA_CIERRE";
