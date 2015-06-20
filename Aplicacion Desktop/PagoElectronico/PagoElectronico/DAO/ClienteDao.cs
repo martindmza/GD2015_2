@@ -41,36 +41,6 @@ namespace DAO
             return null;
         }
 
-        public ClienteModel getClienteById(Decimal id)
-        {
-            List<ClienteModel> clientes = new List<ClienteModel>();
-            DataTable dataRoles = this.getClientsDeBasePorId(id);
-            foreach (DataRow clienteBase in dataRoles.Rows)
-            {
-                ClienteModel rolModel = new ClienteModel(clienteBase);
-                clientes.Add(rolModel);
-            }
-            if (clientes.Count > 0)
-            {
-                return clientes.First();
-            }
-            return null;
-        }
-
-        private DataTable getClientsDeBasePorId(decimal id)
-        {
-            DataTable dt = new DataTable();
-            using (SqlCommand command = InitializeConnection("Listar_Cliente_ID"))
-            {
-                command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = id;
-                SqlDataAdapter da = new SqlDataAdapter(command);
-                da.Fill(dt);
-            }
-            if (dt.Rows.Count > 0)
-                return dt;
-            return null;
-        }
-
         public List<ClienteModel> getClientsByFilters(ClienteFiltros filtros)
         {
             return this.getClients();

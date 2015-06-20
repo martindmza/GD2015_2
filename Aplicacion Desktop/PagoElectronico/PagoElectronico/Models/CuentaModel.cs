@@ -84,7 +84,7 @@ namespace Models
             this.estado= new EstadoDao().dameTuModelo(fila[ESTADO].ToString());
             this.fechaCreacion = fila[FECHA_CREACION] != DBNull.Value ? DateTime.Parse(fila[FECHA_CREACION].ToString()) : DateTime.MinValue;
             this.fechaCierre = fila[FECHA_CIERRE] != DBNull.Value ? DateTime.Parse(fila[FECHA_CIERRE].ToString()) : DateTime.MinValue;
-            this.propietario = new ClienteDao().getClienteById((Decimal)fila[PROPIETARIO]);
+            this.propietario = new ClienteDao().dameTuModelo(fila[PROPIETARIO].ToString());
             this.saldo = (double)fila[SALDO];
             this.habilitado = (Boolean)fila[HABILITADO];
         }
