@@ -8,12 +8,12 @@ using System.Data;
 
 namespace DAO
 {
-    public class DocumentoDAO:BasicaDAO<DocumentoModel>
+    public class TipoDocumentoDAO:BasicaDAO<TipoDocumentoModel>
 
     {
-        public override DocumentoModel getModeloBasico(DataRow fila)
+        public override TipoDocumentoModel getModeloBasico(DataRow fila)
         {
-            return new DocumentoModel(fila);
+            return new TipoDocumentoModel(fila);
         }
 
         public override string getProcedureEncontrarPorId()

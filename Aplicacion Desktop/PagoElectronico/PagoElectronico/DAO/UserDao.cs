@@ -43,7 +43,7 @@ namespace DAO
             
             if (value.Equals("Abrir Sesion"))
             {
-                return new UserDao().dameTuModelo(Decimal.Parse(value2));
+                return new UserDao().dameTuModelo(value2);
             }
             MessageBox.Show(value, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             return null;

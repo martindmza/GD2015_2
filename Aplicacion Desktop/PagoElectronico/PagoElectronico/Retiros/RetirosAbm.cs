@@ -110,7 +110,7 @@ namespace Retiros
         private void aceptar_Click(object sender, EventArgs e)
         {
             //validar Documento
-            if ( ! dniText.Text.Equals(Login.Login.userLogued.cliente.documento.numero.ToString())) {
+            if ( ! dniText.Text.Equals(Login.Login.userLogued.cliente.nroDocumento.ToString())) {
                 MessageBox.Show("Número de Documento Inválido");
                 dniText.Text = "";
                 return;

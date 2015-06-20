@@ -20,7 +20,6 @@ namespace Models
         public const String SALDO = "SALDO";
         public const String HABILITADO = "HABILITADO";
 
-        public Decimal id { get; set; }
         public PaisModel pais { get; set; }
         public CuentaTipoModel tipo { get; set; }
         public Decimal monedaId { get; set; }
@@ -75,17 +74,14 @@ namespace Models
             this.propietario = propietario;
         }
 
-        public void mapeoFilaAModel(DataRow fila)
+        public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-            this.pais = new PaisDAO().dameTuModelo((decimal)fila[PAIS]);
-            if (fila[CUENTATIPO] != null && fila[CUENTATIPO] != "")
-            {
-                this.tipo = new CuentaTipoDAO().dameTuModelo((Decimal)fila[CUENTATIPO]);
-            }
+            this.pais = new PaisDAO().dameTuModelo(fila[PAIS].ToString());
+            this.tipo = new CuentaTipoDAO().dameTuModelo(fila[CUENTATIPO].ToString());
             this.monedaId = (Decimal)fila[MONEDA_ID];
             this.monedaNombre = fila[MONEDA_NOMBRE].ToString();
-            this.estado= new EstadoDao().dameTuModelo((Decimal)fila[ESTADO]);
+            this.estado= new EstadoDao().dameTuModelo(fila[ESTADO].ToString());
             this.fechaCreacion = fila[FECHA_CREACION] != DBNull.Value ? DateTime.Parse(fila[FECHA_CREACION].ToString()) : DateTime.MinValue;
             this.fechaCierre = fila[FECHA_CIERRE] != DBNull.Value ? DateTime.Parse(fila[FECHA_CIERRE].ToString()) : DateTime.MinValue;
             this.propietario = new ClienteDao().getClienteById((Decimal)fila[PROPIETARIO]);

@@ -6,7 +6,7 @@ using Models;
 
 namespace DAO
 {
-    public class DepositoDao
+    public class DepositoDao :AbstractDAO
     {
         public DepositoModel createDeposito(DepositoModel deposito){
             

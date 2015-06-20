@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 
 namespace DAO
 {
-    public class ClienteDao: AbstractDAO
+    public class ClienteDao: BasicaDAO
     {
         public ClienteDao() 
         {

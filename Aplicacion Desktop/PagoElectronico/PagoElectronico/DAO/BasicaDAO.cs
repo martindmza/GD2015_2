@@ -24,18 +24,32 @@ namespace DAO
         }
         public abstract TEntity getModeloBasico(DataRow fila);
 
-        public TEntity dameTuModelo(Decimal id)
+        /*
+         *Recibe un string para despues transformarlo y poder encontrar y generar una Instancia de su propia
+         *caracteristicas
+         */
+        public TEntity dameTuModelo(String id)
         {
-            List<TEntity> lista = new List<TEntity>();
-            DataTable data = this.getBasicaDeBasePorID(id);
-            foreach (DataRow fila in data.Rows)
+            try
             {
-                TEntity rolModel = this.getModeloBasico(fila);
-                lista.Add(rolModel);
+                Decimal decimalId = Decimal.Parse(id);
+
+                List<TEntity> lista = new List<TEntity>();
+                DataTable data = this.getBasicaDeBasePorID(decimalId);
+                foreach (DataRow fila in data.Rows)
+                {
+                    TEntity rolModel = this.getModeloBasico(fila);
+                    lista.Add(rolModel);
+                }
+                if (lista.Count > 0)
+                {
+                    return lista.First();
+                }
             }
-            if (lista.Count > 0)
+            catch (FormatException ex)
             {
-                return lista.First();
+                
+                return null;
             }
             return null;
         }

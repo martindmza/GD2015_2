@@ -41,9 +41,10 @@ namespace Models
             this.fecha = fecha;
         }
 
-        public void mapeoFilaAModel(DataRow fila)
+        public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
+
         }
     }
 }

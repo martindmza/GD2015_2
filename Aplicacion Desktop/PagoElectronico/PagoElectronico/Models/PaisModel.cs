@@ -24,7 +24,7 @@ namespace Models
             return "{ " + id + "; " + nombre + "; " + nacionalidad + " }";
         }
 
-        public void mapeoFilaAModel(DataRow fila)
+        public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
             //this.nacionalidad = fila[NACIONALIDAD].ToString();

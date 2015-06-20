@@ -117,7 +117,7 @@ namespace ABM
                 tipoCuenta.SelectedItem = tipoCuenta.Items[0];
                 tipoActivo = tipos[0];
                 moneda.SelectedItem = moneda.Items[0];
-                estado = estadoDao.dameTuModelo(1);
+                estado = estadoDao.dameTuModelo(1.ToString());
             }
             else
             {

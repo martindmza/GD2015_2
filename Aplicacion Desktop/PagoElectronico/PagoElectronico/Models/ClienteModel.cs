@@ -33,7 +33,7 @@ namespace Models
 
         public PaisModel pais { get; set; }
         public LocalidadModel localidad { get; set; }
-        public DocumentoModel documento { get; set; }
+        public String nroDocumento { get; set; }
         public TipoDocumentoModel tipoDocumento { get; set; }
         public List<CuentaModel> cuentas = new List<CuentaModel>();
         public UserModel usuario;
@@ -67,13 +67,13 @@ namespace Models
             return null;
         }
 
-        public ClienteModel(String apellido, String nombre, DocumentoModel documento,
+        public ClienteModel(String apellido, String nombre, TipoDocumentoModel documento,
             DateTime nacimiento, String email, PaisModel nacionalidad, String direccionCalle, UInt32 direccionNumeroCalle,
             UInt32 direccionPiso, String direccionDepto, LocalidadModel localidad, PaisModel pais)
         {
             this.apellido = apellido;
             this.nombre = nombre;
-            this.documento = documento;
+            this.tipoDocumento = documento;
             this.nacimiento = nacimiento;
             this.email = email;
             //this.nacionalidad = nacionalidad;
@@ -85,14 +85,14 @@ namespace Models
             this.pais = pais;
         }
 
-        public ClienteModel(UInt32 id, String apellido, String nombre, DocumentoModel documento,
+        public ClienteModel(UInt32 id, String apellido, String nombre, TipoDocumentoModel tipoDocumento,
             DateTime nacimiento, String email, PaisModel nacionalidad, String direccionCalle, UInt32 direccionNumeroCalle,
             UInt32 direccionPiso, String direccionDepto, LocalidadModel localidad, PaisModel pais)
         {
             this.id = id;
             this.apellido = apellido;
             this.nombre = nombre;
-            this.documento = documento;
+            this.tipoDocumento = tipoDocumento;
             this.nacimiento = nacimiento;
             this.email = email;
             //this.nacionalidad = nacionalidad;
@@ -115,7 +115,8 @@ namespace Models
             return "{ " + id + "; " +
                             apellido + "; " +
                             nombre + "; " +
-                            documento.ToString() + "; " +
+                            tipoDocumento.nombre + "; " +
+                            nroDocumento.ToString() + "; " +
                             nacimiento.ToString() + "; " +
                             email + "; " +
                             pais.nacionalidad.ToString() + "; " +
@@ -128,7 +129,7 @@ namespace Models
         }
 
 
-        public void mapeoFilaAModel(System.Data.DataRow fila)
+        public override void mapeoFilaAModel(System.Data.DataRow fila)
         {
             base.mapeoFilaAModel(fila);
             this.apellido = fila[APELLIDO].ToString();
@@ -143,7 +144,7 @@ namespace Models
             this.direccionPiso = (Decimal)fila[DIRECCION_PISO];
             this.direccionDepto = fila[DIRECCION_DEPTO].ToString();
             this.localidad = new LocalidadModel(0, fila[LOCALIDAD].ToString());
-            this.pais = new PaisDAO().dameTuModelo((Decimal)fila[PAIS]);
+            this.pais = new PaisDAO().dameTuModelo(fila[PAIS].ToString());
             //this.nacionalidad = pais.nacionalidad;
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
         }

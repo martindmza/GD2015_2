@@ -173,7 +173,7 @@
     <Compile Include="Models\CuentaModel.cs" />
     <Compile Include="Models\CuentaTipoModel.cs" />
     <Compile Include="Models\DepositoModel.cs" />
-    <Compile Include="Models\DocumentoModel.cs" />
+    <Compile Include="Models\TipoDocumentoModel.cs" />
     <Compile Include="Models\EstadoModel.cs" />
     <Compile Include="Models\FacturaModel.cs" />
     <Compile Include="Models\FuncionalidadModel.cs" />
@@ -181,7 +181,6 @@
     <Compile Include="Models\PaisModel.cs" />
     <Compile Include="Models\RetiroModel.cs" />
     <Compile Include="Models\TarjetaDeCreditoModel.cs" />
-    <Compile Include="Models\TipoDocumentoModel.cs" />
     <Compile Include="Models\TransaccionModel.cs" />
     <Compile Include="Models\TransaccionTipoModel.cs" />
     <Compile Include="Models\TransferenciaModel.cs" />

@@ -21,22 +21,6 @@ namespace DAO
             return lista;
         }
 
-        public EstadoModel dameTuModelo(Decimal id)
-        {
-            List<EstadoModel> lista = new List<EstadoModel>();
-            DataTable data = this.getBasicaDeBasePorID(id);
-            foreach (DataRow paisBase in data.Rows)
-            {
-                EstadoModel rolModel = new EstadoModel(paisBase);
-                lista.Add(rolModel);
-            }
-            if (lista.Count > 0)
-            {
-                return lista.First();
-            }
-            return null;
-        }
-
         public override string getProcedureEncontrarPorId()
         {
             return "Buscar_Estado_Id";

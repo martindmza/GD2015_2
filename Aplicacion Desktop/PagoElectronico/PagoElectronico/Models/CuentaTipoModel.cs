@@ -8,7 +8,10 @@ namespace Models
 {
     public class CuentaTipoModel:BasicaModel
     {
-        public UInt32 duracionDias { get; set; }
+        public const String COSTO = "COSTO";
+        public const String VIGENCIA = "VIGENCIA";
+
+        public Decimal duracionDias { get; set; }
         public Decimal costo { get; set; }
 
         public CuentaTipoModel() { }
@@ -23,5 +26,13 @@ namespace Models
             this.duracionDias = duracionDias;
             this.costo = costo;
         }
+
+        public override void mapeoFilaAModel(DataRow fila)
+        {
+            base.mapeoFilaAModel(fila);
+            this.costo = (Decimal)fila[COSTO];
+            this.duracionDias = (Decimal)fila[VIGENCIA];
+        }
+
     }
 }

@@ -21,7 +21,7 @@ namespace Models
         }
 
 
-        public void mapeoFilaAModel(DataRow fila)
+        public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
             this.habilitado = (Boolean)fila[HABILITADA];

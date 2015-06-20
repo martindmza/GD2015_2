@@ -41,7 +41,7 @@ namespace Models
             this.funcionalidades = funcionalidades;
         }
         
-        public void mapeoFilaAModel(DataRow fila)
+        public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
            // this.habilitado = (Boolean)fila[HABILITADO];

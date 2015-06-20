@@ -19,7 +19,7 @@ namespace Models
             this.mapeoFilaAModel(fila);
         }
 
-        public void mapeoFilaAModel(DataRow fila){
+        public virtual void mapeoFilaAModel(DataRow fila){
             this.id = (Decimal)fila[ID];
         }
     }

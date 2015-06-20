@@ -28,7 +28,7 @@ namespace Models
             this.nombre = nombre;
         }
 
-        public void mapeoFilaAModel(DataRow fila)
+        public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
             this.nombre = fila[NOMBRE].ToString();

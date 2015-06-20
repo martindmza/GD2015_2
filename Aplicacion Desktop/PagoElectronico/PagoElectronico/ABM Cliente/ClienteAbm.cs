@@ -98,10 +98,10 @@ namespace ABM
         {
             KeyValuePair<UInt32, String> empty = new KeyValuePair<UInt32, String>(0,"");
             comboBox1.Items.Add(empty);
-            DocumentoDAO docDao = new DocumentoDAO();
-            foreach (DocumentoModel tipo in docDao.getListado())
+            TipoDocumentoDAO docDao = new TipoDocumentoDAO();
+            foreach (TipoDocumentoModel tipo in docDao.getListado())
             {
-                comboBox1.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
+                comboBox1.Items.Add(new KeyValuePair<Decimal, String>(tipo.id, tipo.nombre));
             }
             comboBox1.DisplayMember = "Value";
             comboBox1.ValueMember = "Key";
@@ -117,11 +117,11 @@ namespace ABM
             foreach (ClienteModel cliente in clientes)
             {
                 row = new String[] {    cliente.id.ToString(),
-                                        cliente.apellido.ToString(),
-                                        cliente.nombre.ToString(),
-                                        cliente.documento.nombre.ToString(),
-                                        cliente.documento.numero.ToString(),
-                                        cliente.email.ToString(),
+                                        cliente.apellido,
+                                        cliente.nombre,
+                                        cliente.tipoDocumento.nombre,
+                                        cliente.nroDocumento,
+                                        cliente.email,
                                         cliente.nacimiento.ToString(),
                                         cliente.pais.nacionalidad.ToString(),
 										cliente.direccionCalle.ToString(),
