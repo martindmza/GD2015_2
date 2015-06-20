@@ -66,7 +66,7 @@ namespace ABM
             this.clienteDao = new ClienteDao();
             this.cuentaDao = new CuentaDao();
             this.extraDao = new ExtraDao();
-            this.clientes = clienteDao.getClients();
+            this.clientes = clienteDao.getListado();
 
             fillClientsTable();
             fillDocTypes();

@@ -30,7 +30,7 @@ namespace ABM
 
             this.rolDao = new RolDao();
             this.funcionalidadDao = new FuncionalidadDao();
-            this.roles = rolDao.getRoles();
+            this.roles = rolDao.getListado();
             this.funcionalidadesTodas = funcionalidadDao.getFuncionalidades();
             
             InitializeComponent();

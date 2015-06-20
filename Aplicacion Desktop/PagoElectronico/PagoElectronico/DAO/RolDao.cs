@@ -8,22 +8,8 @@ using System.Data.SqlClient;
 
 namespace DAO
 {
-    public class RolDao: AbstractDAO
+    public class RolDao: BasicaDAO<RolModel>
     {
-        public List<RolModel> getRoles()
-        {
-            List<RolModel> listaRoles = new List<RolModel>();
-            DataTable dataRoles = this.getRolesDeBase();
-            foreach (DataRow rolBase in dataRoles.Rows)
-            {
-                RolModel rolModel = new RolModel(rolBase);
-                listaRoles.Add(rolModel);
-            }
-            return listaRoles;
-        }
-        //-------------------------------------------------------------------------------------------------------------
-
-
         //-------------------------------------------------------------------------------------------------------------
         public List<RolModel> getRolesByUser(Decimal userId)
         {
@@ -40,7 +26,9 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
         public RolModel createRol(RolModel rol){
             rol.habilitado = true;
-            rol.id = 99;
+            //rol.id = 99;
+
+
             return rol;
         }
         //-------------------------------------------------------------------------------------------------------------
@@ -67,19 +55,6 @@ namespace DAO
         }
         //-------------------------------------------------------------------------------------------------------------
 
-        private DataTable getRolesDeBase()
-        {
-            DataTable dt= new DataTable();
-            using (SqlCommand command = InitializeConnection("Listar_Rol"))
-            {
-                SqlDataAdapter da  =new SqlDataAdapter(command);                
-                da.Fill(dt);                                
-            }
-            if (dt.Rows.Count > 0)
-                return dt;
-            return null;
-        }
-
         private DataTable getRolesDeBase(Decimal idUsuario)
         {
             DataTable dt = new DataTable();
@@ -93,7 +68,22 @@ namespace DAO
                 return dt;
             return null;
         }
-        
 
+
+
+        public override RolModel getModeloBasico(DataRow fila)
+        {
+            return new RolModel(fila);
+        }
+
+        public override string getProcedureEncontrarPorId()
+        {
+            return "Buscar_Rol_ID";
+        }
+
+        public override string getProcedureListar()
+        {
+            return "Listar_Rol";
+        }
     }
 }
