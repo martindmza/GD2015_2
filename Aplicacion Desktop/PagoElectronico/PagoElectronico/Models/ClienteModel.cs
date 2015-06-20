@@ -38,6 +38,9 @@ namespace Models
         public List<CuentaModel> cuentas = new List<CuentaModel>();
         public UserModel usuario;
 
+        public ClienteModel()
+        {
+        }
         public ClienteModel(DataRow fila)
             : base(fila)
         {

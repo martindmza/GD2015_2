@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 
 namespace DAO
 {
-    public class ClienteDao: BasicaDAO
+    public class ClienteDao: BasicaDAO<ClienteModel>
     {
         public ClienteDao() 
         {
@@ -124,6 +124,21 @@ namespace DAO
             if (dt.Rows.Count > 0)
                 return dt;
             return null;
+        }
+
+        public override ClienteModel getModeloBasico(DataRow fila)
+        {
+            return new ClienteModel(fila);
+        }
+
+        public override string getProcedureEncontrarPorId()
+        {
+            return "Buscar_Cliente_ID";
+        }
+
+        public override string getProcedureListar()
+        {
+            return "Listar_Cliente";
         }
     }
 }
