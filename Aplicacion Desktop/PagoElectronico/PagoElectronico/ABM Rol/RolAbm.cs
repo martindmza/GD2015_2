@@ -147,25 +147,29 @@ namespace ABM
         //cuando selecciono un nuevo rol
         //-----------------------------------------------------------------------------------------------------------------
         private void dataGridViewRoles_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+            try{
+                funcionalidadesNoContenidas = funcionalidadesTodas;
+                int filaActiva = this.dataGridViewRoles.CurrentCell.RowIndex;
+                String idRolActivo = dataGridViewRoles.Rows[filaActiva].Cells[0].Value.ToString();
 
-            funcionalidadesNoContenidas = funcionalidadesTodas;
-            int filaActiva = this.dataGridViewRoles.CurrentCell.RowIndex;
-            String idRolActivo = dataGridViewRoles.Rows[filaActiva].Cells[0].Value.ToString();
-
-            int count = 0;
-            foreach (RolModel rol in roles) {
-                if (idRolActivo.Equals(rol.id.ToString()))
-                {
-                    rolActivo = rol;
-                    rolActivoIndex = count;
-                    break;
+                int count = 0;
+                foreach (RolModel rol in roles) {
+                    if (idRolActivo.Equals(rol.id.ToString()))
+                    {
+                        rolActivo = rol;
+                        rolActivoIndex = count;
+                        break;
+                    }
+                    count++;
                 }
-                count++;
-            }
 
-            button1.Enabled = true;
-            button2.Enabled = true;
-            fillFunctionsTable();
+                button1.Enabled = true;
+                button2.Enabled = true;
+                fillFunctionsTable();
+            } catch (NullReferenceException err) {
+                button1.Enabled = true;
+                button2.Enabled = true;
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
