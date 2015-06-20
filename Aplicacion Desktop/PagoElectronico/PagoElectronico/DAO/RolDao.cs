@@ -25,6 +25,13 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------
+        public List<RolModel> getRolesByFilters(Decimal rolId,String rolName)
+        {
+            List<RolModel> listaRoles = new List<RolModel>();
+            //TODO
+            return null;
+        }
+        //-------------------------------------------------------------------------------------------------------------
         public RolModel updateRol(RolModel rol)
         {
             return rol;
