@@ -8,9 +8,13 @@ using DAO;
 namespace Models
 {
     public class RolModel : BasicaModel{
-        public const String HABILITADO = "HABILITADA";
+        public const String HABILITADO = "HABILITADO";
         public Boolean habilitado { get; set; }
         public List<FuncionalidadModel> funcionalidades { get; set; }
+
+        public RolModel()
+        {
+        }
 
         public RolModel(String nombre)
         {
@@ -44,7 +48,9 @@ namespace Models
         public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-           // this.habilitado = (Boolean)fila[HABILITADO];
+            Console.WriteLine("Fila de Rol Leida");
+
+            this.habilitado = (Boolean)fila[HABILITADO];
         }
     }
 }
