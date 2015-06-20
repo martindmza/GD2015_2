@@ -113,7 +113,7 @@ namespace Models
 
 
 
-        public override void mapeoFilaAModel(DataRow fila)
+        public void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
             this.password = fila[PASSWORD].ToString();
