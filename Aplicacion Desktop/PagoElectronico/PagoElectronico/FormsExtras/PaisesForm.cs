@@ -43,9 +43,7 @@ namespace FormsExtras
         private void init(int operacionTipo)
         {
             InitializeComponent();
-            extraDao = new ExtraDao();
-
-            paises = extraDao.getPaises();
+            paises = new PaisDAO().getListado();
             this.operacionTipo = operacionTipo;
 
             if (operacionTipo == 0)

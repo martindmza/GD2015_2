@@ -5,146 +5,75 @@ using System.Text;
 using MyExceptions;
 using Models;
 using ABM;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace DAO
 {
-    public class ClienteDao
+    public class ClienteDao: BasicaDAO
     {
-
         public ClienteDao() 
         {
-            //this.connector = Conexion.getInstance();
         }
 
         public List<ClienteModel> getClients()
         {
-
             List<ClienteModel> clientes = new List<ClienteModel>();
-
-            PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
-            PaisModel p2 = new PaisModel(2, "Chile", "Chileno");
-            PaisModel p3 = new PaisModel(3, "Uruguay", "Uruguayo");
-            PaisModel p4 = new PaisModel(4, "Paraguay", "Paraguayo");
-            PaisModel p5 = new PaisModel(5, "Perú", "Peruano");
-            LocalidadModel l1 = new LocalidadModel(1, "Haedo");
-            LocalidadModel l2 = new LocalidadModel(2, "Moron");
-            LocalidadModel l3 = new LocalidadModel(3, "Liniers");
-            LocalidadModel l4 = new LocalidadModel(4, "Palermo");
-            LocalidadModel l5 = new LocalidadModel(5, "Belgrano");
-
-            DocumentoModel d1 = new DocumentoModel(1, "DNI", 34284433);
-            DocumentoModel d2 = new DocumentoModel(1, "DNI", 34281111);
-            DocumentoModel d3 = new DocumentoModel(2, "Pasaporte", 1231231236);
-            DocumentoModel d4 = new DocumentoModel(3, "Pasaporte",321312123);
-            DocumentoModel d5 = new DocumentoModel(2, "Cedula", 34284433);
-            DocumentoModel d6 = new DocumentoModel(3, "Cedula", 34284431);
-
-            /*
-            String apellido, String nombre, DocumentoModel documento,
-            DateTime nacimiento, String email, PaisModel nacionalidad, String direccionCalle, UInt32 direccionNumeroCalle,
-            UInt32 direccionPiso, String direccionDepto, LocalidadModel localidad, PaisModel pais
-            */
-
-            ClienteModel c1 = new ClienteModel(1, "Amaya", "Hector", d1,new DateTime(1995,1,1),"martin.d.mza@gmail.com",p1, "Calle1", 111, 1, "A", l1, p2);
-            ClienteModel c2 = new ClienteModel(2, "Lopez", "Maxi", d2, new DateTime(1980, 1, 1), "maxi.d.mza@gmail.com", p2, "Calle2", 221, 1, "B", l2, p3);
-            ClienteModel c3 = new ClienteModel(3, "Vega", "Eric", d3, new DateTime(1970, 1, 1), "1.d.mza@gmail.com", p3, "Calle3", 331, 1, "C", l3, p4);
-            ClienteModel c4 = new ClienteModel(4, "Perez", "Ana", d4, new DateTime(1966, 1, 1), "2.d.mza@gmail.com", p4, "Calle4",441, 1, "D", l1, p5);
-            ClienteModel c5 = new ClienteModel(5, "Martinez", "Juan", d5, new DateTime(1955, 1, 1), "3.d.mza@gmail.com", p5, "Calle5", 551, 1, "E", l2, p1);
-            ClienteModel c6 = new ClienteModel(6, "Pastorino", "Oscar", d6, new DateTime(1910, 1, 1), "4.d.mza@gmail.com", p1, "Calle6", 661, 1, "F", l3, p2);
-
-
-            clientes.Add(c1);
-            clientes.Add(c2);
-            clientes.Add(c3);
-            clientes.Add(c4);
-            clientes.Add(c5);
-            clientes.Add(c6);
- 
-
+            DataTable dataClients = this.getClientsDeBase();
+            foreach (DataRow rolBase in dataClients.Rows)
+            {
+                ClienteModel rolModel = new ClienteModel(rolBase);
+                clientes.Add(rolModel);
+            }
             return clientes;
         }
 
-        public ClienteModel getClienteById(UInt32 id)
+        private DataTable getClientsDeBase()
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Listar_Cliente"))
+            {
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
+        }
+
+        public ClienteModel getClienteById(Decimal id)
         {
             List<ClienteModel> clientes = new List<ClienteModel>();
+            DataTable dataRoles = this.getClientsDeBasePorId(id);
+            foreach (DataRow clienteBase in dataRoles.Rows)
+            {
+                ClienteModel rolModel = new ClienteModel(clienteBase);
+                clientes.Add(rolModel);
+            }
+            if (clientes.Count > 0)
+            {
+                return clientes.First();
+            }
+            return null;
+        }
 
-            PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
-            PaisModel p2 = new PaisModel(2, "Chile", "Chileno");
-            PaisModel p3 = new PaisModel(3, "Uruguay", "Uruguayo");
-            PaisModel p4 = new PaisModel(4, "Paraguay", "Paraguayo");
-            PaisModel p5 = new PaisModel(5, "Perú", "Peruano");
-            LocalidadModel l1 = new LocalidadModel(1, "Haedo");
-            LocalidadModel l2 = new LocalidadModel(2, "Moron");
-            LocalidadModel l3 = new LocalidadModel(3, "Liniers");
-            LocalidadModel l4 = new LocalidadModel(4, "Palermo");
-            LocalidadModel l5 = new LocalidadModel(5, "Belgrano");
-
-            DocumentoModel d1 = new DocumentoModel(1, "DNI", 34284433);
-            DocumentoModel d2 = new DocumentoModel(1, "DNI", 34281111);
-            DocumentoModel d3 = new DocumentoModel(2, "Pasaporte", 1231231236);
-            DocumentoModel d4 = new DocumentoModel(3, "Pasaporte", 321312123);
-            DocumentoModel d5 = new DocumentoModel(2, "Cedula", 34284433);
-            DocumentoModel d6 = new DocumentoModel(3, "Cedula", 34284431);
-
-            ClienteModel c1 = new ClienteModel(1, "Amaya", "Hector", d1, new DateTime(1995, 1, 1), "martin.d.mza@gmail.com", p1, "Calle1", 111, 1, "A", l1, p2);
-            ClienteModel c2 = new ClienteModel(2, "Lopez", "Maxi", d2, new DateTime(1980, 1, 1), "maxi.d.mza@gmail.com", p2, "Calle2", 221, 1, "B", l2, p3);
-            ClienteModel c3 = new ClienteModel(3, "Vega", "Eric", d3, new DateTime(1970, 1, 1), "1.d.mza@gmail.com", p3, "Calle3", 331, 1, "C", l3, p4);
-            ClienteModel c4 = new ClienteModel(4, "Perez", "Ana", d4, new DateTime(1966, 1, 1), "2.d.mza@gmail.com", p4, "Calle4", 441, 1, "D", l1, p5);
-            ClienteModel c5 = new ClienteModel(5, "Martinez", "Juan", d5, new DateTime(1955, 1, 1), "3.d.mza@gmail.com", p5, "Calle5", 551, 1, "E", l2, p1);
-            ClienteModel c6 = new ClienteModel(6, "Pastorino", "Oscar", d6, new DateTime(1910, 1, 1), "4.d.mza@gmail.com", p1, "Calle6", 661, 1, "F", l3, p2);
-
-
-            clientes.Add(c1);
-            clientes.Add(c2);
-            clientes.Add(c3);
-            clientes.Add(c4);
-            clientes.Add(c5);
-            clientes.Add(c6);
-
-            int value = (int)id;
-
-            return clientes[value];
+        private DataTable getClientsDeBasePorId(decimal id)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Listar_Cliente_ID"))
+            {
+                command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = id;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
         }
 
         public List<ClienteModel> getClientsByFilters(ClienteFiltros filtros)
         {
-
-            List<ClienteModel> clientes = new List<ClienteModel>();
-
-            PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
-            PaisModel p2 = new PaisModel(2, "Chile", "Chileno");
-            PaisModel p3 = new PaisModel(3, "Uruguay", "Uruguayo");
-            PaisModel p4 = new PaisModel(4, "Paraguay", "Paraguayo");
-            PaisModel p5 = new PaisModel(5, "Perú", "Peruano");
-            LocalidadModel l1 = new LocalidadModel(1, "Haedo");
-            LocalidadModel l2 = new LocalidadModel(2, "Moron");
-            LocalidadModel l3 = new LocalidadModel(3, "Liniers");
-            LocalidadModel l4 = new LocalidadModel(4, "Palermo");
-            LocalidadModel l5 = new LocalidadModel(5, "Belgrano");
-            DocumentoModel d1 = new DocumentoModel(1, "DNI", 34284433);
-            DocumentoModel d2 = new DocumentoModel(1, "DNI", 34281111);
-            DocumentoModel d3 = new DocumentoModel(2, "Pasaporte", 1231231236);
-            DocumentoModel d4 = new DocumentoModel(3, "Pasaporte", 321312123);
-            DocumentoModel d5 = new DocumentoModel(2, "Cedula", 34284433);
-            DocumentoModel d6 = new DocumentoModel(3, "Cedula", 34284431);
-
-            ClienteModel c1 = new ClienteModel(1, "Amaya", "Hector", d1, new DateTime(1995, 1, 1), "martin.d.mza@gmail.com", p1, "Calle1", 111, 1, "A", l1, p2);
-            ClienteModel c2 = new ClienteModel(2, "Lopez", "Maxi", d2, new DateTime(1980, 1, 1), "maxi.d.mza@gmail.com", p2, "Calle2", 221, 1, "B", l2, p3);
-            ClienteModel c3 = new ClienteModel(3, "Vega", "Eric", d3, new DateTime(1970, 1, 1), "1.d.mza@gmail.com", p3, "Calle3", 331, 1, "C", l3, p4);
-            ClienteModel c4 = new ClienteModel(4, "Perez", "Ana", d4, new DateTime(1966, 1, 1), "2.d.mza@gmail.com", p4, "Calle4", 441, 1, "D", l1, p5);
-            ClienteModel c5 = new ClienteModel(5, "Martinez", "Juan", d5, new DateTime(1955, 1, 1), "3.d.mza@gmail.com", p5, "Calle5", 551, 1, "E", l2, p1);
-            ClienteModel c6 = new ClienteModel(6, "Pastorino", "Oscar", d6, new DateTime(1910, 1, 1), "4.d.mza@gmail.com", p1, "Calle6", 661, 1, "F", l3, p2);
-
-
-            clientes.Add(c1);
-            //clientes.Add(c2);
-            clientes.Add(c3);
-            clientes.Add(c4);
-            //clientes.Add(c5);
-            //clientes.Add(c6);
-
-
-            return clientes;
+            return this.getClients();
         }
 
         public ClienteModel addNewCliente(ClienteModel cliente)
@@ -162,6 +91,39 @@ namespace DAO
         {
             cliente.habilitado = false;
             return cliente;
+        }
+
+        public ClienteModel getClienteByUser(UserModel userModel)
+        {
+            List<ClienteModel> clientes = new List<ClienteModel>();
+            DataTable dataRoles = this.getClientsDeBasePorIdUsuario(userModel.id);
+            if (dataRoles != null)
+            {
+                foreach (DataRow clienteBase in dataRoles.Rows)
+                {
+                    ClienteModel rolModel = new ClienteModel(clienteBase);
+                    clientes.Add(rolModel);
+                }
+            }
+            if (clientes.Count > 0)
+            {
+                return clientes.First();
+            }
+            return null;
+        }
+
+        private DataTable getClientsDeBasePorIdUsuario(decimal p)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Listar_Cliente_ID_Usuario"))
+            {
+                command.Parameters.Add("@Id_Usuario", System.Data.SqlDbType.Int).Value = p;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
         }
     }
 }

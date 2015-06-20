@@ -18,7 +18,7 @@ namespace DAO
 
             List<TransferenciaModel> transf = new List<TransferenciaModel>();
 
-            PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
+        /*    PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
             CuentaTipoModel oro = new CuentaTipoModel(1, "oro", 10, 1000);
             EstadoModel e1 = new EstadoModel(1, "abierta");
             ClienteModel cliente = new ClienteModel(1, "Pepe", "Martinez");
@@ -37,7 +37,7 @@ namespace DAO
             transf.Add(new TransferenciaModel(8, c1, c2, 342, 1, "dolar", 123));
             transf.Add(new TransferenciaModel(9, c1, c2, 7545, 1, "dolar", 123));
             transf.Add(new TransferenciaModel(10, c1, c2, 20000, 1, "dolar", 123));
-            
+          */  
             return transf;
         }
     }

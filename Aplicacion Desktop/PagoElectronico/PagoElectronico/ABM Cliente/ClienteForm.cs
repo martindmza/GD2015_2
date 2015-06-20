@@ -23,7 +23,7 @@ namespace ABM
         private PaisModel pais;
         private PaisModel nacionalidad;
         private LocalidadModel localidad;
-        private DocumentoModel documento;
+        private TipoDocumentoModel tipoDocumento;
 
         private const int SELECCIONAR_PAIS = 0;
         private const int SELECCIONAR_NACIONALIDAD = 1;
@@ -89,9 +89,10 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void fillDocTypes()
         {
-            foreach (DocumentoModel tipo in extraDao.getDocTypes())
+            TipoDocumentoDAO docDao = new TipoDocumentoDAO();
+            foreach (TipoDocumentoModel tipo in docDao.getListado())
             {
-                docTipo.Items.Add(new KeyValuePair<UInt32, String>(tipo.tipo, tipo.nombre));
+                docTipo.Items.Add(new KeyValuePair<Decimal, String>(tipo.id, tipo.nombre));
             }
             docTipo.DisplayMember = "Value";
             docTipo.ValueMember = "Key";
@@ -118,13 +119,13 @@ namespace ABM
                     String[] valueString = result[0].Split('[');
                     UInt32 value = UInt32.Parse(valueString[1]);
 
-                    if (value == cliente.documento.tipo ) {
+                    if (value == cliente.tipoDocumento.id ) {
                         docTipo.SelectedItem = docTipo.Items[i];
                         break;
                     }
                 }
 
-                docNumero.Text = cliente.documento.numero.ToString();
+                docNumero.Text = cliente.nroDocumento;
                 apellido.Text = cliente.apellido;
                 nombre.Text = cliente.nombre;
                 nacimiento.Value = cliente.nacimiento;
@@ -147,14 +148,15 @@ namespace ABM
                     domDepartamento.Text = cliente.direccionDepto;
                 }
 
-                nacionalidadText.Text = cliente.nacionalidad.nacionalidad;
+                nacionalidadText.Text = cliente.pais.nacionalidad;
                 paisText.Text = cliente.pais.nombre;
                 localidadText.Text = cliente.localidad.nombre;
 
-                nacionalidad = cliente.nacionalidad;
+                nacionalidad = cliente.pais;
                 pais = cliente.pais;
                 localidad = cliente.localidad;
-                documento = cliente.documento;
+                tipoDocumento = cliente.tipoDocumento;
+                
             }
             
 
@@ -211,9 +213,10 @@ namespace ABM
             String[] result = docTipo.SelectedItem.ToString().Split(',');
             String[] valueString = result[0].Split('[');
             UInt32 docTipoSelected = UInt32.Parse(valueString[1]);
-
-            DocumentoModel documentoToSend = extraDao.getDocTypeById(docTipoSelected);
-            documentoToSend.numero = UInt64.Parse(docNumero.Text);
+             TipoDocumentoDAO docDao = new TipoDocumentoDAO();
+           
+            TipoDocumentoModel documentoToSend = docDao.dameTuModelo(docTipoSelected.ToString());
+            //documentoToSend.numero = UInt64.Parse(docNumero.Text);
 
             switch (operacionTipo)
             {

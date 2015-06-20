@@ -9,7 +9,8 @@ namespace DAO
 {
     public abstract class AbstractDAO
     {
-                private SqlConnection _connection = null;
+        
+        private SqlConnection _connection = null;
 		private SqlTransaction _transaction = null;
 		private bool _conTransaccion = false;
 

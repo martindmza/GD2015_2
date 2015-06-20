@@ -61,12 +61,6 @@
       <DependentUpon>ClienteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ABM Cliente\ClienteFiltros.cs" />
-    <Compile Include="Consulta Saldos\ConsultaDeSaldos.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Consulta Saldos\ConsultaDeSaldos.Designer.cs">
-      <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
-    </Compile>
     <Compile Include="ABM Cuenta\CuentaAbm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,14 +91,25 @@
     <Compile Include="ABM Rol\RolForm.Designer.cs">
       <DependentUpon>RolForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consulta Saldos\ConsultaDeSaldos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Consulta Saldos\ConsultaDeSaldos.Designer.cs">
+      <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
+    </Compile>
     <Compile Include="DAO\AbstractDAO.cs" />
+    <Compile Include="DAO\BasicaDAO.cs" />
     <Compile Include="DAO\ClienteDao.cs" />
     <Compile Include="DAO\CuentaDao.cs" />
+    <Compile Include="DAO\CuentaTipoDAO.cs" />
     <Compile Include="DAO\DepositoDao.cs" />
-    <Compile Include="DAO\estadoDao.cs" />
+    <Compile Include="DAO\DocumentoDAO.cs" />
+    <Compile Include="DAO\EstadoDao.cs" />
     <Compile Include="DAO\ExtraDao.cs" />
     <Compile Include="DAO\FacturaDao.cs" />
     <Compile Include="DAO\FuncionalidadDao.cs" />
+    <Compile Include="DAO\LocalidadDAO.cs" />
+    <Compile Include="DAO\PaisDAO.cs" />
     <Compile Include="DAO\RetiroDao.cs" />
     <Compile Include="DAO\RolDao.cs" />
     <Compile Include="DAO\TarjetaDeCreditoDao.cs" />
@@ -161,12 +166,14 @@
     <Compile Include="Login\Login.designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\AbstractModel.cs" />
     <Compile Include="Models\BancoModel.cs" />
+    <Compile Include="Models\BasicaModel.cs" />
     <Compile Include="Models\ClienteModel.cs" />
     <Compile Include="Models\CuentaModel.cs" />
     <Compile Include="Models\CuentaTipoModel.cs" />
     <Compile Include="Models\DepositoModel.cs" />
-    <Compile Include="Models\DocumentoModel.cs" />
+    <Compile Include="Models\TipoDocumentoModel.cs" />
     <Compile Include="Models\EstadoModel.cs" />
     <Compile Include="Models\FacturaModel.cs" />
     <Compile Include="Models\FuncionalidadModel.cs" />
@@ -208,9 +215,6 @@
     <EmbeddedResource Include="ABM Cliente\ClienteForm.resx">
       <DependentUpon>ClienteForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Consulta Saldos\ConsultaDeSaldos.resx">
-      <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ABM Cuenta\CuentaAbm.resx">
       <DependentUpon>CuentaAbm.cs</DependentUpon>
     </EmbeddedResource>
@@ -222,6 +226,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Rol\RolForm.resx">
       <DependentUpon>RolForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Consulta Saldos\ConsultaDeSaldos.resx">
+      <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Depositos\DepositosAbm.resx">
       <DependentUpon>DepositosAbm.cs</DependentUpon>

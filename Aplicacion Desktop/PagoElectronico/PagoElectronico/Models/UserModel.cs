@@ -9,19 +9,54 @@ using MyExceptions;
 
 namespace Models
 {
-    public class UserModel
+    public class UserModel: BasicaModel
     {
 
-        public Decimal id { get; set; }
-        public String nombre { get; set; }
+
+        public const String PASSWORD = "PASS";
+        public const String INTENTOS_FALLIDOS = "INTENTOS_FALLIDOS";
+        public const String FECHA_CREACION = "FECHA_CREACION";
+        public const String FECHA_ULT_MODIFICACION = "FECHA_ULT_MODIFICACION";
+        public const String PASSWORD_MODIFICADA = "PASS_MODIFICADA";
+        public const String HABILITADO = "HABILITADA";
+        public const String PREGUNTA = "PREGUNTA";
+        public const String RESPUESTA = "RESPUESTA";
+        
+
         public String password { get; set; }
-        public Boolean habilitado = true;
+        public String password_modificada { get; set; }
+        public String pregunta { get; set; }        
+        public String respuesta { get; set; }
+        public DateTime fecha_creacion { get; set; }
+        public DateTime fecha_modificacion { get; set; }
         public Decimal intentosFallidos { get; set; }
+        public Boolean habilitado = true;
+
         public List<RolModel> roles { get; set; }
-        public UserDao dao { get; set; }
-        public RolDao rolDao { get; set; }
+       
+        
         public List<CuentaModel> cuentas { get; set; }
         public ClienteModel cliente { get; set; }
+
+        public UserModel(DataRow fila)
+            : base(fila)
+
+        {
+            this.roles = this.getMisRoles();
+            this.cuentas = this.getMisCuentas();
+            this.cliente = this.getMiCliente();
+
+        }
+
+        private ClienteModel getMiCliente()
+        {
+            return new ClienteDao().getClienteByUser(this);
+        }
+
+        private List<CuentaModel> getMisCuentas()
+        {
+            return new CuentaDao().getCuentasByUsuario(this);
+        }
 
         public UserModel() { incializar(); }
 
@@ -65,20 +100,28 @@ namespace Models
         {
             roles = new List<RolModel>();
             cuentas = new List<CuentaModel>();
-            dao = new UserDao();
-            rolDao = new RolDao();
+        
         }
 
         //---------------------------------------------------------------------------------------------------------------
-        public void getRoles()
+        public List<RolModel> getMisRoles()
         {
-            if (rolDao.getRolesByUser(this.id) != null) {
-                roles = rolDao.getRolesByUser(this.id);    
-            }
+          return new RolDao().getRolesByUser(this.id);    
         }
         //---------------------------------------------------------------------------------------------------------------
 
 
 
+
+        public override void mapeoFilaAModel(DataRow fila)
+        {
+            base.mapeoFilaAModel(fila);
+            this.password = fila[PASSWORD].ToString();
+            this.password_modificada = fila[PASSWORD_MODIFICADA].ToString();
+            this.habilitado = (Boolean)fila[HABILITADO];
+            this.intentosFallidos = (Decimal)fila[INTENTOS_FALLIDOS];
+            this.pregunta = fila[PREGUNTA].ToString();
+            this.respuesta = fila[RESPUESTA].ToString();
+        }
     }
 }

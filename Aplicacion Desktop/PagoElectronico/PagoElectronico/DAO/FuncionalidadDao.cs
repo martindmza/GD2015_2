@@ -3,45 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Models;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace DAO
 {
-    class FuncionalidadDao
+    class FuncionalidadDao: AbstractDAO
     {
+        public const String LISTAR_FUNCIONALIDAD_ROL = "Listar_Funcionalidad_Rol";
+
         public List<FuncionalidadModel> getFuncionalidades()
         {
+            return new List<FuncionalidadModel>();
+        }
 
-            List<FuncionalidadModel> funcionalidades = new List<FuncionalidadModel>();
-            FuncionalidadModel func1 = new FuncionalidadModel(1, "funcionalidad1", true);
-            FuncionalidadModel func2 = new FuncionalidadModel(2, "funcionalidad2", true);
-            FuncionalidadModel func3 = new FuncionalidadModel(3, "funcionalidad3", true);
-            FuncionalidadModel func4 = new FuncionalidadModel(4, "funcionalidad4", true);
-            FuncionalidadModel func5 = new FuncionalidadModel(5, "funcionalidad5", true);
-            FuncionalidadModel func6 = new FuncionalidadModel(6, "funcionalidad6", true);
-            FuncionalidadModel func7 = new FuncionalidadModel(7, "funcionalidad7", true);
-            FuncionalidadModel func8 = new FuncionalidadModel(8, "funcionalidad8", true);
-            FuncionalidadModel func9 = new FuncionalidadModel(9, "funcionalidad9", true);
-            FuncionalidadModel func10 = new FuncionalidadModel(10, "funcionalidad10", true);
-            FuncionalidadModel func11 = new FuncionalidadModel(11, "funcionalidad11", true);
-            FuncionalidadModel func12 = new FuncionalidadModel(12, "funcionalidad12", true);
+        public List<FuncionalidadModel> getFuncionalidades(Decimal id)
+        {
+            DataTable tablaFuncionalidad = this.getFuncionalidadesBase(id);
+            List<FuncionalidadModel> listaRoles = new List<FuncionalidadModel>();
 
-            funcionalidades.Add(func1);
-            funcionalidades.Add(func2);
-            funcionalidades.Add(func3);
-            funcionalidades.Add(func4);
-            funcionalidades.Add(func5);
-            funcionalidades.Add(func6);
-            funcionalidades.Add(func7);
-            funcionalidades.Add(func8);
-            funcionalidades.Add(func9);
-            funcionalidades.Add(func10);
-            funcionalidades.Add(func11);
-            funcionalidades.Add(func12);
-
-            return funcionalidades;
+            foreach (DataRow funcionBase in tablaFuncionalidad.Rows)
+            {
+                FuncionalidadModel funcionalidadModel = new FuncionalidadModel(funcionBase);
+                listaRoles.Add(funcionalidadModel);
+            }
+            return listaRoles;
         }
         //-------------------------------------------------------------------------------------------------------------
 
-
+        public DataTable getFuncionalidadesBase(Decimal idRol)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection(LISTAR_FUNCIONALIDAD_ROL))
+            {
+                command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = idRol;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
+        }
     }
 }

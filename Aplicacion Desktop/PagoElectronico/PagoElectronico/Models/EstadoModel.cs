@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Models
 {
-    public class EstadoModel
+    public class EstadoModel: BasicaModel
     {
-        public UInt32 id;
-        public String nombre;
-
-        public EstadoModel(UInt32 id, String nombre) {
-            this.id = id;
-            this.nombre = nombre;
+        public EstadoModel()
+        {
+        }
+        public EstadoModel(DataRow fila):base(fila) {
         }
     }
 }

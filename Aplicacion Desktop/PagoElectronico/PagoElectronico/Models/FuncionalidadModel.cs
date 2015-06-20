@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Models
 {
-    public class FuncionalidadModel
+    public class FuncionalidadModel: BasicaModel
     {
-        public Decimal id { get; set; }
-        public String nombre { get; set; }
         public Boolean habilitado { get; set; }
+
+        public const String HABILITADA = "HABILITADA";
+
+        public FuncionalidadModel(DataRow fila) : base(fila) { }
 
         public FuncionalidadModel(Decimal id, String nombre, Boolean habilitado) {
             this.id = id;
@@ -17,5 +20,11 @@ namespace Models
             this.habilitado = habilitado;
         }
 
+
+        public override void mapeoFilaAModel(DataRow fila)
+        {
+            base.mapeoFilaAModel(fila);
+            this.habilitado = (Boolean)fila[HABILITADA];
+        }
     }
 }

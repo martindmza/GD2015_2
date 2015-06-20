@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Models
 {
-    public class DepositoModel
+    public class DepositoModel : AbstractModel
     {
-        public UInt32 id;
         public ClienteModel depositante;
         public CuentaModel cuentaDestino;
         public Double importe;
@@ -39,6 +39,12 @@ namespace Models
             this.monedaNombre = monedaNombre;
             this.tarjetaDeCredito = tarjetaDeCredito;
             this.fecha = fecha;
+        }
+
+        public override void mapeoFilaAModel(DataRow fila)
+        {
+            base.mapeoFilaAModel(fila);
+
         }
     }
 }
