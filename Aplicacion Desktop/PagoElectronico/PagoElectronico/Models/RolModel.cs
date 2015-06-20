@@ -7,18 +7,12 @@ using DAO;
 
 namespace Models
 {
-    public class RolModel : AbstractModel{
-
-        public Decimal id { get; set; }
-        public String nombre { get; set; }
+    public class RolModel : BasicaModel{
+        public const String HABILITADO = "HABILITADA";
         public Boolean habilitado { get; set; }
         public List<FuncionalidadModel> funcionalidades { get; set; }
 
-        public const String ID_ROL = "ID";
-        public const String NOMBRE = "NOMBRE";
-        
-
-         public RolModel(String nombre)
+        public RolModel(String nombre)
         {
             this.nombre = nombre;
             funcionalidades = new List<FuncionalidadModel>();
@@ -46,12 +40,11 @@ namespace Models
             this.habilitado = habilitado;
             this.funcionalidades = funcionalidades;
         }
-
         
-        public override void mapeoFilaAModel(DataRow fila)
+        public void mapeoFilaAModel(DataRow fila)
         {
-            this.id = (Decimal)fila[ID_ROL];
-            this.nombre = fila[NOMBRE].ToString();
+            base.mapeoFilaAModel(fila);
+           // this.habilitado = (Boolean)fila[HABILITADO];
         }
     }
 }

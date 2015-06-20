@@ -6,14 +6,10 @@ using System.Data;
 
 namespace Models
 {
-    public class FuncionalidadModel: AbstractModel
+    public class FuncionalidadModel: BasicaModel
     {
-        public Decimal id { get; set; }
-        public String nombre { get; set; }
         public Boolean habilitado { get; set; }
 
-        public const String ID_FUNCIONALIDAD = "ID";
-        public const String NOMBRE = "NOMBRE";
         public const String HABILITADA = "HABILITADA";
 
         public FuncionalidadModel(DataRow fila) : base(fila) { }
@@ -25,10 +21,9 @@ namespace Models
         }
 
 
-        public override void mapeoFilaAModel(DataRow fila)
+        public void mapeoFilaAModel(DataRow fila)
         {
-            this.id = (Decimal)fila[ID_FUNCIONALIDAD];
-            this.nombre = fila[NOMBRE].ToString();
+            base.mapeoFilaAModel(fila);
             this.habilitado = (Boolean)fila[HABILITADA];
         }
     }

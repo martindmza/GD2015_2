@@ -22,9 +22,7 @@ namespace Models
         public const String LOCALIDAD = "LOCALIDAD";
         public const String PAIS = "PAIS";
         /********************/
-        public Decimal id { get; set; }
         public String apellido { get; set; }
-        public String nombre { get; set; }
         public DateTime nacimiento { get; set; }
         public String email { get; set; }
         public String direccionCalle {get; set;}
@@ -130,10 +128,9 @@ namespace Models
         }
 
 
-        public override void mapeoFilaAModel(System.Data.DataRow fila)
+        public void mapeoFilaAModel(System.Data.DataRow fila)
         {
-            this.id = (Decimal)fila[ID];
-            this.nombre = fila[NOMBRE].ToString();
+            base.mapeoFilaAModel(fila);
             this.apellido = fila[APELLIDO].ToString();
             
            // this.documento = fila[DOCUMENTO].ToString();

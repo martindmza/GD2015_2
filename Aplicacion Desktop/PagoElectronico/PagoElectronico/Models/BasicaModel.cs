@@ -8,10 +8,8 @@ namespace Models
 {
     public class BasicaModel: AbstractModel
     {
-        public const String ID = "ID";
         public const String NOMBRE = "NOMBRE";
 
-        public Decimal id;
         public String nombre;
 
         public BasicaModel()
@@ -24,12 +22,16 @@ namespace Models
         {
         }
 
-        public override void mapeoFilaAModel(DataRow fila)
+        public BasicaModel(Decimal id, String nombre)
         {
-            this.id = (Decimal)fila[ID];
-            this.nombre = fila[NOMBRE].ToString();
+            this.id = id;
+            this.nombre = nombre;
         }
 
-       
+        public void mapeoFilaAModel(DataRow fila)
+        {
+            base.mapeoFilaAModel(fila);
+            this.nombre = fila[NOMBRE].ToString();
+        }
     }
 }

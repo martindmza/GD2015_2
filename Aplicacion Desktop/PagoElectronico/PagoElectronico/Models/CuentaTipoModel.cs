@@ -12,9 +12,11 @@ namespace Models
         public Decimal costo { get; set; }
 
         public CuentaTipoModel() { }
-        public CuentaTipoModel(DataRow fila ):base(fila){}
+        public CuentaTipoModel(DataRow fila ):base(fila)
+        {
+        }
 
-        public CuentaTipoModel(UInt32 id, String nombre, UInt32 duracionDias, Decimal costo)
+        public CuentaTipoModel(Decimal id, String nombre, UInt32 duracionDias, Decimal costo)
         {
             this.id = id;
             this.nombre = nombre;

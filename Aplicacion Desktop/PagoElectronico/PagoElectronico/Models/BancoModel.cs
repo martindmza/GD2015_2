@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Models
 {
-    public class BancoModel
+    public class BancoModel: BasicaModel
     {
-        public UInt32 id;
-        public String nombre;
-
-        public BancoModel(UInt32 id, String nombre) { 
-            this.id = id;
-            this.nombre = nombre;
-        }
+        public BancoModel()
+            : base(){}
+        public BancoModel(Decimal id, String nombre)
+            : base(id,nombre) { }
+        public BancoModel(DataRow fila)
+            : base(fila) { }
+        
+        
     }
 }

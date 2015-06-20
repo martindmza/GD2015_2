@@ -8,9 +8,10 @@ namespace Models
 {
     public abstract class AbstractModel
     {
+        public const String ID = "ID";
+        public Decimal id;
         public AbstractModel()
         {
-         
         }
 
         public AbstractModel(DataRow fila)
@@ -18,6 +19,8 @@ namespace Models
             this.mapeoFilaAModel(fila);
         }
 
-        public abstract void mapeoFilaAModel(DataRow fila);
+        public void mapeoFilaAModel(DataRow fila){
+            this.id = (Decimal)fila[ID];
+        }
     }
 }
