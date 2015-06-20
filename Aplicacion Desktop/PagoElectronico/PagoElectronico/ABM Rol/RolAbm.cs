@@ -25,6 +25,7 @@ namespace ABM
         private List<RolModel> roles;
         private List<FuncionalidadModel> funcionalidadesTodas;
         private List<FuncionalidadModel> funcionalidadesNoContenidas;
+        private Decimal idFilter;
 
         public RolAbm() {
 
@@ -257,7 +258,38 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonBuscar_Click(object sender, EventArgs e)
         {
+            roles = rolDao.getRolesByFilters(idFilter,textBox2.Text);
             fillRolesTable();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        //Validar si se ingeso un numero
+        private void textBox1_Leave(object sender, EventArgs e)
+        {
+            if (textBox1.Text.Length != 0)
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(textBox1.Text, "[^0-9]"))
+                {
+                    MessageBox.Show("Ingrese solo numeros");
+                    textBox1.Text = "";
+                }
+                else {
+                    try
+                    {
+                        idFilter = Decimal.Parse(textBox1.Text);
+                        if (idFilter <= 0)
+                        {
+                            MessageBox.Show("No puede buscar un código negativo");
+                            textBox1.Text = "";
+                        }
+                    }
+                    catch (FormatException erf)
+                    {
+                        MessageBox.Show("Ingrese un número válido");
+                    }
+                }
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
     }
