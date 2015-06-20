@@ -474,12 +474,12 @@ WHERE	R.Nombre = 'Cliente' AND
 ----------------------LA-PASS-SERA-REZAGADOS-ENCRIPTADA-EN-SHA-256---------------------------------
 
 INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
-SELECT DISTINCT Cli_Mail, 'd19501ed8c9de057fe8370035686d5e7a9686c2fddb68b57e1668e21917b3e87', @fecha, @fecha
+SELECT DISTINCT Cli_Mail, '1E57CBAAA510CD149EE657799EF3EE2D2A2815F98B249AAC81904BF54549F5ED', @fecha, @fecha
 FROM gd_esquema.Maestra
 WHERE Cli_Mail IS NOT NULL
 
 INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
-VALUES ('admin','e6b87050bfcb8143fcb8db0170a4dc9ed00d904ddd3e2a4ad1b1e8dc0fdc9be7', @fecha, @fecha)
+VALUES ('admin','83725956498A914502C515217D3310E5E7FA4DE8083DFAD999B63EED48EE6', @fecha, @fecha)
 
 ----------------------------------------ADMINISTRADOR-----------------------------------------------
 
