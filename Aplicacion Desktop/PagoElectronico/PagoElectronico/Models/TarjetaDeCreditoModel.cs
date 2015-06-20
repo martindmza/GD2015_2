@@ -5,9 +5,8 @@ using System.Text;
 
 namespace Models
 {
-    public class TarjetaDeCreditoModel
+    public class TarjetaDeCreditoModel: BasicaModel
     {
-        public UInt32 id {get;set;}
         public String numero {get;set;}
         public String codigoSeguridad {get;set;}
         public DateTime emision {get;set;}
@@ -16,6 +15,7 @@ namespace Models
 
         public ClienteModel propietario { get; set; }
         public UserModel emisor { get; set; }
+        public TarjetaDeCreditoModel() { }
 
         public TarjetaDeCreditoModel(String numero, String codigoSeguridad,
                                         DateTime emision, DateTime vencimiento, ClienteModel propietario)
@@ -28,7 +28,7 @@ namespace Models
             this.propietario = propietario;
         }
 
-        public TarjetaDeCreditoModel(UInt32 id,String numero, String codigoSeguridad,
+        public TarjetaDeCreditoModel(Decimal id,String numero, String codigoSeguridad,
                                         DateTime emision, DateTime vencimiento, ClienteModel propietario) 
         {
             this.id = id;

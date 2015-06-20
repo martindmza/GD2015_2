@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Models;
 using DAO;
+using Logins;
 
 namespace Facturacion
 {
@@ -25,7 +26,7 @@ namespace Facturacion
 
         public FacturacionAbm()
         {
-            cliente = Login.Login.userLogued.cliente;
+            cliente = Login.userLogued.cliente;
             transaccionDao = new TranscaccionDao();
             extraDao = new ExtraDao();
             transacciones = transaccionDao.getTransaccionesPendientesByCliente(cliente);

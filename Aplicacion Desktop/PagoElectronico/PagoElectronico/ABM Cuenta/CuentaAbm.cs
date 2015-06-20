@@ -62,7 +62,7 @@ namespace ABM
             this.parentRetiros = parentRetiros;
             this.parentRetiros.Enabled = false;
 
-            formResponseCliente(Login.Login.userLogued.cliente);
+            formResponseCliente(Logins.Login.userLogued.cliente);
             cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
             fillTable();
             button1.Enabled = false;
@@ -73,7 +73,7 @@ namespace ABM
         {
             if (origenOdestino == 0) {
                 initToSelect(false);
-                formResponseCliente(Login.Login.userLogued.cliente);
+                formResponseCliente(Logins.Login.userLogued.cliente);
                 cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
                 fillTable();
                 button1.Enabled = false;
@@ -97,7 +97,7 @@ namespace ABM
             openedToSelect = false;
             this.cuentaDao = new CuentaDao();
             this.extraDao = new ExtraDao();
-            this.cuentas = cuentaDao.getCuentasByCliente(Login.Login.userLogued.cliente);
+            this.cuentas = cuentaDao.getCuentasByCliente(Logins.Login.userLogued.cliente);
             
             fillTable();
             this.nombreLabel.Text = "";

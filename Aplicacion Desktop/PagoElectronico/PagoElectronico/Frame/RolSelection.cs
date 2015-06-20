@@ -22,9 +22,9 @@ namespace Frame
         }
 
         private void fillRolesList() {
-            string[] filas = new string[Login.Login.userLogued.roles.Count];
+            string[] filas = new string[Logins.Login.userLogued.roles.Count];
             int count = 0;
-            foreach (RolModel rol in Login.Login.userLogued.roles)
+            foreach (RolModel rol in Logins.Login.userLogued.roles)
             {
                 filas[count] = rol.nombre.ToString();
                 count++;
@@ -36,7 +36,7 @@ namespace Frame
         {
             try
             {
-                Login.Login.rolSelected = Login.Login.userLogued.roles[listBox1.SelectedIndex];
+                Logins.Login.rolSelected = Logins.Login.userLogued.roles[listBox1.SelectedIndex];
                 parentFrame.enableMenu();
                 parentFrame.setRolLogued();
                 MdiParent.Enabled = true;

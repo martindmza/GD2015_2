@@ -14,6 +14,8 @@ using Retiros;
 using Transferencias;
 using Facturacion;
 using Tarjetas;
+using Models;
+using Logins;
 
 namespace Frame
 {
@@ -26,30 +28,28 @@ namespace Frame
         //______________________________________________________________________________________________________________________
         public Frame()
         {
-            InitializeComponent();
-            this.label1.Text = Login.Login.userLogued.nombre;
-
-            //Busco los roles del usuario
-            try
+            UserModel usuario = Login.userLogued;
+            if (usuario != null)
             {
-                
-                Login.Login.userLogued.getMisRoles();
+                InitializeComponent();
+               
+                this.label1.Text = Login.userLogued.nombre;
+                //Busco los roles del usuario
+                usuario.getMisRoles();
+                if (usuario.roles.Count == 0)
+                {
+                    throw new UserRolNotFoundException("El usuario no tiene roles cargados");
+                }
+                //Si encuentra más de un rol, muestra opciones de rol con el cual entrar
+                if (usuario.roles.Count > 1)
+                {
+                    Form abmroles = new RolSelection(this);
+                    abmroles.MdiParent = this;
+                    abmroles.Show();
+                }
             }
-            catch (Exception err2)
-            {
-                MessageBox.Show("El usuario se encontró pero no pudo crearse :" + err2);
-            }
-
-            if (Login.Login.userLogued.roles.Count == 0) {
-                throw new UserRolNotFoundException("El usuario no tiene roles cargados");
-            }
-
-            //Si encuentra más de un rol, muestra opciones de rol con el cual entrar
-            if (Login.Login.userLogued.roles.Count > 1) {
-                Form abmroles = new RolSelection(this);
-                abmroles.MdiParent = this;
-                abmroles.Show();
-            }
+            return;
+            
         }
         //______________________________________________________________________________________________________________________
 
@@ -57,7 +57,7 @@ namespace Frame
         public void setRolLogued() {
             try
             {
-                this.label4.Text = Login.Login.rolSelected.nombre;
+                this.label4.Text = Login.rolSelected.nombre;
             }
             catch (NullReferenceException e) {
                 MessageBox.Show("No se seleccionó ningún rol" + e);

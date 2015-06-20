@@ -1,4 +1,4 @@
-﻿namespace Login
+﻿namespace Logins
 {
     partial class Login
     {

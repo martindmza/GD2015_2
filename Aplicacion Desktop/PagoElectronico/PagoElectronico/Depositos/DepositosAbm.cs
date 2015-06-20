@@ -10,6 +10,7 @@ using Models;
 using DAO;
 using FormsExtras;
 using ABM;
+using Logins;
     
 
 namespace Depositos
@@ -29,7 +30,7 @@ namespace Depositos
         {
             extraDao = new ExtraDao();
             depositoDao = new DepositoDao();
-            cliente = Login.Login.userLogued.cliente;
+            cliente = Login.userLogued.cliente;
 
             InitializeComponent();
             fillComboBox();

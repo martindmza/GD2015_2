@@ -12,7 +12,7 @@ using DAO;
 using System.Security.Cryptography;
 using MyExceptions;
 
-namespace Login
+namespace Logins
 {
     public partial class Login : Form
     {
@@ -34,26 +34,12 @@ namespace Login
             String usuario = this.usuario.Text;
             String password = this.password.Text;
 
-            try {
-                userLogued = dao.loguin(usuario,password);
-                if (userLogued == null) { 
-                    throw new UserNotFoundException("el usuario se encontró pero no puedo crearse");
-                }
-            }
-            catch (UserNotFoundException err)
-            {
-                MessageBox.Show("Contraseña incorrecta :" + err);
+            userLogued = dao.loguin(usuario,password);
 
-            }
-
-            try {
+            if(userLogued!= null){
                 Frame.Frame frame = new Frame.Frame();
                 this.Hide();
                 frame.Show();
-            }
-            catch (UserRolNotFoundException err2)
-            {
-                MessageBox.Show(err2.message);
             }
         }
         //---------------------------------------------------------------------------------------------------------------------

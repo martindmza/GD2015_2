@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Login;
+using Logins;
 
 namespace PagoElectronico
 {
@@ -16,7 +16,7 @@ namespace PagoElectronico
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login.Login());
+            Application.Run(new Login());
             Application.Exit();
         }
     }

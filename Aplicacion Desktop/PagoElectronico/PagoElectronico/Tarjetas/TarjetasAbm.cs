@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using DAO;
 using Models;
+using Logins;
 
 namespace Tarjetas
 {
@@ -29,7 +30,7 @@ namespace Tarjetas
             InitializeComponent();
 
             dao = new TarjetaDeCreditoDao();
-            cliente = Login.Login.userLogued.cliente;
+            cliente = Login.userLogued.cliente;
             tarjetas = dao.getTarjetasByCliente(cliente);
             fillData();
 
