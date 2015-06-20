@@ -638,112 +638,6 @@ AS
 	END
 GO
 
------------------------------------------CREAR ROL------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Crear_Rol(@Nombre_Rol NVARCHAR(255), @Respuesta INT OUTPUT)
-AS
-BEGIN
-	IF EXISTS(SELECT * FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
-	BEGIN
-		SET @Respuesta = -1
-	END
-	ELSE
-	BEGIN
-		INSERT INTO REZAGADOS.Rol VALUES (@Nombre_Rol, 1)
-		SET @Respuesta = (SELECT Id_Rol FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
-	END
-END
-GO
-
------------------------------------------BORRAR ROL------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Borrar_Rol(@Id_Rol NUMERIC(18,09), @Respuesta INT OUTPUT)
-AS
-BEGIN
-	IF NOT EXISTS(SELECT * FROM REZAGADOS.Rol WHERE Id_Rol = @Id_Rol)
-	BEGIN
-		SET @Respuesta = -1
-	END
-	ELSE
-	BEGIN
-		DELETE FROM REZAGADOS.Rol WHERE Id_Rol = @Id_Rol
-		SET @Respuesta = 1
-	END
-END
-GO
-
------------------------------------------BAJA ROL------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Baja_Rol(@Id_Rol NUMERIC(18,09))
-AS
-BEGIN
-UPDATE REZAGADOS.Rol SET Habilitada=0 WHERE Id_Rol=@Id_Rol
-END
-GO
-
------------------------------------------ALTA ROL------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Alta_Rol(@Id_Rol NUMERIC(18,09))
-AS
-BEGIN
-UPDATE REZAGADOS.Rol SET Habilitada=1 WHERE Id_Rol = @Id_Rol
-END
-GO
-
------------------------------------------MODIFICAR NOMBRE ROL------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Modificar_Nombre_Rol(@Nombre_Rol VARCHAR(255), @Id_Rol NUMERIC(18,0))
-AS
-BEGIN
-UPDATE REZAGADOS.Rol SET Nombre = @Nombre_Rol WHERE Id_Rol = @Id_Rol
-END
-GO
-
------------------------------------------ASIGNAR ROL------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Asignar_Rol (@Nombre_Usuario VARCHAR(255), @Id_Rol NUMERIC(18,0))
-AS 
-BEGIN 
-BEGIN TRY
-BEGIN TRANSACTION      
-    INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario,Id_Rol) values ((SELECT Id_Usuario from REZAGADOS.Usuario WHERE Nombre = @Nombre_Usuario),@Id_Rol)
-COMMIT TRANSACTION
-END TRY
-BEGIN CATCH 
-ROLLBACK TRANSACTION
-END CATCH   
-END
-GO
-
------------------------------------------DESASIGNAR ROL------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Desasignar_Rol(@Nombre_Usuario VARCHAR(255), @Id_Rol NUMERIC(18,0))
-AS
-BEGIN TRY
-BEGIN TRANSACTION
-	BEGIN
-		DELETE FROM REZAGADOS.UsuarioXRol WHERE Id_Rol= @Id_Rol  AND Id_Usuario = (SELECT Id_Usuario from REZAGADOS.Usuario WHERE Nombre = @Nombre_Usuario) 
-	END
-COMMIT TRANSACTION
-END TRY
-BEGIN CATCH
-ROLLBACK TRANSACTION
-END CATCH
-GO
 
 -----------------------------------------LOGIN------------------------------------------------
 
@@ -1072,7 +966,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT r.Id_Rol ID, r.Nombre NOMBRE
+	SELECT r.Id_Rol ID, r.Nombre NOMBRE , r.Habilitada HABILITADO
 	FROM [REZAGADOS].Rol r 
 	inner join [REZAGADOS].UsuarioXRol ur 
 	on r.Id_Rol = ur.Id_Rol
@@ -1089,7 +983,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT r.Id_Rol ID, r.Nombre NOMBRE
+	SELECT r.Id_Rol ID, r.Nombre NOMBRE, r.Habilitada HABILITADO
 	FROM [REZAGADOS].Rol r 
 END
 GO
@@ -1293,5 +1187,127 @@ BEGIN
 	SELECT p.Id_Pais ID, p.Descripcion NOMBRE
 	FROM [REZAGADOS].Pais p 
 	WHERE p.Id_Pais = @Id
+END
+GO
+
+-----------------------------------------CREAR ROL------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Crear_Rol(@Nombre_Rol NVARCHAR(255), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55))
+AS
+BEGIN
+	IF EXISTS(SELECT * FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
+	BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Ya existe ese Rol'
+	END
+	ELSE
+	BEGIN
+		INSERT INTO REZAGADOS.Rol VALUES (@Nombre_Rol, 1)
+		SET @Respuesta = (SELECT Id_Rol FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
+		
+	END
+END
+GO
+
+-----------------------------------------BAJA ROL------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Baja_Rol(@Id_Rol NUMERIC(18,09))
+AS
+BEGIN
+UPDATE REZAGADOS.Rol SET Habilitada=0 WHERE Id_Rol=@Id_Rol
+END
+GO
+
+-----------------------------------------ALTA ROL------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Alta_Rol(@Id_Rol NUMERIC(18,09))
+AS
+BEGIN
+UPDATE REZAGADOS.Rol SET Habilitada=1 WHERE Id_Rol = @Id_Rol
+END
+GO
+
+-----------------------------------------MODIFICAR NOMBRE ROL------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Modificar_Nombre_Rol(@Nombre_Rol VARCHAR(255), @Id_Rol NUMERIC(18,0), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55))
+AS
+BEGIN
+IF EXISTS(SELECT 1 FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
+	BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Ya existe ese Rol'
+	END
+	ELSE
+		BEGIN
+		UPDATE REZAGADOS.Rol SET Nombre = @Nombre_Rol WHERE Id_Rol = @Id_Rol
+		SET @Respuesta = 1
+		SET @Respuesta = 'Rol Modificado exitosamente'
+	END
+END
+GO
+
+-----------------------------------------ASIGNAR ROL------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Asignar_Rol (@Id_Usuario NUMERIC(18,0), @Id_Rol NUMERIC(18,0),  @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55))
+AS 
+BEGIN 
+BEGIN TRY
+	BEGIN TRANSACTION      
+		INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario,Id_Rol) 
+		VALUES (@Id_Usuario,@Id_Rol)
+	COMMIT TRANSACTION
+	SET @Respuesta = 1
+	SET @Respuesta = 'Rol Asignado exitosamente'
+END TRY
+BEGIN CATCH 
+	ROLLBACK TRANSACTION
+	SET @Respuesta = -1
+	SET @Respuesta = 'Ese Rol ya se encuentra asignado a ese usuario'
+END CATCH   
+END
+GO
+
+-----------------------------------------DESASIGNAR ROL------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Desasignar_Rol(@Nombre_Usuario VARCHAR(255), @Id_Rol NUMERIC(18,0))
+AS
+BEGIN TRY
+BEGIN TRANSACTION
+	BEGIN
+		DELETE FROM REZAGADOS.UsuarioXRol WHERE Id_Rol= @Id_Rol  AND Id_Usuario = (SELECT Id_Usuario from REZAGADOS.Usuario WHERE Nombre = @Nombre_Usuario) 
+	END
+COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+ROLLBACK TRANSACTION
+END CATCH
+GO
+
+
+--------------------------------Buscar_Rol_Id-------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Buscar_Rol_Id]
+@Id NUMERIC(18,0)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT r.Id_Rol ID, r.Nombre NOMBRE, r.Habilitada HABILITADO
+	FROM [REZAGADOS].Rol r 
+	WHERE r.Id_Rol = @Id
 END
 GO
