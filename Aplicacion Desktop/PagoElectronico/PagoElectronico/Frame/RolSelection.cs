@@ -26,8 +26,11 @@ namespace Frame
             int count = 0;
             foreach (RolModel rol in Logins.Login.userLogued.roles)
             {
-                filas[count] = rol.nombre.ToString();
-                count++;
+                if (rol.habilitado)
+                {
+                    filas[count] = rol.nombre.ToString();
+                    count++;
+                }
             }
             listBox1.Items.AddRange(filas);
         }

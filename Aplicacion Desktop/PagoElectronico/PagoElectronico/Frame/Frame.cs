@@ -32,8 +32,8 @@ namespace Frame
             if (usuario != null)
             {
                 InitializeComponent();
-               
-                this.label1.Text = Login.userLogued.nombre;
+
+                this.label1.Text = usuario.nombre;
                 //Busco los roles del usuario
                 usuario.getMisRoles();
                 if (usuario.roles.Count == 0)
@@ -46,6 +46,10 @@ namespace Frame
                     Form abmroles = new RolSelection(this);
                     abmroles.MdiParent = this;
                     abmroles.Show();
+                }
+                else if (usuario.roles.Count == 1)
+                {
+                    this.label4.Text = usuario.roles.First().nombre;
                 }
             }
             return;

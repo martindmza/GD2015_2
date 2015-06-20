@@ -24,7 +24,7 @@ namespace Models
         
 
         public String password { get; set; }
-        public String password_modificada { get; set; }
+        public Boolean password_modificada { get; set; }
         public String pregunta { get; set; }        
         public String respuesta { get; set; }
         public DateTime fecha_creacion { get; set; }
@@ -117,7 +117,7 @@ namespace Models
         {
             base.mapeoFilaAModel(fila);
             this.password = fila[PASSWORD].ToString();
-            this.password_modificada = fila[PASSWORD_MODIFICADA].ToString();
+            this.password_modificada = (Boolean)fila[PASSWORD_MODIFICADA];
             this.habilitado = (Boolean)fila[HABILITADO];
             this.intentosFallidos = (Decimal)fila[INTENTOS_FALLIDOS];
             this.pregunta = fila[PREGUNTA].ToString();
