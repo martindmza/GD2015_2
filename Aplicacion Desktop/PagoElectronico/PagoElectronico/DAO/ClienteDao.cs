@@ -16,34 +16,9 @@ namespace DAO
         {
         }
 
-        public List<ClienteModel> getClients()
-        {
-            List<ClienteModel> clientes = new List<ClienteModel>();
-            DataTable dataClients = this.getClientsDeBase();
-            foreach (DataRow rolBase in dataClients.Rows)
-            {
-                ClienteModel rolModel = new ClienteModel(rolBase);
-                clientes.Add(rolModel);
-            }
-            return clientes;
-        }
-
-        private DataTable getClientsDeBase()
-        {
-            DataTable dt = new DataTable();
-            using (SqlCommand command = InitializeConnection("Listar_Cliente"))
-            {
-                SqlDataAdapter da = new SqlDataAdapter(command);
-                da.Fill(dt);
-            }
-            if (dt.Rows.Count > 0)
-                return dt;
-            return null;
-        }
-
         public List<ClienteModel> getClientsByFilters(ClienteFiltros filtros)
         {
-            return this.getClients();
+            return this.getListado();
         }
 
         public ClienteModel addNewCliente(ClienteModel cliente)
