@@ -17,8 +17,8 @@ namespace DAO
             DataTable data = this.getListaDeBase();
             foreach (DataRow fila in data.Rows)
             {
-                TEntity rolModel = this.getModeloBasico(fila);
-                lista.Add(rolModel);
+                TEntity model = this.getModeloBasico(fila);
+                lista.Add(model);
             }
             return lista;
         }
@@ -82,6 +82,7 @@ namespace DAO
         }
 
         public abstract string getProcedureEncontrarPorId();
+
         public abstract string getProcedureListar();
     }
 }
