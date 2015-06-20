@@ -69,7 +69,9 @@ namespace ABM
                 case 0:
                     RolModel newRol = new RolModel(textBox1.Text);
                     rol = rolDao.createRol(newRol);
-                    parent.formResponseAdd(newRol);
+                    if(rol.id!=-1)
+                        parent.formResponseAdd(newRol);
+                    
                     break;
                 case 1:
                     rol.nombre = textBox1.Text;
