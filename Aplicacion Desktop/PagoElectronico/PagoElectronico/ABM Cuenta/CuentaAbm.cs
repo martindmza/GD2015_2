@@ -97,7 +97,8 @@ namespace ABM
             openedToSelect = false;
             this.cuentaDao = new CuentaDao();
             this.extraDao = new ExtraDao();
-            this.cuentas = cuentaDao.getCuentasByCliente(Logins.Login.userLogued.cliente);
+            this.cuentas = new List<CuentaModel>();
+            //this.cuentas = cuentaDao.getCuentasByCliente(Logins.Login.userLogued.cliente);
             
             fillTable();
             this.nombreLabel.Text = "";

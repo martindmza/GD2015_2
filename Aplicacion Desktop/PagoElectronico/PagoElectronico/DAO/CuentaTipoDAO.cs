@@ -23,5 +23,10 @@ namespace DAO
         {
             return "Listar_CuentaTipo";
         }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

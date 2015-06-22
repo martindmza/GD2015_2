@@ -25,5 +25,10 @@ namespace DAO
         {
             return "Listar_Documento";
         }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

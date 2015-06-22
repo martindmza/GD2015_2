@@ -13,20 +13,14 @@ using System.Data.SqlClient;
 namespace DAO
 {
     public class UserDao: BasicaDAO<UserModel>
-    {
-        private Conexion connector;
-
+    {   
         public UserDao() {
-            //this.connector = Conexion.getInstance();
         }
 
         //-----------------------------------------------------------------------------------------------------------------
         public UserModel loguin(String usuario, String password) {
-            //UserModel user = null;
             String passwordHash = hash(password);
-
             DataTable dt = new DataTable();
-
             SqlCommand command = InitializeConnection("Login");
 
             command.Parameters.Add("Usuario", System.Data.SqlDbType.NVarChar, 50).Value = usuario;
@@ -62,9 +56,7 @@ namespace DAO
             {
                 resultEncriptado += cryString[i].ToString("X");
             }
-
             return resultEncriptado;
-           
         }
         //--------------------------------------------------------------------
 
@@ -81,6 +73,11 @@ namespace DAO
         public override string getProcedureListar()
         {
             return "Listar_User";
+        }
+
+        protected override string getProcedureCrearBasica()
+        {
+            return "Crear_User";
         }
     }
 }

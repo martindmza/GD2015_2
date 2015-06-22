@@ -23,5 +23,10 @@ namespace DAO
         {
             return new LocalidadModel(fila);
         }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

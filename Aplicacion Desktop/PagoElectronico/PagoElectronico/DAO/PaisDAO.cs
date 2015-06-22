@@ -23,5 +23,10 @@ namespace DAO
         {
             return new PaisModel(fila);
         }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
