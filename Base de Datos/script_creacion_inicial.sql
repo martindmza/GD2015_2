@@ -1142,7 +1142,7 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Crear_Rol(@Nombre_Rol NVARCHAR(255), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Crear_Rol(@Nombre_Rol NVARCHAR(255), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
 	IF EXISTS(SELECT * FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
@@ -1181,32 +1181,50 @@ UPDATE REZAGADOS.Rol SET Habilitada=1 WHERE Id_Rol = @Id_Rol
 END
 GO
 
------------------------------------------MODIFICAR NOMBRE ROL------------------------------------------------
-
-USE [GD1C2015]
+-----------------------------------------MODIFICAR ROL------------------------------------------------
+CREATE TYPE REZAGADOS.FuncionalidadesLista AS TABLE 
+( Id_Funcionalidad NUMERIC(18,0) );
 GO
-CREATE PROCEDURE REZAGADOS.Modificar_Nombre_Rol(@Nombre_Rol VARCHAR(255), @Id_Rol NUMERIC(18,0), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
+
+GO
+CREATE PROCEDURE REZAGADOS.Modificar_Rol (
+@Id_Rol NUMERIC(18,0),
+@Nombre_Rol VARCHAR(255),
+@Funcionalidades FuncionalidadesLista READONLY,
+@Respuesta INT OUTPUT,
+@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
-BEGIN
-IF EXISTS(SELECT 1 FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
-	BEGIN
-		SET @Respuesta = -1
-		SET @RespuestaMensaje = 'Ya existe ese Rol'
-	END
-	ELSE
-		BEGIN
+SET NOCOUNT ON
+BEGIN TRY
+BEGIN TRANSACTION
+	BEGIN	
+		-- quito todas las funcionalidades del rol
+		DELETE FROM REZAGADOS.FuncionalidadXRol WHERE Id_Rol = @Id_Rol
+		
+		-- asigno las funcionalidaes enviadas
+		 INSERT INTO REZAGADOS.FuncionalidadXRol (Id_Rol,Id_Funcionalidad) 
+			SELECT @Id_Rol,Id_Funcionalidad FROM @Funcionalidades;
+		
+		-- modifico el nombre del Rol
 		UPDATE REZAGADOS.Rol SET Nombre = @Nombre_Rol WHERE Id_Rol = @Id_Rol
+		
 		SET @Respuesta = 1
 		SET @RespuestaMensaje = 'Rol Modificado exitosamente'
 	END
-END
+COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION
+	SET @Respuesta = - 1
+	SET @RespuestaMensaje =  ERROR_MESSAGE()
+END CATCH
 GO
 
 -----------------------------------------ASIGNAR ROL------------------------------------------------
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Asignar_Rol (@Id_Usuario NUMERIC(18,0), @Id_Rol NUMERIC(18,0),  @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Asignar_Rol (@Id_Usuario NUMERIC(18,0), @Id_Rol NUMERIC(18,0),  @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS 
 BEGIN 
 BEGIN TRY
@@ -1293,50 +1311,6 @@ BEGIN
 	EXEC(@sqlCommand)
 END
 GO
-
------------------------------------------DESASIGNAR FUNCIONALIDADES------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Desasignar_Funcionalidades(@Id_Rol NUMERIC(18,0), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
-AS
-BEGIN TRY
-BEGIN TRANSACTION
-	BEGIN	
-		DELETE FROM REZAGADOS.FuncionalidadXRol WHERE Id_Rol= @Id_Rol
-		SET @Respuesta = 1
-		SET @RespuestaMensaje = 'Funcionalidad desasignada exitosamente'
-	END
-COMMIT TRANSACTION
-END TRY
-BEGIN CATCH
-	ROLLBACK TRANSACTION
-	SET @Respuesta = - 1
-	SET @RespuestaMensaje = 'Las Funcionalidades no se pudieron desasignar'
-END CATCH
-GO
-
------------------------------------------ASIGNAR FUNCIONALIDAD------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Asignar_Funcionalidad (@Id_Func NUMERIC(18,0), @Id_Rol NUMERIC(18,0), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
-AS 
-Begin 
-BEGIN TRY
-BEGIN TRANSACTION      
-	INSERT INTO REZAGADOS.FuncionalidadXRol(Id_Rol,Id_Funcionalidad) VALUES (@Id_Rol,@Id_Func)
-	SET @Respuesta = 1
-	SET @RespuestaMensaje = 'Funcionalidad Asignada exitosamente'
- COMMIT TRANSACTION
- END TRY
- BEGIN CATCH
-	ROLLBACK TRANSACTION
-	SET @Respuesta = -1
-	SET @RespuestaMensaje = 'La Funcionalidad ya se encuentra asignada'
- END CATCH  
- END
- GO
 
 ----------------------------------------------LISTAR FUNCIONALIDAD ROL-------------------------------------------------------
 
