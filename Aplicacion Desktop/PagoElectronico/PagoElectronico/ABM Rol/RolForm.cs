@@ -46,7 +46,6 @@ namespace ABM
                     this.Text = "Crear Nuevo Rol";
                     break;
                 case 1:
-                    this.button1.Enabled = false;
                     this.Text = "Modificar Rol";
                     break;
                 case 2:

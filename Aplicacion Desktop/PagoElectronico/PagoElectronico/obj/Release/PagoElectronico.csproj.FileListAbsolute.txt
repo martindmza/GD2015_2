@@ -1,27 +1,29 @@
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\bin\Release\PagoElectronico.exe
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\bin\Release\PagoElectronico.pdb
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ResolveAssemblyReference.cache
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.ClienteAbm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.ClienteForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.CuentaAbm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.CuentaForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.RolAbm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.RolForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Depositos.DepositosAbm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Depositos.DepositosComprobante.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Facturacion.FacturacionAbm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Facturacion.FacturaForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\FormsExtras.LocalidadesForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\FormsExtras.PaisesForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\FormsExtras.TarjetaDeCreditoForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Frame.Frame.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Frame.RolSelection.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\PagoElectronico.Properties.Resources.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Retiros.ChequeForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Retiros.RetirosAbm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Tarjetas.TarjetasAbm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Tarjetas.TarjetasForm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Transferencias.TransferenciaAbm.resources
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\PagoElectronico.csproj.GenerateResource.Cache
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\PagoElectronico.exe
-C:\Users\sa\Documents\GitHub\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\PagoElectronico.pdb
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\bin\Release\PagoElectronico.exe
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\bin\Release\PagoElectronico.pdb
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.ClienteAbm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.ClienteForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.CuentaAbm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.CuentaForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.FuncionalidadesForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.RolAbm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.RolForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\ABM.ConsultaDeSaldos.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Depositos.DepositosAbm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Depositos.DepositosComprobante.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Facturacion.FacturacionAbm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Facturacion.FacturaForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\FormsExtras.LocalidadesForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\FormsExtras.PaisesForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\FormsExtras.TarjetaDeCreditoForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Frame.Frame.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Frame.RolSelection.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\PagoElectronico.Properties.Resources.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Retiros.ChequeForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Retiros.RetirosAbm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Tarjetas.TarjetasAbm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Tarjetas.TarjetasForm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\Transferencias.TransferenciaAbm.resources
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\PagoElectronico.csproj.GenerateResource.Cache
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\PagoElectronico.exe
+C:\Users\Administrador\Desktop\Backup\FACULTAD\Gestión de Datos\2015\TP\GD2015_2\Aplicacion Desktop\PagoElectronico\PagoElectronico\obj\Release\PagoElectronico.pdb

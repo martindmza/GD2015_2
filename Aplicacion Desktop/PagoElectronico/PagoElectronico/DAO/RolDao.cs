@@ -34,8 +34,45 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
         public RolModel updateRol(RolModel rol)
         {
+            try
+            {
+                DataTable dt = new DataTable();
+                //desasigno las funcionalidades asignadas
+                SqlCommand command = InitializeConnection("Desasignar_Funcionalidades");
 
+                command.Parameters.Add("@Id_Rol", System.Data.SqlDbType.Int).Value = rol.id;
+
+                //
+                var pOut = command.Parameters.Add("@Respuesta", SqlDbType.Int);
+                var pOut2 = command.Parameters.Add("@RespuestaMensaje", SqlDbType.NVarChar, 255);
+                pOut.Direction = ParameterDirection.Output;
+                pOut2.Direction = ParameterDirection.Output;
+                //
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+                Int32 value = Convert.IsDBNull(pOut.Value) ? 0 : (Int32)(pOut.Value);
+                string value2 = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+                if (value != -1)
+                {
+                    this.Commit();
+                }
+                else
+                {
+                    MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                }
+            }
+            catch (NullReferenceException exepcion) {
+                Console.Write(exepcion);
+            }
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                this.RollBack();
+                throw excepcion;
+
+            }
             return rol;
+
         }
         //-------------------------------------------------------------------------------------------------------------
 
@@ -44,12 +81,6 @@ namespace DAO
         {
             rol.habilitado = false;
             return rol;
-        }
-        //-------------------------------------------------------------------------------------------------------------
-
-        //-------------------------------------------------------------------------------------------------------------
-        public void RolAbmChanges( List<RolModel> rolList)
-        {
         }
         //-------------------------------------------------------------------------------------------------------------
 
@@ -121,11 +152,6 @@ namespace DAO
                 throw excepcion;
 
             }
-        }
-
-        private void agregarFuncionalidad(FuncionalidadModel unaFuncionalidad)
-        {
-            
         }
     }
 }
