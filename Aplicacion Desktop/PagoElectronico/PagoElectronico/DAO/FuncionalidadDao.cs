@@ -22,11 +22,13 @@ namespace DAO
         {
             DataTable tablaFuncionalidad = this.getFuncionalidadesBase(id);
             List<FuncionalidadModel> listaRoles = new List<FuncionalidadModel>();
-
-            foreach (DataRow funcionBase in tablaFuncionalidad.Rows)
+            if (tablaFuncionalidad != null)
             {
-                FuncionalidadModel funcionalidadModel = new FuncionalidadModel(funcionBase);
-                listaRoles.Add(funcionalidadModel);
+                foreach (DataRow funcionBase in tablaFuncionalidad.Rows)
+                {
+                    FuncionalidadModel funcionalidadModel = new FuncionalidadModel(funcionBase);
+                    listaRoles.Add(funcionalidadModel);
+                }
             }
             return listaRoles;
         }

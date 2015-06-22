@@ -5,6 +5,7 @@ using System.Text;
 using Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows.Forms;
 
 namespace DAO
 {
@@ -30,18 +31,6 @@ namespace DAO
             //TODO
             return null;
         }
-        //-------------------------------------------------------------------------------------------------------------
-
-        //-------------------------------------------------------------------------------------------------------------
-        public RolModel createRol(RolModel rol){
-            rol.habilitado = true;
-            //rol.id = 99;
-
-
-            return rol;
-        }
-        //-------------------------------------------------------------------------------------------------------------
-
         //-------------------------------------------------------------------------------------------------------------
         public RolModel updateRol(RolModel rol)
         {
@@ -93,6 +82,50 @@ namespace DAO
         public override string getProcedureListar()
         {
             return "Listar_Rol";
+        }
+
+        public RolModel createRol(RolModel entity)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+
+                SqlCommand command = InitializeConnection("Crear_Rol");
+
+                command.Parameters.Add("Nombre_Rol", System.Data.SqlDbType.NVarChar, 50).Value = entity.nombre;
+                //
+                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Int);
+                var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
+                pOut.Direction = ParameterDirection.Output;
+                pOut2.Direction = ParameterDirection.Output;
+                //
+                
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+                Int32 value = Convert.IsDBNull(pOut.Value) ? 0 : (Int32)(pOut.Value);
+                string value2 = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+                if (value != -1)
+                {
+                    entity.id = value;
+                    this.Commit();
+                }
+                else
+                {
+                    MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                }
+                return entity;
+            }
+            catch (Exception excepcion)
+            {
+                this.RollBack();
+                throw excepcion;
+
+            }
+        }
+
+        private void agregarFuncionalidad(FuncionalidadModel unaFuncionalidad)
+        {
+            
         }
     }
 }

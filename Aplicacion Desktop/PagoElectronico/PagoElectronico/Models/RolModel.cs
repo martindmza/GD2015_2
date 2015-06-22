@@ -18,8 +18,10 @@ namespace Models
 
         public RolModel(String nombre)
         {
+            this.id = -1;
             this.nombre = nombre;
             funcionalidades = new List<FuncionalidadModel>();
+            this.habilitado = true;
         }
         
         public RolModel(DataRow fila): base(fila){
