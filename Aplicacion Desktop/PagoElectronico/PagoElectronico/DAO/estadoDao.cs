@@ -35,5 +35,10 @@ namespace DAO
         {
             return new EstadoModel(fila);
         }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

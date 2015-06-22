@@ -85,5 +85,10 @@ namespace DAO
         {
             return "Listar_Cliente";
         }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

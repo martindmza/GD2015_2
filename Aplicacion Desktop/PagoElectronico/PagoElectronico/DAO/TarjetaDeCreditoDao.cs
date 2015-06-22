@@ -62,5 +62,10 @@ namespace DAO
         {
             throw new NotImplementedException();
         }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
