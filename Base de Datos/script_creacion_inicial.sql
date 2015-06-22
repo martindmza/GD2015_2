@@ -1298,12 +1298,12 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Desasignar_Funcionalidades(@Id_Func NUMERIC(18,0), @Id_Rol NUMERIC(18,0), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Desasignar_Funcionalidades(@Id_Rol NUMERIC(18,0), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
 AS
 BEGIN TRY
 BEGIN TRANSACTION
 	BEGIN	
-		DELETE FROM REZAGADOS.FuncionalidadXRol WHERE Id_Rol= @Id_Rol  AND Id_Funcionalidad = @Id_Func
+		DELETE FROM REZAGADOS.FuncionalidadXRol WHERE Id_Rol= @Id_Rol
 		SET @Respuesta = 1
 		SET @RespuestaMensaje = 'Funcionalidad desasignada exitosamente'
 	END
@@ -1312,7 +1312,7 @@ END TRY
 BEGIN CATCH
 	ROLLBACK TRANSACTION
 	SET @Respuesta = - 1
-	SET @RespuestaMensaje = 'La Funcionalidad no se puedo desasignar'
+	SET @RespuestaMensaje = 'Las Funcionalidades no se pudieron desasignar'
 END CATCH
 GO
 
