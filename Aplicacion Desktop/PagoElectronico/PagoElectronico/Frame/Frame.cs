@@ -26,7 +26,7 @@ namespace Frame
         private const int OPERACION_TIPO_SELECCION = 1;
 
         //______________________________________________________________________________________________________________________
-        public Frame()
+        public Frame(Login parent)
         {
             UserModel usuario = Login.userLogued;
             if (usuario != null)
@@ -34,26 +34,40 @@ namespace Frame
                 InitializeComponent();
 
                 this.label1.Text = usuario.nombre;
-                //Busco los roles del usuario
+
+                //Busco los roles activos del usuario
                 usuario.getMisRoles();
-                if (usuario.roles.Count == 0)
+                List<RolModel> rolesHabilitados = new List<RolModel>();
+                foreach (RolModel rol in usuario.roles)
                 {
-                    throw new UserRolNotFoundException("El usuario no tiene roles cargados");
+                    if (rol.habilitado == true)
+                    {
+                        rolesHabilitados.Add(rol);
+                    }
                 }
-                //Si encuentra más de un rol, muestra opciones de rol con el cual entrar
-                if (usuario.roles.Count > 1)
+
+                //si no tiene roles activos salir
+                if (rolesHabilitados.Count == 0)
                 {
-                    Form abmroles = new RolSelection(this);
-                    abmroles.MdiParent = this;
-                    abmroles.Show();
+                    MessageBox.Show("El usuario no tiene roles cargados o Habilitados");
+                    this.Close();
+                    this.Dispose();
+                    GC.Collect();
+                    parent.Show();
                 }
-                else if (usuario.roles.Count == 1)
+                //Si tiene un rol activo entrar a la aplicacion directamente
+                else if (rolesHabilitados.Count == 1)
                 {
                     this.label4.Text = usuario.roles.First().nombre;
+                    Login.rolSelected = usuario.roles.First();
+                }
+                //Si tiene más de un rol, muestra opciones de rol con el cual entrar
+                else {
+                        Form f = new RolSelection(this,rolesHabilitados);
+                        f.MdiParent = this;
+                        f.Show();
                 }
             }
-            return;
-            
         }
         //______________________________________________________________________________________________________________________
 

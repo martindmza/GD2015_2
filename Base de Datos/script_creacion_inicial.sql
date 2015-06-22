@@ -9,7 +9,7 @@
 
 USE [GD1C2015]
 GO
--- CREATE SCHEMA [REZAGADOS] AUTHORIZATION [gd]
+CREATE SCHEMA [REZAGADOS] AUTHORIZATION [gd]
 GO
 
 -------------------------------------------------------------------------------------
@@ -901,23 +901,6 @@ BEGIN
 END
 GO
 
-----------------------------------------------LISTAR FUNCIONALIDAD ROL-------------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE [REZAGADOS].[Listar_Funcionalidad_Rol]
-@id int
-AS
-BEGIN
-	SET NOCOUNT ON;
-	SELECT f.Id_Funcionalidad ID, f.Nombre NOMBRE , f.Habilitada HABILITADA
-	FROM [REZAGADOS].Funcionalidad f 
-	inner join [REZAGADOS].FuncionalidadXRol rf 
-	on f.Id_Funcionalidad = rf.Id_Funcionalidad
-	WHERE rf.Id_Rol = @id
-END
-GO
-
 ----------------------------------------------LISTAR ROL USUARIO-------------------------------------------------------
 
 USE [GD1C2015]
@@ -1152,6 +1135,9 @@ BEGIN
 END
 GO
 
+
+
+------------------ROLES-------------
 -----------------------------------------CREAR ROL------------------------------------------------
 
 USE [GD1C2015]
@@ -1168,7 +1154,7 @@ BEGIN
 	BEGIN
 		INSERT INTO REZAGADOS.Rol VALUES (@Nombre_Rol, 1)
 		SET @Respuesta = (SELECT Id_Rol FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
-		@RespuestaMensaje = 'Rol Creado exitosamente'
+		SET @RespuestaMensaje = 'Rol Creado exitosamente'
 	END
 END
 GO
@@ -1274,27 +1260,45 @@ BEGIN
 END
 GO
 
---------------------------------Buscar_Rol_Nombre-------------------------------------------
+--------------------------------Buscar_Rol_Filtros-------------------------------------------
 USE [GD1C2015]
 GO
 
-CREATE PROCEDURE [REZAGADOS].[Buscar_Rol_Id]
-@Nombre VARCHAR(255)
+CREATE PROCEDURE [REZAGADOS].[Buscar_Rol_Filtros] (@Nombre VARCHAR(255)=NULL, @Id_Rol NUMERIC(18,0)=NULL)
 AS
 BEGIN
 	SET NOCOUNT ON;
+	DECLARE @sqlCommand VARCHAR(MAX)
+	DECLARE @sqlWhere VARCHAR(MAX)
 
-	SELECT r.Id_Rol ID, r.Nombre NOMBRE, r.Habilitada HABILITADO
-	FROM [REZAGADOS].Rol r 
-	WHERE r.Nombre LIKE '%' + @Nombre + '%'
+	SET @sqlCommand = '	SELECT r.Id_Rol ID, r.Nombre NOMBRE, r.Habilitada HABILITADO
+						FROM [REZAGADOS].Rol r '
+	SET @sqlWhere = ''
+	
+	IF(@Id_Rol IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Id_Rol = ' + CAST(@Id_Rol AS VARCHAR(MAX))
+	END
+	
+	IF(@Nombre IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Nombre LIKE  ''%'+@Nombre+'%'''
+	END
+	
+	IF (@sqlWhere <> '')
+	BEGIN
+		SET @sqlWhere = ' WHERE ' + SUBSTRING (@sqlWhere, 5, Len(@sqlWhere)  )
+		SET @sqlCommand = @sqlCommand + @sqlWhere
+	END
+	EXEC(@sqlCommand)
 END
 GO
 
------------------------------------------DESASIGNAR FUNCIONALIDAD------------------------------------------------
+-----------------------------------------DESASIGNAR FUNCIONALIDADES------------------------------------------------
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Desasignar_Funcionalidad(@Id_Func NUMERIC(18,0), @Id_Rol NUMERIC(18,0), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Desasignar_Funcionalidades(@Id_Func NUMERIC(18,0), @Id_Rol NUMERIC(18,0), @Respuesta INT OUTPUT, @RespuestaMensaje VARCHAR(55) OUTPUT)
 AS
 BEGIN TRY
 BEGIN TRANSACTION
@@ -1334,4 +1338,31 @@ BEGIN TRANSACTION
  END
  GO
 
+----------------------------------------------LISTAR FUNCIONALIDAD ROL-------------------------------------------------------
 
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Listar_Funcionalidad_Rol]
+@id int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT f.Id_Funcionalidad ID, f.Nombre NOMBRE , f.Habilitada HABILITADA
+	FROM [REZAGADOS].Funcionalidad f 
+	inner join [REZAGADOS].FuncionalidadXRol rf 
+	on f.Id_Funcionalidad = rf.Id_Funcionalidad
+	WHERE rf.Id_Rol = @id
+END
+GO
+----------------------------------------------LISTAR FUNCIONALIDAD-------------------------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Listar_Funcionalidad]
+AS
+BEGIN
+SELECT	f.Id_Funcionalidad ID,
+		f.Nombre NOMBRE ,
+		f.Habilitada HABILITADA
+	FROM [REZAGADOS].Funcionalidad f 
+END
+GO

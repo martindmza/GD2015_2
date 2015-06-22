@@ -79,6 +79,12 @@
     <Compile Include="ABM de Usuario\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="ABM Rol\FuncionalidadesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ABM Rol\FuncionalidadesForm.Designer.cs">
+      <DependentUpon>FuncionalidadesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ABM Rol\RolAbm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -220,6 +226,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Cuenta\CuentaForm.resx">
       <DependentUpon>CuentaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ABM Rol\FuncionalidadesForm.resx">
+      <DependentUpon>FuncionalidadesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ABM Rol\RolAbm.resx">
       <DependentUpon>RolAbm.cs</DependentUpon>

@@ -20,19 +20,14 @@ namespace ABM
         private Int32 rolActivoIndex;
         private RolModel rolActivo;
         private RolDao rolDao;
-        private FuncionalidadDao funcionalidadDao;
 
         private List<RolModel> roles;
-        private List<FuncionalidadModel> funcionalidadesTodas;
-        private List<FuncionalidadModel> funcionalidadesNoContenidas;
         private Decimal idFilter;
 
         public RolAbm() {
 
             this.rolDao = new RolDao();
-            this.funcionalidadDao = new FuncionalidadDao();
             this.roles = rolDao.getListado();
-            this.funcionalidadesTodas = funcionalidadDao.getFuncionalidades();
             
             InitializeComponent();
             fillRolesTable();
@@ -58,35 +53,6 @@ namespace ABM
                                             };
 
                     dataGridViewRoles.Rows.Add(row);
-                }
-            }
-        }
-        //-----------------------------------------------------------------------------------------------------------------
-
-        //-----------------------------------------------------------------------------------------------------------------
-        private void fillFunctionsTable()
-        {
-            string[] filaFuncCont;
-            string[] filaFuncDisp;
-
-            dataGridView1.Rows.Clear();
-            dataGridView2.Rows.Clear();
-
-            //cargo las funcionalidades que tiene el rol seleccionado y las quito de la lista de todas las funcionalidades
-            foreach (FuncionalidadModel func in rolActivo.funcionalidades)
-            {
-                filaFuncCont = new String[] { func.nombre };
-                dataGridView1.Rows.Add(filaFuncCont);
-                this.funcionalidadesNoContenidas.Remove(func);
-            }
-
-            //cargo las funcionalidades que no tiene el rol seleccionado
-            foreach (FuncionalidadModel func in this.funcionalidadesNoContenidas)
-            {
-                if (!rolActivo.funcionalidades.Exists(i => i.id == func.id))
-                {
-                    filaFuncDisp = new String[] { func.nombre };
-                    dataGridView2.Rows.Add(filaFuncDisp);
                 }
             }
         }
@@ -149,7 +115,6 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void dataGridViewRoles_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
             try{
-                funcionalidadesNoContenidas = funcionalidadesTodas;
                 int filaActiva = this.dataGridViewRoles.CurrentCell.RowIndex;
                 String idRolActivo = dataGridViewRoles.Rows[filaActiva].Cells[0].Value.ToString();
 
@@ -166,43 +131,13 @@ namespace ABM
 
                 button1.Enabled = true;
                 button2.Enabled = true;
-                fillFunctionsTable();
             } catch (NullReferenceException err) {
                 button1.Enabled = true;
                 button2.Enabled = true;
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
-
-        //-----------------------------------------------------------------------------------------------------------------
-        //quitar funcionalidad
-        private void button6_Click(object sender, EventArgs e)
-        {
-            if (this.rolActivo.funcionalidades.Count == 1)
-            {
-                this.button6.Enabled = false;
-            }
-            this.button5.Enabled = true;
-            int index = this.dataGridView1.CurrentCell.RowIndex;
-            this.rolActivo.funcionalidades.RemoveAt(index);
-            fillFunctionsTable();
-        }
-        //-----------------------------------------------------------------------------------------------------------------
-
-        //-----------------------------------------------------------------------------------------------------------------
-        //agregar funcionalidad
-        private void button5_Click(object sender, EventArgs e)
-        {
-            if (this.dataGridView2.Rows.Count == 1)
-            {
-                this.button5.Enabled = false;
-            }
-            this.button6.Enabled = true;
-            int index = this.dataGridView2.CurrentCell.RowIndex;
-            this.rolActivo.funcionalidades.Add(funcionalidadesTodas[index]);
-            fillFunctionsTable();
-        }
-        //-----------------------------------------------------------------------------------------------------------------
+       
 
         //-----------------------------------------------------------------------------------------------------------------
         //agregar nuevo Rol

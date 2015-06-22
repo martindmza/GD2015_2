@@ -13,18 +13,21 @@ namespace Frame
     public partial class RolSelection : Form {
 
         private Frame parentFrame;
+        private List<RolModel> rolesHabilitados;
 
-        public RolSelection(Frame parent)
+        public RolSelection(Frame parent,List<RolModel> rolesHabilitados)
         {
             this.parentFrame = parent;
+            this.rolesHabilitados = rolesHabilitados;
             InitializeComponent();
             fillRolesList();
+            button1.Enabled = false;
         }
 
         private void fillRolesList() {
-            string[] filas = new string[Logins.Login.userLogued.roles.Count];
+            string[] filas = new string[rolesHabilitados.Count];
             int count = 0;
-            foreach (RolModel rol in Logins.Login.userLogued.roles)
+            foreach (RolModel rol in rolesHabilitados)
             {
                 if (rol.habilitado)
                 {
@@ -39,14 +42,16 @@ namespace Frame
         {
             try
             {
-                Logins.Login.rolSelected = Logins.Login.userLogued.roles[listBox1.SelectedIndex];
+                Logins.Login.rolSelected = rolesHabilitados[listBox1.SelectedIndex];
                 parentFrame.enableMenu();
                 parentFrame.setRolLogued();
                 MdiParent.Enabled = true;
                 this.Dispose();
                 GC.Collect();
             }
-            catch (Exception ern) { }
+            catch (NullReferenceException ern) {
+                MessageBox.Show("No seleccionó un rol");
+            }
         }
 
         private void RolSelection_Load(object sender, EventArgs e)
@@ -59,6 +64,18 @@ namespace Frame
             this.Dispose();
             parentFrame.Dispose();
             GC.Collect();
+        }
+
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex != null)
+            {
+                button1.Enabled = true;
+            }
+            else {
+                button1.Enabled = false;
+            }
         }
     }
 }

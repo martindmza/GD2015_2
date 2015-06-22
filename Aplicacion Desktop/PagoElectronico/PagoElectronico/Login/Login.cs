@@ -37,7 +37,7 @@ namespace Logins
             userLogued = dao.loguin(usuario,password);
 
             if(userLogued!= null){
-                Frame.Frame frame = new Frame.Frame();
+                Frame.Frame frame = new Frame.Frame(this);
                 this.Hide();
                 frame.Show();
             }
