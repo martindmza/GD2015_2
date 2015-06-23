@@ -37,17 +37,27 @@ namespace DAO
             try
             {
                 DataTable dt = new DataTable();
-                //desasigno las funcionalidades asignadas
-                SqlCommand command = InitializeConnection("Desasignar_Funcionalidades");
+
+                //Seteo la tabla de las funcionalidades
+                DataTable funcionalidadesLista = new DataTable();
+                funcionalidadesLista.Columns.Add("Id_Funcionalidad", typeof(decimal));
+                foreach (FuncionalidadModel f in rol.funcionalidades)
+                {
+                    funcionalidadesLista.Rows.Add(f.id);
+                }
+
+                //Llamo al SP modificar Rol
+                SqlCommand command = InitializeConnection("Modificar_Rol");
 
                 command.Parameters.Add("@Id_Rol", System.Data.SqlDbType.Int).Value = rol.id;
-
-                //
+                command.Parameters.Add("@Nombre_Rol", System.Data.SqlDbType.NVarChar,255).Value = rol.nombre;
+                command.Parameters.Add("@Funcionalidades", System.Data.SqlDbType.Structured).Value = funcionalidadesLista;
                 var pOut = command.Parameters.Add("@Respuesta", SqlDbType.Int);
                 var pOut2 = command.Parameters.Add("@RespuestaMensaje", SqlDbType.NVarChar, 255);
                 pOut.Direction = ParameterDirection.Output;
                 pOut2.Direction = ParameterDirection.Output;
                 //
+
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 da.Fill(dt);
                 Int32 value = Convert.IsDBNull(pOut.Value) ? 0 : (Int32)(pOut.Value);
@@ -59,6 +69,9 @@ namespace DAO
                 else
                 {
                     MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    //enviando el id negativo indico que falló
+                    rol.id = rol.id * -1;
+                    return rol;
                 }
             }
             catch (NullReferenceException exepcion) {
@@ -79,7 +92,7 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
         public RolModel disableRol(RolModel rol)
         {
-            rol.habilitado = false;
+            Baja_Rol
             return rol;
         }
         //-------------------------------------------------------------------------------------------------------------

@@ -18,6 +18,9 @@ namespace ABM
         private RolDao rolDao;
         private RolAbm parent;
 
+        private Int32 funcActivoIndex;
+        private FuncionalidadModel funcionalidadActiva;
+
         public List<FuncionalidadModel> funcionalidades;
 
         public RolForm(int operacionTipo, RolModel rol, RolDao rolDao, RolAbm parent)
@@ -44,6 +47,10 @@ namespace ABM
                 case 0:
                     this.button1.Enabled = false;
                     this.Text = "Crear Nuevo Rol";
+                    panel1.Visible = false;
+                    this.Size = new Size(286, 140);
+                    button1.Location = new Point(181, 60);
+                    button2.Location = new Point(100, 60);
                     break;
                 case 1:
                     this.Text = "Modificar Rol";
@@ -102,14 +109,19 @@ namespace ABM
                     RolModel newRol = new RolModel(textBox1.Text);
                     newRol.funcionalidades = funcionalidades;
                     rol = rolDao.createRol(newRol);
-                    if(rol.id!=-1)
+                    if (rol.id != -1)
+                    {
                         parent.formResponseAdd(newRol);
-                    
+                    }
                     break;
                 case 1:
-                    rol.nombre = textBox1.Text;
-                    rol.funcionalidades = funcionalidades;
-                    rolDao.updateRol(rol);
+                    RolModel updatedRol = new RolModel(textBox1.Text);
+                    updatedRol.funcionalidades = funcionalidades;
+                    updatedRol = rolDao.createRol(updatedRol);
+                    if (updatedRol.id != -1)
+                    {
+                        rol = updatedRol;
+                    }
                     parent.formResponseUpdate(rol);
                     break;
                 default:
@@ -181,12 +193,28 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dataGridView1.CurrentCell.RowIndex == 0)
+            try
+            {
+                int filaActiva = this.dataGridView1.CurrentCell.RowIndex;
+                String idActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
+
+                int count = 0;
+                foreach (FuncionalidadModel f in funcionalidades)
+                {
+                    if (idActivo.Equals(rol.id.ToString()))
+                    {
+                        funcionalidadActiva = f;
+                        funcActivoIndex = count;
+                        break;
+                    }
+                    count++;
+                }
+
+                buttonQuitar.Enabled = true;
+            }
+            catch (NullReferenceException err)
             {
                 buttonQuitar.Enabled = false;
-            }
-            else {
-                buttonQuitar.Enabled = true;
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
