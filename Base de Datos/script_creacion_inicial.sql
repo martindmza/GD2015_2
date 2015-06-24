@@ -380,9 +380,9 @@ WHERE Nombre = 'admin'
 
 -----------------------------------------CLIENTE-------------------------------------------------
 
-INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Nacionalidad)
+INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail)
 (
-SELECT U.Id_Usuario, G.Cli_Nombre, G.Cli_Apellido,T.Id_Tipo_Documento, G.Cli_Nro_Doc, P.Id_Pais, G.Cli_Dom_Calle, G.Cli_Dom_Nro, G.Cli_Dom_Piso, G.Cli_Dom_Depto, G.Cli_Fecha_Nac, G.Cli_Mail, 'Capital Federal', 'Argentina'
+SELECT U.Id_Usuario, G.Cli_Nombre, G.Cli_Apellido,T.Id_Tipo_Documento, G.Cli_Nro_Doc, P.Id_Pais, G.Cli_Dom_Calle, G.Cli_Dom_Nro, G.Cli_Dom_Piso, G.Cli_Dom_Depto, G.Cli_Fecha_Nac, G.Cli_Mail
 FROM REZAGADOS.Usuario U, gd_esquema.Maestra G, REZAGADOS.TipoDocumento T, REZAGADOS.Pais P
 WHERE U.Nombre = G.Cli_Mail AND P.Id_Pais = G.Cli_Pais_Codigo AND T.Id_Tipo_Documento = G.Cli_Tipo_Doc_Cod
 GROUP BY U.Id_Usuario, G.Cli_Nombre, G.Cli_Apellido,T.Id_Tipo_Documento, G.Cli_Nro_Doc, P.Id_Pais, G.Cli_Dom_Calle, G.Cli_Dom_Nro, G.Cli_Dom_Piso, G.Cli_Dom_Depto, G.Cli_Fecha_Nac, G.Cli_Mail
@@ -412,10 +412,15 @@ FROM gd_esquema.Maestra
 WHERE Banco_Cogido IS NOT NULL
 GROUP BY Banco_Cogido, Banco_Nombre, Banco_Direccion
 
+----------------------------------------TIPO CUENTA------------------------------------------------
+
+INSERT INTO REZAGADOS.TipoCuenta (Categoria, Costo, Dias_Vigencia)
+VALUES ('Oro', 10, 10), ('Plata', 5, 20), ('Bronce', 5, 30), ('Gratuita', 0, 0)
+
 -----------------------------------------CUENTA---------------------------------------------------
 
-INSERT INTO REZAGADOS.Cuenta (Id_Cuenta, Id_Usuario, Id_Pais, Estado, Fecha_Creacion, Fecha_Cierre)
-SELECT g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
+INSERT INTO REZAGADOS.Cuenta (Id_Cuenta, Id_Usuario, Id_Tipo_Cuenta, Id_Pais, Estado, Fecha_Creacion, Fecha_Cierre)
+SELECT g.Cuenta_Numero, u.Id_Usuario, (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria='Gratuita') , g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
 FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE u.Nombre = g.Cli_Mail AND g.Cuenta_Dest_Fecha_Creacion IS NOT NULL
 GROUP BY g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
@@ -428,15 +433,10 @@ FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE Tarjeta_Numero IS NOT NULL  AND u.Nombre = g.Cli_Mail
 GROUP BY u.Id_Usuario, Tarjeta_Numero, Tarjeta_Emisor_Descripcion, Tarjeta_Codigo_Seg, Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento
 
-----------------------------------------TIPO CUENTA------------------------------------------------
-
-INSERT INTO REZAGADOS.TipoCuenta (Categoria, Costo, Dias_Vigencia)
-VALUES ('Oro', 10, 10), ('Plata', 5, 20), ('Bronce', 5, 30), ('Gratis', 0, 0)
-
 --------------------------------------------TIPO ITEM-----------------------------------------------
 
 INSERT INTO REZAGADOS.TipoItem (Tipo)
-VALUES ('Comisión por transferencia.'), ('Creacion de cuenta'), ('Retiro'), ('Cheque')
+VALUES ('Comisión por transferencia.'), ('Creacion de cuenta.'), ('Cambio de cuenta.'), ('Retiro.'), ('Cheque.')
 
 ------------------------------------------FACUTRA--------------------------------------------------
 
@@ -483,9 +483,6 @@ SELECT Cheque_Numero, Retiro_Codigo, Banco_Cogido, Cheque_Fecha, Cheque_Importe
 FROM gd_esquema.Maestra
 WHERE Cheque_Numero IS NOT NULL
 GROUP BY Cheque_Numero, Retiro_Codigo, Banco_Cogido, Cheque_Fecha, Cheque_Importe
-
-
-----------------------------------------HISTORIAL CUENTA-----------------------------------------------
 
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -746,6 +743,10 @@ GO
 CREATE PROCEDURE REZAGADOS.Crear_Cuenta(@Id_Usuario NUMERIC(18,0), @Pais VARCHAR(255), @Moneda VARCHAR(255), @Fecha DATETIME, @Tipo VARCHAR(255), @Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
+IF (@Tipo = 'Gratuito')
+INSERT INTO REZAGADOS.Cuenta(Id_Usuario, Id_Pais, Id_Tipo_Cuenta, Id_Moneda, Estado, Fecha_Creacion)
+VALUES (@Id_Usuario, (SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais), (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo), (SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda), 'Habilitada', @Fecha)
+ELSE
 INSERT INTO REZAGADOS.Cuenta(Id_Usuario, Id_Pais, Id_Tipo_Cuenta, Id_Moneda, Estado, Fecha_Creacion)
 VALUES (@Id_Usuario, (SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais), (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo), (SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda), 'Pendiente de activación', @Fecha)
 SET @Respuesta = (SELECT @@IDENTITY)
@@ -1262,6 +1263,7 @@ GO
 
 
 --------------------------------------------------BUSCAR ROL ID-------------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1327,7 +1329,9 @@ BEGIN
 	WHERE rf.Id_Rol = @id
 END
 GO
+
 ----------------------------------------------LISTAR FUNCIONALIDAD-------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].[Listar_Funcionalidad]
@@ -1339,4 +1343,9 @@ SELECT	f.Id_Funcionalidad ID,
 	FROM [REZAGADOS].Funcionalidad f 
 END
 GO
+
+----------------------------------------------------FACTURACION DE COSTOS------------------------------------------
+---------------------------------------------------TRANSFERECIA DE CUENTAS-----------------------------------------
+---------------------------------------------------MODIFICACION TIPO CUENTA----------------------------------------
+-----------------------------------------------------APERTURA DE CUENTA--------------------------------------------
 
