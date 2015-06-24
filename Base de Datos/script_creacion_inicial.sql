@@ -329,7 +329,7 @@ FROM gd_esquema.Maestra
 GROUP BY Cuenta_Pais_Codigo, Cuenta_Pais_Desc
 )
 
---------------------------------------TIPODOCUMENTO--------------------------------------------
+--------------------------------------TIPO DOCUMENTO--------------------------------------------
 
 INSERT INTO REZAGADOS.TipoDocumento (Id_Tipo_Documento, Descripcion) (
 SELECT Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc
@@ -347,7 +347,7 @@ VALUES ('Administrador'),('Cliente')
 INSERT INTO REZAGADOS.Funcionalidad (Nombre)
 VALUES ('ABM de Rol'), ('Registro de Usuario'), ('ABM de Cliente'), ('ABM de Cuenta'), ('Deposito'), ('Retiro de Efectivo'), ('Transferencias entre cuentas'), ('Facturación de Costos'), ('Consulta de saldos'), ('Listado Estadístico')
 
--------------------------------------ROLXFUNCIONALIDAD------------------------------------------
+-------------------------------------ROL X FUNCIONALIDAD------------------------------------------
 
 INSERT INTO REZAGADOS.FuncionalidadXRol (Id_Rol,Id_Funcionalidad)
 SELECT R.Id_Rol, F.Id_Funcionalidad
@@ -388,7 +388,7 @@ WHERE U.Nombre = G.Cli_Mail AND P.Id_Pais = G.Cli_Pais_Codigo AND T.Id_Tipo_Docu
 GROUP BY U.Id_Usuario, G.Cli_Nombre, G.Cli_Apellido,T.Id_Tipo_Documento, G.Cli_Nro_Doc, P.Id_Pais, G.Cli_Dom_Calle, G.Cli_Dom_Nro, G.Cli_Dom_Piso, G.Cli_Dom_Depto, G.Cli_Fecha_Nac, G.Cli_Mail
 )
 
------------------------------------------USUARIOXROL--------------------------------------------------
+-----------------------------------------USUARIO X ROL--------------------------------------------------
 
 INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario,Id_Rol)
 SELECT C.Id_Usuario, R.Id_Rol 
@@ -428,12 +428,12 @@ FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE Tarjeta_Numero IS NOT NULL  AND u.Nombre = g.Cli_Mail
 GROUP BY u.Id_Usuario, Tarjeta_Numero, Tarjeta_Emisor_Descripcion, Tarjeta_Codigo_Seg, Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento
 
-----------------------------------------TIPOCUENTA------------------------------------------------
+----------------------------------------TIPO CUENTA------------------------------------------------
 
 INSERT INTO REZAGADOS.TipoCuenta (Categoria, Costo, Dias_Vigencia)
 VALUES ('Oro', 10, 10), ('Plata', 5, 20), ('Bronce', 5, 30), ('Gratis', 0, 0)
 
---------------------------------------------TIPOITEM-----------------------------------------------
+--------------------------------------------TIPO ITEM-----------------------------------------------
 
 INSERT INTO REZAGADOS.TipoItem (Tipo)
 VALUES ('Comisión por transferencia.'), ('Creacion de cuenta'), ('Retiro'), ('Cheque')
@@ -445,7 +445,7 @@ SELECT g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
 FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE u.Nombre = g.Cli_Mail AND g.Factura_Numero IS NOT NULL
 GROUP BY g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
---FIJARSE ERROR SIN GROUP BY
+
 --------------------------------------------ITEM----------------------------------------------------
 
 INSERT INTO REZAGADOS.Item (Id_Factura, Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
@@ -460,7 +460,7 @@ SELECT g.Retiro_Codigo, c.Id_Cuenta, g.Retiro_Fecha, g.Retiro_Importe
 FROM gd_esquema.Maestra g, REZAGADOS.Cuenta c
 WHERE g.Retiro_Codigo IS NOT NULL AND c.Id_Cuenta = g.Cuenta_Numero
 GROUP BY g.Retiro_Codigo, c.Id_Cuenta, g.Retiro_Fecha, g.Retiro_Importe
---ERROR GROUP
+
 ----------------------------------------TRANSFERENCIA-------------------------------------------------
 
 INSERT INTO REZAGADOS.Transferencia (Id_Cuenta_Emi, Id_Cuenta_Dest, Fecha, Importe)
@@ -485,9 +485,7 @@ WHERE Cheque_Numero IS NOT NULL
 GROUP BY Cheque_Numero, Retiro_Codigo, Banco_Cogido, Cheque_Fecha, Cheque_Importe
 
 
---ERROR GROUP
-----------------------------------------HISTORIALCUENTA-----------------------------------------------
-----------------------------------------HISTORIALUSUARIO-----------------------------------------------
+----------------------------------------HISTORIAL CUENTA-----------------------------------------------
 
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -991,7 +989,7 @@ BEGIN
     ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
 END
 GO
-----------------------------------------Buscar_User_ID-----------------
+-------------------------------------------------BUSCAR USER ID----------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1009,7 +1007,7 @@ BEGIN
 END
 GO
 
------------------------------------Listar_Cuenta------------------------------------
+-------------------------------------------------LISTAR CUENTA-------------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1024,7 +1022,7 @@ BEGIN
 END
 GO
 
----------------------------------Listar_Cuenta_Usuario---------------------------------------
+----------------------------------------------LISTAR CUENTA USUARIO------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1041,7 +1039,7 @@ BEGIN
 END
 GO
 
---------------------------------Listar_Cuenta_Cliente---------------------------------------
+---------------------------------------------LISTAR CUENTA CLIENTE--------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1058,7 +1056,7 @@ BEGIN
 	WHERE cli.Id_Cliente = @Id_Cliente
 END
 GO
------------------------------Listar_Cliente_ID_Usuario-------------------------------------
+-----------------------------------------LISTAR CLIENTE ID USUARIO-------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1079,7 +1077,7 @@ BEGIN
 END
 GO
 
---------------------------------------Listar_Cliente----------------------------------------------------
+----------------------------------------------LISTAR CLIENTE----------------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1098,7 +1096,7 @@ BEGIN
 END
 GO
 
---------------------------------------Buscar_Cliente_ID----------------------------------------------------
+---------------------------------------------BUSCAR CLIENTE ID----------------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1119,7 +1117,7 @@ BEGIN
 END
 GO
 
---------------------------------Buscar_Pais_Id-------------------------------------------
+--------------------------------------------BUSCAR PAIS ID-------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1137,8 +1135,8 @@ GO
 
 
 
-------------------ROLES-------------
------------------------------------------CREAR ROL------------------------------------------------
+------------------------------------------------ROLES--------------------------------------------------------
+----------------------------------------------CREAR ROL----------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1159,7 +1157,7 @@ BEGIN
 END
 GO
 
------------------------------------------BAJA ROL------------------------------------------------
+----------------------------------------------BAJA ROL------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1170,7 +1168,7 @@ UPDATE REZAGADOS.Rol SET Habilitada=0 WHERE Id_Rol=@Id_Rol
 END
 GO
 
------------------------------------------ALTA ROL------------------------------------------------
+-----------------------------------------------ALTA ROL------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1181,7 +1179,8 @@ UPDATE REZAGADOS.Rol SET Habilitada=1 WHERE Id_Rol = @Id_Rol
 END
 GO
 
------------------------------------------MODIFICAR ROL------------------------------------------------
+---------------------------------------------MODIFICAR ROL------------------------------------------------
+
 CREATE TYPE REZAGADOS.FuncionalidadesLista AS TABLE 
 ( Id_Funcionalidad NUMERIC(18,0) );
 GO
@@ -1220,7 +1219,7 @@ BEGIN CATCH
 END CATCH
 GO
 
------------------------------------------ASIGNAR ROL------------------------------------------------
+--------------------------------------------------ASIGNAR ROL------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1243,7 +1242,7 @@ END CATCH
 END
 GO
 
------------------------------------------DESASIGNAR ROL------------------------------------------------
+------------------------------------------------DESASIGNAR ROL------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1262,7 +1261,7 @@ END CATCH
 GO
 
 
---------------------------------Buscar_Rol_Id-------------------------------------------
+--------------------------------------------------BUSCAR ROL ID-------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1278,7 +1277,7 @@ BEGIN
 END
 GO
 
---------------------------------Buscar_Rol_Filtros-------------------------------------------
+--------------------------------------------------BUSCAR ROL FILTROS-------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -1340,3 +1339,4 @@ SELECT	f.Id_Funcionalidad ID,
 	FROM [REZAGADOS].Funcionalidad f 
 END
 GO
+
