@@ -318,6 +318,10 @@ FOREIGN KEY (Id_Usuario) REFERENCES REZAGADOS.Usuario (Id_Usuario)
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
 
+CREATE TYPE REZAGADOS.IdLista AS TABLE 
+( Id_Funcionalidad NUMERIC(18,0) );
+
+
 DECLARE @fecha datetime
 SET @fecha = getdate()
 
@@ -653,7 +657,6 @@ AS
 	END
 GO
 
-
 -----------------------------------------LOGIN------------------------------------------------
 
 USE [GD1C2015]
@@ -720,8 +723,6 @@ BEGIN
 END
 GO
 
-
-
 -----------------------------------------MODIFICAR NOMBRE FUNCIONALIDAD--------------------------------------------
 
 USE [GD1C2015]
@@ -732,7 +733,6 @@ BEGIN
 	UPDATE REZAGADOS.Funcionalidad SET Nombre = @Nombre_Func WHERE Id_Funcionalidad=@Id_Func
 END
 GO
-
 
 -----------------------------------------BAJA CUENTA------------------------------------------------
 
@@ -803,6 +803,8 @@ END
 GO
 
 ----------------------------------------ESTADO CUENTA------------------------------------------
+----------------------------------------LISTAR ESTADO---------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].[Listar_Estado]
@@ -813,6 +815,8 @@ BEGIN
 	FROM [REZAGADOS].Estado_Cuenta e
 END
 GO
+
+--------------------------------------BUSCAR ESTADO ID-----------------------------------------
 
 USE [GD1C2015]
 GO
@@ -894,6 +898,7 @@ END
 GO
 
 -----------------------------------------RETIRO EFECTIVO--------------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.RetiroEfectivo(@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Nro_Documento NUMERIC(18,0), @Cuenta NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
@@ -926,6 +931,7 @@ END
 GO
 
 ----------------------------------------------TRANSFERENCIA ENTRE CUENTAS-------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Cuenta_Origen NUMERIC(18,0), @Cuenta_Destino NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
@@ -1030,7 +1036,6 @@ GO
 CREATE PROCEDURE REZAGADOS.Top5Retiros (@Cuenta NUMERIC(18,0))
 AS
 BEGIN
-
 SELECT TOP 5 R.Id_Retiro, R.Id_Cuenta, R.Fecha, R.Id_Cuenta, R.Importe, C.Id_Cheque, C.Id_Retiro, C.Id_Banco, C.Fecha, C.Id_Moneda, C.Importe, C.Num_Egreso, C.Num_Item
 FROM REZAGADOS.Retiro R, REZAGADOS.Cheque C
 WHERE R.Id_Cuenta = @Cuenta
@@ -1052,10 +1057,11 @@ BEGIN
     ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
 END
 GO
+
 -------------------------------------------------BUSCAR USER ID----------------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Buscar_User_ID]
 @Id numeric(18, 0) = null
 AS
@@ -1071,9 +1077,9 @@ END
 GO
 
 -------------------------------------------------LISTAR CUENTA-------------------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta]
 AS
 BEGIN
@@ -1086,9 +1092,9 @@ END
 GO
 
 ----------------------------------------------LISTAR CUENTA USUARIO------------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta_Usuario]
 @Id_Usuario int
 AS
@@ -1103,9 +1109,9 @@ END
 GO
 
 ---------------------------------------------LISTAR CUENTA CLIENTE--------------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta_Cliente]
 @Id_Cliente int
 AS
@@ -1119,10 +1125,11 @@ BEGIN
 	WHERE cli.Id_Cliente = @Id_Cliente
 END
 GO
+
 -----------------------------------------LISTAR CLIENTE ID USUARIO-------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Listar_Cliente_ID_Usuario]
 @Id_Usuario int
 AS
@@ -1141,9 +1148,9 @@ END
 GO
 
 ----------------------------------------------LISTAR CLIENTE----------------------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Listar_Cliente]
 AS
 BEGIN
@@ -1160,9 +1167,9 @@ END
 GO
 
 ---------------------------------------------BUSCAR CLIENTE ID----------------------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Buscar_Cliente_ID]
 @Id int
 AS
@@ -1181,9 +1188,9 @@ END
 GO
 
 --------------------------------------------BUSCAR PAIS ID-------------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Buscar_Pais_Id]
 @Id int
 AS
@@ -1195,8 +1202,6 @@ BEGIN
 	WHERE p.Id_Pais = @Id
 END
 GO
-
-
 
 ------------------------------------------------ROLES--------------------------------------------------------
 ----------------------------------------------CREAR ROL----------------------------------------------------
@@ -1244,15 +1249,12 @@ GO
 
 ---------------------------------------------MODIFICAR ROL------------------------------------------------
 
-CREATE TYPE REZAGADOS.FuncionalidadesLista AS TABLE 
-( Id_Funcionalidad NUMERIC(18,0) );
-GO
-
+USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Modificar_Rol (
 @Id_Rol NUMERIC(18,0),
 @Nombre_Rol VARCHAR(255),
-@Funcionalidades FuncionalidadesLista READONLY,
+@Funcionalidades IdLista READONLY,
 @Respuesta INT OUTPUT,
 @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
@@ -1323,12 +1325,10 @@ ROLLBACK TRANSACTION
 END CATCH
 GO
 
-
 --------------------------------------------------BUSCAR ROL ID-------------------------------------------
 
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Buscar_Rol_Id]
 @Id NUMERIC(18,0)
 AS
@@ -1342,9 +1342,9 @@ END
 GO
 
 --------------------------------------------------BUSCAR ROL FILTROS-------------------------------------------
+
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Buscar_Rol_Filtros] (@Nombre VARCHAR(255)=NULL, @Id_Rol NUMERIC(18,0)=NULL)
 AS
 BEGIN
@@ -1413,6 +1413,34 @@ USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].[Modificar_Tipo_Cuenta] (@Numero_Cuenta NUMERIC(18,0), @Id_Tipo NUMERIC(18,0))
 AS
-	UPDATE REZAGADOS.Cuenta SET Id_Tipo_Cuenta = @Id_Tipo WHERE Id_Cuenta=@Numero_Cuenta
+	BEGIN
+		UPDATE REZAGADOS.Cuenta SET Id_Tipo_Cuenta = @Id_Tipo WHERE Id_Cuenta=@Numero_Cuenta
+	END
 GO
 
+---------------------------------------------------FACTURAR COSTOS------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Facturar] (@Id_Items IdLista READONLY, @Id_Usuario NUMERIC(18,0), @Respuesta INT OUTPUT, @Respuesta2 VARCHAR(255) OUTPUT)
+AS
+SET NOCOUNT ON
+BEGIN TRY
+BEGIN TRANSACTION
+	BEGIN	
+		--DECLARE @TOTAL INT SET SELECT SUM(Importe) FROM REZAGADOS.Item WHERE Id_Item IN (SELECT * FROM @Id_Items)
+		--INSERT INTO REZAGADOS.Factura (Id_Usuario, Fecha) VALUES (SELECT Id_Usuario FROM REZAGADOS.Item, REZAGADOS.Cuenta WHERE Cuenta.Id_Cuenta=Item.Id_Cuenta 
+		INSERT INTO REZAGADOS.Factura (Id_Usuario, Fecha) VALUES (@Id_Usuario, GETDATE())
+		DECLARE @Id_Factura NUMERIC(18,0) = (SELECT @@IDENTITY)
+		UPDATE REZAGADOS.Item SET Id_Factura=@Id_Factura WHERE Id_Item IN (SELECT * FROM @Id_Items)
+		SET @Respuesta = 1
+		SET @Respuesta2 = 'Items pagados exitosamente'
+	END
+COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION
+	SET @Respuesta = - 1
+	SET @Respuesta2 =  ERROR_MESSAGE()
+END CATCH
+GO
