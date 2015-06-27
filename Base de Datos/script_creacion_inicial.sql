@@ -186,7 +186,7 @@ ALTER TABLE REZAGADOS.Banco ADD CONSTRAINT PK_Id_Banco PRIMARY KEY (Id_Banco);
 
 CREATE TABLE REZAGADOS.Item (
 Id_Item numeric(18,0) IDENTITY(1,1) NOT NULL,
-Id_Factura numeric(18,0) NOT NULL,
+Id_Factura numeric(18,0),
 Id_Cuenta numeric(18,0),
 Id_Tipo_Item numeric(18,0),
 Importe numeric(18,2) NOT NULL, 
@@ -452,7 +452,7 @@ GROUP BY u.Id_Usuario, Tarjeta_Numero, Tarjeta_Emisor_Descripcion, Tarjeta_Codig
 --------------------------------------------TIPO ITEM-----------------------------------------------
 
 INSERT INTO REZAGADOS.TipoItem (Tipo)
-VALUES ('Comisión por transferencia.'), ('Creacion de cuenta.'), ('Cambio de cuenta.'), ('Retiro.'), ('Cheque.')
+VALUES ('Comisión por transferencia.'), ('Creacion de cuenta.'), ('Cambio de cuenta.')
 
 ------------------------------------------FACUTRA--------------------------------------------------
 
@@ -468,6 +468,10 @@ INSERT INTO REZAGADOS.Item (Id_Factura, Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
 SELECT f.Id_Factura, c.Id_Cuenta, t.Id_Tipo_Item, g.Trans_Importe, g.Transf_Fecha
 FROM gd_esquema.Maestra g, REZAGADOS.Factura f, REZAGADOS.Usuario u, REZAGADOS.Cuenta c, REZAGADOS.TipoItem t
 WHERE f.Id_Factura = g.Factura_Numero AND u.Nombre = g.Cli_Mail AND c.Id_Usuario = u.Id_Usuario AND t.Tipo = g.Item_Factura_Descr
+UNION
+SELECT g.Factura_Numero, c.Id_Cuenta, 1, CAST(ROUND(g.Trans_Importe,1)/10 as Numeric (18,2)), g.Transf_Fecha
+FROM gd_esquema.Maestra g, REZAGADOS.Usuario u, REZAGADOS.Cuenta c
+WHERE u.Nombre = g.Cli_Mail AND c.Id_Usuario = u.Id_Usuario AND Item_Factura_Descr IS NULL AND Cuenta_Dest_Numero is not null AND Trans_Importe != 0.00
 
 --------------------------------------------RETIRO----------------------------------------------------
 
@@ -506,7 +510,7 @@ GROUP BY Cheque_Numero, Retiro_Codigo, Banco_Cogido, Cheque_Fecha, Cheque_Import
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
 
------------------------------------------CREAR CLIENTE------------------------------------------------
+------------------------------------------CREAR CLIENTE------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -798,7 +802,7 @@ UPDATE REZAGADOS.TipoCuenta SET Costo = @Costo WHERE Categoria=@Categoria
 END
 GO
 
-----------------------------------------Esatod_Cuenta------------------------------------------
+----------------------------------------ESTADO CUENTA------------------------------------------
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].[Listar_Estado]
@@ -1403,7 +1407,5 @@ END
 GO
 
 ----------------------------------------------------FACTURACION DE COSTOS------------------------------------------
----------------------------------------------------TRANSFERECIA DE CUENTAS-----------------------------------------
 ---------------------------------------------------MODIFICACION TIPO CUENTA----------------------------------------
------------------------------------------------------APERTURA DE CUENTA--------------------------------------------
 
