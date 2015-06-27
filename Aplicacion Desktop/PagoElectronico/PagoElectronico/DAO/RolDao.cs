@@ -11,33 +11,71 @@ namespace DAO
 {
     public class RolDao: BasicaDAO<RolModel>
     {
+        private const String LISTAR_ROL_USUARIO = "Listar_Rol_Usuario";
+        private const String LISTAR_ROL_FILTROS = "Buscar_Rol_Filtros";
+       
+
         //-------------------------------------------------------------------------------------------------------------
         public List<RolModel> getRolesByUser(Decimal userId)
         {
-            List<RolModel> listaRoles = new List<RolModel>();
-            DataTable dataRoles = this.getRolesDeBase(userId);
-            foreach(DataRow rolBase in dataRoles.Rows){
-                RolModel rolModel = new RolModel(rolBase);
-                listaRoles.Add(rolModel);
-            }
-            return listaRoles;
+            SqlCommand command = InitializeConnection(LISTAR_ROL_USUARIO);
+            command.Parameters.Add("@Id", System.Data.SqlDbType.Decimal).Value = userId;
+           
+            return operacionSelect(command);
+        }
+        //-------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------
+        public List<RolModel> getRolesByUser(Decimal userId,Boolean habilitados)
+        { 
+            SqlCommand command = InitializeConnection(LISTAR_ROL_USUARIO);
+            command.Parameters.Add("@Id", System.Data.SqlDbType.Decimal).Value = userId;
+            command.Parameters.Add("@Habilitados", System.Data.SqlDbType.Bit).Value = habilitados;
+
+            return operacionSelect(command);
         }
         //-------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------
         public List<RolModel> getRolesByFilters(Decimal rolId,String rolName)
         {
-            List<RolModel> listaRoles = new List<RolModel>();
-            //TODO
-            return null;
+            SqlCommand command = InitializeConnection(LISTAR_ROL_FILTROS);
+
+            if (rolName.Length != 0 && rolName != null)
+            {
+                command.Parameters.Add("@Nombre", System.Data.SqlDbType.NVarChar, 255).Value = rolName;
+            }
+            if (rolId != 0)
+            {
+                command.Parameters.Add("@Id_Rol", System.Data.SqlDbType.Decimal).Value = rolId;
+            }
+
+            return operacionSelect(command);
         }
         //-------------------------------------------------------------------------------------------------------------
-        public RolModel updateRol(RolModel rol)
+
+        //-------------------------------------------------------------------------------------------------------------
+        public RolRespuesta createRol(RolModel entity)
         {
             try
             {
-                DataTable dt = new DataTable();
+                SqlCommand command = InitializeConnection("Crear_Rol");
+                command.Parameters.Add("Nombre_Rol", System.Data.SqlDbType.NVarChar, 255).Value = entity.nombre;
+                return operacionDml(command);
+            }
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                throw excepcion;
+            }
+        }
+        //-------------------------------------------------------------------------------------------------------------
 
+        //-------------------------------------------------------------------------------------------------------------
+        public RolRespuesta updateRol(RolModel rol)
+        {
+            try
+            {
                 //Seteo la tabla de las funcionalidades
                 DataTable funcionalidadesLista = new DataTable();
                 funcionalidadesLista.Columns.Add("Id_Funcionalidad", typeof(decimal));
@@ -49,69 +87,57 @@ namespace DAO
                 //Llamo al SP modificar Rol
                 SqlCommand command = InitializeConnection("Modificar_Rol");
 
-                command.Parameters.Add("@Id_Rol", System.Data.SqlDbType.Int).Value = rol.id;
+                command.Parameters.Add("@Id_Rol", System.Data.SqlDbType.Decimal).Value = rol.id;
                 command.Parameters.Add("@Nombre_Rol", System.Data.SqlDbType.NVarChar,255).Value = rol.nombre;
                 command.Parameters.Add("@Funcionalidades", System.Data.SqlDbType.Structured).Value = funcionalidadesLista;
-                var pOut = command.Parameters.Add("@Respuesta", SqlDbType.Int);
-                var pOut2 = command.Parameters.Add("@RespuestaMensaje", SqlDbType.NVarChar, 255);
-                pOut.Direction = ParameterDirection.Output;
-                pOut2.Direction = ParameterDirection.Output;
-                //
-
-                SqlDataAdapter da = new SqlDataAdapter(command);
-                da.Fill(dt);
-                Int32 value = Convert.IsDBNull(pOut.Value) ? 0 : (Int32)(pOut.Value);
-                string value2 = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
-                if (value != -1)
-                {
-                    this.Commit();
-                }
-                else
-                {
-                    MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    //enviando el id negativo indico que falló
-                    rol.id = rol.id * -1;
-                    return rol;
-                }
+                return operacionDml(command);
             }
             catch (NullReferenceException exepcion) {
                 Console.Write(exepcion);
+                throw exepcion;
             }
             catch (Exception excepcion)
             {
                 Console.Write(excepcion);
-                this.RollBack();
                 throw excepcion;
-
             }
-            return rol;
 
         }
         //-------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------
-        public RolModel disableRol(RolModel rol)
+        public RolRespuesta disableRol(RolModel rol)
         {
-            Baja_Rol
-            return rol;
-        }
-        //-------------------------------------------------------------------------------------------------------------
-
-        private DataTable getRolesDeBase(Decimal idUsuario)
-        {
-            DataTable dt = new DataTable();
-            using (SqlCommand command = InitializeConnection("Listar_Rol_Usuario"))
+            try
             {
-                command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = idUsuario;
-                SqlDataAdapter da = new SqlDataAdapter(command);
-                da.Fill(dt);
+                SqlCommand command = InitializeConnection("Baja_Rol");
+                command.Parameters.Add("@Id_Rol", System.Data.SqlDbType.Decimal).Value = rol.id;
+                return operacionDml(command);
             }
-            if (dt.Rows.Count > 0)
-                return dt;
-            return null;
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                throw excepcion;
+            }
         }
+        //-------------------------------------------------------------------------------------------------------------
 
-
+        //-------------------------------------------------------------------------------------------------------------
+        public RolRespuesta enableRol(RolModel rol)
+        {
+            try
+            {
+                SqlCommand command = InitializeConnection("Alta_Rol");
+                command.Parameters.Add("@Id_Rol", System.Data.SqlDbType.Decimal).Value = rol.id;
+                return operacionDml(command);
+            }
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                throw excepcion;
+            }
+        }
+        //-------------------------------------------------------------------------------------------------------------
 
         public override RolModel getModeloBasico(DataRow fila)
         {
@@ -128,43 +154,45 @@ namespace DAO
             return "Listar_Rol";
         }
 
-        public RolModel createRol(RolModel entity)
+
+        private List<RolModel> operacionSelect(SqlCommand command)
+        {
+            List<RolModel> result = new List<RolModel>();
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(dt);
+            foreach (DataRow row in dt.Rows)
+            {
+                RolModel rolModel = new RolModel(row);
+                result.Add(rolModel);
+            }
+            return result;
+        }
+       
+        public RolRespuesta operacionDml(SqlCommand command)
         {
             try
             {
                 DataTable dt = new DataTable();
-
-                SqlCommand command = InitializeConnection("Crear_Rol");
-
-                command.Parameters.Add("Nombre_Rol", System.Data.SqlDbType.NVarChar, 50).Value = entity.nombre;
                 //
-                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Int);
+                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
                 var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
                 pOut.Direction = ParameterDirection.Output;
                 pOut2.Direction = ParameterDirection.Output;
                 //
-                
+
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 da.Fill(dt);
-                Int32 value = Convert.IsDBNull(pOut.Value) ? 0 : (Int32)(pOut.Value);
-                string value2 = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
-                if (value != -1)
-                {
-                    entity.id = value;
-                    this.Commit();
-                }
-                else
-                {
-                    MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                }
-                return entity;
+                Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (Decimal)(pOut.Value);
+                String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+
+                return new RolRespuesta(value,mensaje);
             }
             catch (Exception excepcion)
             {
-                this.RollBack();
                 throw excepcion;
-
             }
+            
         }
 
         protected override string getProcedureCrearBasica()

@@ -15,7 +15,8 @@ namespace ABM
 
         private const int AGREGAR_ROL = 0;
         private const int MODIFICAR_ROL = 1;
-        private const int DESHABILITAR_ROL = 2;
+        private const int HABILITAR_ROL = 2;
+        private const int DESHABILITAR_ROL = 3;
 
         private Int32 rolActivoIndex;
         private RolModel rolActivo;
@@ -45,15 +46,17 @@ namespace ABM
             string[] row;
             foreach (RolModel rol in roles)
             {
-                if (applyFilters(rol)) 
-                {
-                    row = new String[] {    rol.id.ToString(),
-                                            rol.nombre.ToString(),
-                                            rol.habilitado.ToString()
-                                            };
-
-                    dataGridViewRoles.Rows.Add(row);
+                String estado = "Deshabilitado";
+                if (rol.habilitado) {
+                    estado = "Habilitado";
                 }
+
+                row = new String[] {    rol.id.ToString(),
+                                        rol.nombre.ToString(),
+                                        estado
+                                        };
+
+                dataGridViewRoles.Rows.Add(row);
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -71,42 +74,6 @@ namespace ABM
             roles[rolActivoIndex] = rol;
             fillRolesTable();
          }
-        //-----------------------------------------------------------------------------------------------------------------
-
-        //-----------------------------------------------------------------------------------------------------------------
-        public void formResponseDisable()
-        {
-            roles[rolActivoIndex].habilitado = false;
-            fillRolesTable();
-        }
-        //-----------------------------------------------------------------------------------------------------------------
-
-        //-----------------------------------------------------------------------------------------------------------------
-        public bool applyFilters(RolModel rol)
-        {
-            bool response = true;
-            //id
-
-            if (textBox1.Text.Length != 0)
-            {
-                if ( ! textBox1.Text.ToLower().Contains(rol.id.ToString()))
-                {
-                    response = false;
-                }
-            }
-
-            //nombre
-            if (textBox2.Text.Length != 0)
-            {
-                if (!textBox2.Text.ToLower().Contains(rol.nombre.ToLower()))
-                {
-                    response = false;
-                }
-            }
-            return response;
-
-
-        }
         //-----------------------------------------------------------------------------------------------------------------
 
 
@@ -129,6 +96,12 @@ namespace ABM
                     count++;
                 }
 
+                button2.Text = "Dar de Alta";
+                if (rolActivo.habilitado)
+                {
+                    button2.Text = "Dar de Baja";
+                }
+
                 button1.Enabled = true;
                 button2.Enabled = true;
             } catch (NullReferenceException err) {
@@ -149,11 +122,16 @@ namespace ABM
         }
         //-----------------------------------------------------------------------------------------------------------------
 
-        //deshabilitar Rol
+        //deshabilitar o habilitar Rol
         //-----------------------------------------------------------------------------------------------------------------
         private void button2_Click(object sender, EventArgs e)
         {
-            RolForm rolForm = new RolForm(DESHABILITAR_ROL, rolActivo, rolDao, this);
+            int ACTION = HABILITAR_ROL;
+            if (rolActivo.habilitado)
+            {
+                ACTION = DESHABILITAR_ROL;
+            }
+            RolForm rolForm = new RolForm(ACTION, rolActivo, rolDao, this);
             rolForm.MdiParent = this.MdiParent;
             rolForm.Show();
         }
@@ -181,6 +159,10 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonBuscar_Click(object sender, EventArgs e)
         {
+            rolActivo = null;
+            rolActivoIndex = 0;
+            button1.Enabled = false;
+            button2.Enabled = false;
             roles = rolDao.getRolesByFilters(idFilter,textBox2.Text);
             fillRolesTable();
         }
@@ -190,6 +172,7 @@ namespace ABM
         //Validar si se ingeso un numero
         private void textBox1_Leave(object sender, EventArgs e)
         {
+            idFilter = 0;
             if (textBox1.Text.Length != 0)
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(textBox1.Text, "[^0-9]"))
@@ -213,6 +196,14 @@ namespace ABM
                     }
                 }
             }
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonLimpiar_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

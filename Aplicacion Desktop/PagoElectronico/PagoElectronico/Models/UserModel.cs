@@ -104,14 +104,18 @@ namespace Models
         }
 
         //---------------------------------------------------------------------------------------------------------------
-        public List<RolModel> getMisRoles()
+        public void getMisRoles(Boolean rolesHabilitados)
         {
-          return new RolDao().getRolesByUser(this.id);    
+           this.roles = new RolDao().getRolesByUser(this.id, rolesHabilitados);
         }
         //---------------------------------------------------------------------------------------------------------------
 
-
-
+        //---------------------------------------------------------------------------------------------------------------
+        public List<RolModel> getMisRoles()
+        {
+            return new RolDao().getRolesByUser(this.id);
+        }
+        //---------------------------------------------------------------------------------------------------------------
 
         public override void mapeoFilaAModel(DataRow fila)
         {

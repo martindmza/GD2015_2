@@ -16,6 +16,7 @@ using Facturacion;
 using Tarjetas;
 using Models;
 using Logins;
+using DAO;
 
 namespace Frame
 {
@@ -36,18 +37,10 @@ namespace Frame
                 this.label1.Text = usuario.nombre;
 
                 //Busco los roles activos del usuario
-                usuario.getMisRoles();
-                List<RolModel> rolesHabilitados = new List<RolModel>();
-                foreach (RolModel rol in usuario.roles)
-                {
-                    if (rol.habilitado == true)
-                    {
-                        rolesHabilitados.Add(rol);
-                    }
-                }
-
+                usuario.getMisRoles(true);
+               
                 //si no tiene roles activos salir
-                if (rolesHabilitados.Count == 0)
+                if (usuario.roles.Count == 0)
                 {
                     MessageBox.Show("El usuario no tiene roles cargados o Habilitados");
                     this.Close();
@@ -56,26 +49,38 @@ namespace Frame
                     parent.Show();
                 }
                 //Si tiene un rol activo entrar a la aplicacion directamente
-                else if (rolesHabilitados.Count == 1)
+                else if (usuario.roles.Count == 1)
                 {
-                    this.label4.Text = usuario.roles.First().nombre;
                     Login.rolSelected = usuario.roles.First();
+                    setRolLogued(Login.rolSelected);
+                    enableMenu();
                 }
                 //Si tiene más de un rol, muestra opciones de rol con el cual entrar
-                else {
-                        Form f = new RolSelection(this,rolesHabilitados);
-                        f.MdiParent = this;
-                        f.Show();
+                else
+                {
+                    Form f = new RolSelection(this, usuario.roles);
+                    f.MdiParent = this;
+                    f.Show();
                 }
+
             }
+            else {
+                MessageBox.Show("No se registrado un usuario válido");
+                this.Close();
+                this.Dispose();
+                GC.Collect();
+            }            
+
         }
         //______________________________________________________________________________________________________________________
 
         //---------------------------------------------------------------------------------------------------------------------
-        public void setRolLogued() {
+        public void setRolLogued(RolModel rol) {
             try
             {
+                Logins.Login.rolSelected = rol;
                 this.label4.Text = Login.rolSelected.nombre;
+                rol.funcionalidades = new FuncionalidadDao().getFuncionalidades(rol.id, true);
             }
             catch (NullReferenceException e) {
                 MessageBox.Show("No se seleccionó ningún rol" + e);
@@ -87,6 +92,30 @@ namespace Frame
         public void enableMenu()
         {
             this.menuStrip1.Enabled = true;
+            List <ToolStripMenuItem> operaciones = new List<ToolStripMenuItem>();
+            operaciones.Add(rolesToolStripMenuItem);
+            operaciones.Add(usuariosToolStripMenuItem1);
+            operaciones.Add(clientesToolStripMenuItem);
+            operaciones.Add(cuentasToolStripMenuItem1);
+            operaciones.Add(depositoToolStripMenuItem);
+            operaciones.Add(retiroToolStripMenuItem);
+            operaciones.Add(transferenciaToolStripMenuItem);
+            operaciones.Add(facturacionDeCostosToolStripMenuItem);
+            operaciones.Add(tarjetasToolStripMenuItem);
+            operaciones.Add(consultaDeSaldosToolStripMenuItem);
+            operaciones.Add(estadisticasToolStripMenuItem);
+            operaciones.Add(abmsToolStripMenuItem);
+            operaciones.Add(movimientosToolStripMenuItem);
+            int index = 1;
+            foreach (ToolStripMenuItem o in operaciones)
+            {
+                if (Login.rolSelected.funcionalidades.Exists(i => i.id == index))
+                {
+                    o.Visible = true;
+                }
+                index++;
+            }
+
         }
         //---------------------------------------------------------------------------------------------------------------------
 
@@ -126,9 +155,9 @@ namespace Frame
             f.Show();
         }
         //-----------------------------------------------------------------------------------------------------------------
-
+        
         //-----------------------------------------------------------------------------------------------------------------
-        private void depósitosToolStripMenuItem_Click(object sender, EventArgs e)
+        private void depositoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form f = new DepositosAbm();
             f.MdiParent = this;
@@ -137,7 +166,7 @@ namespace Frame
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        private void retirosToolStripMenuItem_Click(object sender, EventArgs e)
+        private void retiroToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form f = new RetirosAbm();
             f.MdiParent = this;
@@ -146,14 +175,14 @@ namespace Frame
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        private void transferenciasToolStripMenuItem_Click(object sender, EventArgs e)
+        private void transferenciaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form f = new TransferenciaAbm();
             f.MdiParent = this;
             f.Show();
         }
         //-----------------------------------------------------------------------------------------------------------------
-
+        
         //-----------------------------------------------------------------------------------------------------------------
         private void facturaciónDeCostosToolStripMenuItem_Click(object sender, EventArgs e)
         {
