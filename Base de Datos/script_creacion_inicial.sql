@@ -1448,8 +1448,8 @@ GO
 
 ----------------------------------------------LISTAR FUNCIONALIDAD ROL-------------------------------------------------------
 USE [GD1C2015]
-IF OBJECT_ID ('REZAGADOS.[Listar_Funcionalidad_Rol]') IS NOT NULL
-    DROP PROCEDURE REZAGADOS.[Listar_Funcionalidad_Rol]
+IF OBJECT_ID ('REZAGADOS.Listar_Funcionalidad_Rol') IS NOT NULL
+    DROP PROCEDURE REZAGADOS.Listar_Funcionalidad_Rol
 
 GO
 CREATE PROCEDURE [REZAGADOS].[Listar_Funcionalidad_Rol]
@@ -1505,6 +1505,34 @@ END
 GO
 
 ----------------------------------------------------FACTURACION DE COSTOS------------------------------------------
+USE [GD1C2015]
+IF OBJECT_ID ('REZAGADOS.Facturar') IS NOT NULL
+    DROP PROCEDURE REZAGADOS.Facturar
+
+GO
+CREATE PROCEDURE [REZAGADOS].[Facturar] (@Id_Items IdLista READONLY, @Id_Usuario NUMERIC(18,0), @Respuesta INT OUTPUT, @Respuesta2 VARCHAR(255) OUTPUT)
+ AS
+SET NOCOUNT ON
+BEGIN TRY
+BEGIN TRANSACTION
+	BEGIN	
+		--DECLARE @TOTAL INT SET SELECT SUM(Importe) FROM REZAGADOS.Item WHERE Id_Item IN (SELECT * FROM @Id_Items)
+		--INSERT INTO REZAGADOS.Factura (Id_Usuario, Fecha) VALUES (SELECT Id_Usuario FROM REZAGADOS.Item, REZAGADOS.Cuenta WHERE Cuenta.Id_Cuenta=Item.Id_Cuenta 
+		INSERT INTO REZAGADOS.Factura (Id_Usuario, Fecha) VALUES (@Id_Usuario, GETDATE())
+		DECLARE @Id_Factura NUMERIC(18,0) = (SELECT @@IDENTITY)
+		UPDATE REZAGADOS.Item SET Id_Factura=@Id_Factura WHERE Id_Item IN (SELECT * FROM @Id_Items)
+		SET @Respuesta = 1
+		SET @Respuesta2 = 'Items pagados exitosamente'
+	END
+COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION
+	SET @Respuesta = - 1
+	SET @Respuesta2 =  ERROR_MESSAGE()
+END CATCH
+GO 
+
 ---------------------------------------------------MODIFICAR TIPO CUENTA----------------------------------------
 
 USE [GD1C2015]
