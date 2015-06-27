@@ -93,19 +93,7 @@ namespace DAO
 
         public List<CuentaTipoModel> getCuentaTypes()
         {
-            List<CuentaTipoModel> tipos = new List<CuentaTipoModel>();
-
-            CuentaTipoModel t1 = new CuentaTipoModel(1, "oro", 10, 1000);
-            CuentaTipoModel t2 = new CuentaTipoModel(2, "plata", 10, 500);
-            CuentaTipoModel t3 = new CuentaTipoModel(3, "bronce", 10, 200);
-            CuentaTipoModel t4 = new CuentaTipoModel(4, "gratarola", 10, 0);
-
-            tipos.Add(t1);
-            tipos.Add(t2);
-            tipos.Add(t3);
-            tipos.Add(t4);
-
-            return tipos;
+            return new CuentaTipoDAO().getListado();
         }
 
         public CuentaModel addNewCuenta(CuentaModel cuenta)

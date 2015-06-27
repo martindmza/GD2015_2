@@ -268,6 +268,8 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE REZAGADOS.Buscar_Estado_Id;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Estado]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Listar_Estado;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_CuentaTipo]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Listar_CuentaTipo;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Tipo_Cuenta]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.[Modificar_Tipo_Cuenta];
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Facturar]') AND type in (N'P', N'PC'))
