@@ -1407,5 +1407,12 @@ END
 GO
 
 ----------------------------------------------------FACTURACION DE COSTOS------------------------------------------
----------------------------------------------------MODIFICACION TIPO CUENTA----------------------------------------
+---------------------------------------------------MODIFICAR TIPO CUENTA----------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Modificar_Tipo_Cuenta] (@Numero_Cuenta NUMERIC(18,0), @Id_Tipo NUMERIC(18,0))
+AS
+	UPDATE REZAGADOS.Cuenta SET Id_Tipo_Cuenta = @Id_Tipo WHERE Id_Cuenta=@Numero_Cuenta
+GO
 
