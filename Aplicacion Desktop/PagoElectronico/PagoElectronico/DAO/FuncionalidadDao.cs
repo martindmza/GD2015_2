@@ -13,49 +13,51 @@ namespace DAO
         public const String LISTAR_FUNCIONALIDAD_ROL = "Listar_Funcionalidad_Rol";
         public const String LISTAR_FUNCIONALIDAD = "Listar_Funcionalidad";
 
+        //-------------------------------------------------------------------------------------------------------------
         public List<FuncionalidadModel> getFuncionalidades()
         {
-            return getFuncionalidades(0);
-        }
+            SqlCommand command = InitializeConnection(LISTAR_FUNCIONALIDAD);
 
-        public List<FuncionalidadModel> getFuncionalidades(Decimal id)
-        {
-            DataTable tablaFuncionalidad = this.getFuncionalidadesBase(id);
-            List<FuncionalidadModel> listaRoles = new List<FuncionalidadModel>();
-            if (tablaFuncionalidad != null)
-            {
-                foreach (DataRow funcionBase in tablaFuncionalidad.Rows)
-                {
-                    FuncionalidadModel funcionalidadModel = new FuncionalidadModel(funcionBase);
-                    listaRoles.Add(funcionalidadModel);
-                }
-            }
-            return listaRoles;
+            return operacionSelect(command);
         }
         //-------------------------------------------------------------------------------------------------------------
-        public DataTable getFuncionalidadesBase(Decimal idRol)
+
+        //-------------------------------------------------------------------------------------------------------------
+        public List<FuncionalidadModel> getFuncionalidades(Decimal idRol)
         {
-            DataTable dt = new DataTable();
-            //si no tengo filtros, llamo a la vista que retorna todas las funcionalidades
-            if (idRol == 0)
-            {
-                using (SqlCommand command = InitializeConnection(LISTAR_FUNCIONALIDAD))
-                {
-                    SqlDataAdapter da = new SqlDataAdapter(command);
-                    da.Fill(dt);
-                }
-            }
-            else {
-                using (SqlCommand command = InitializeConnection(LISTAR_FUNCIONALIDAD_ROL))
-                {
-                    command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = idRol;
-                    SqlDataAdapter da = new SqlDataAdapter(command);
-                    da.Fill(dt);
-                }   
-            }
-            if (dt.Rows.Count > 0)
-                return dt;
-            return null;
+
+            SqlCommand command = InitializeConnection(LISTAR_FUNCIONALIDAD_ROL);
+            command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = idRol;
+
+            return operacionSelect(command);
         }
+        //-------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------
+        public List<FuncionalidadModel> getFuncionalidades(Decimal idRol,Boolean habilitadas)
+        {
+            SqlCommand command = InitializeConnection(LISTAR_FUNCIONALIDAD_ROL);
+            command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = idRol;
+            command.Parameters.Add("@Habilitados", System.Data.SqlDbType.Bit).Value = habilitadas;
+
+            return operacionSelect(command);
+        }
+        //-------------------------------------------------------------------------------------------------------------
+
+        //-------------------------------------------------------------------------------------------------------------
+        private List<FuncionalidadModel> operacionSelect(SqlCommand command)
+        {
+            List<FuncionalidadModel> result = new List<FuncionalidadModel>();
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(dt);
+            foreach (DataRow row in dt.Rows)
+            {
+                FuncionalidadModel rolModel = new FuncionalidadModel(row);
+                result.Add(rolModel);
+            }
+            return result;
+        }
+        //-------------------------------------------------------------------------------------------------------------
     }
 }

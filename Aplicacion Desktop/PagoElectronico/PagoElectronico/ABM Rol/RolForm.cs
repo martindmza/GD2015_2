@@ -13,6 +13,7 @@ namespace ABM
 {
     public partial class RolForm : Form
     {
+        private String EXCEPTION_MESSAGE = "No se pudo completar la operación";
         private RolModel rol;
         private int operacionTipo;
         private RolDao rolDao;
@@ -27,15 +28,17 @@ namespace ABM
         {
             InitializeComponent();
 
+            this.funcionalidades = new List<FuncionalidadModel>();
             if (rol != null)
             {
                 this.rol = rol;
                 this.textBox1.Text = rol.nombre;
-                this.funcionalidades = rol.funcionalidades;
+
+                foreach (FuncionalidadModel f in rol.funcionalidades)
+                {
+                    this.funcionalidades.Add( (FuncionalidadModel) f.Clone());
+                }
                 fillFunctionsTable();
-            }
-            else {
-                this.funcionalidades = new List<FuncionalidadModel>();
             }
 
             this.operacionTipo = operacionTipo;
@@ -56,10 +59,18 @@ namespace ABM
                     this.Text = "Modificar Rol";
                     break;
                 case 2:
+                    this.Text = "Dar de Alta Rol";
+                    this.textBox1.Enabled = false;
+                    this.buttonQuitar.Enabled = false;
+                    this.buttonAgregar.Enabled = false;
+                    this.button1.Text = "Dar de Alta";
+                    break;
+                default:
                     this.Text = "Dar de Baja Rol";
                     this.textBox1.Enabled = false;
                     this.buttonQuitar.Enabled = false;
                     this.buttonAgregar.Enabled = false;
+                    this.button1.Text = "Dar de baja";
                     break;
             }
 
@@ -103,36 +114,94 @@ namespace ABM
         //aceptar
         private void button1_Click(object sender, EventArgs e)
         {
+            RolRespuesta respuesta;
+
             switch (operacionTipo)
             {
+                //crear el rol
                 case 0:
-                    RolModel newRol = new RolModel(textBox1.Text);
-                    newRol.funcionalidades = funcionalidades;
-                    rol = rolDao.createRol(newRol);
-                    if (rol.id != -1)
+                    rol = new RolModel(textBox1.Text);
+                    try
                     {
-                        parent.formResponseAdd(newRol);
+                        respuesta = rolDao.createRol(rol);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            rol.id = respuesta.codigo;
+                            parent.formResponseAdd(rol);
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE);
                     }
                     break;
+                //modificar el rol
                 case 1:
-                    RolModel updatedRol = new RolModel(textBox1.Text);
-                    updatedRol.funcionalidades = funcionalidades;
-                    updatedRol = rolDao.createRol(updatedRol);
-                    if (updatedRol.id != -1)
+                    rol.nombre = textBox1.Text;
+                    rol.funcionalidades = funcionalidades;
+                    try
                     {
-                        rol = updatedRol;
+                        respuesta = rolDao.updateRol(rol);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            parent.formResponseUpdate(rol);
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
                     }
-                    parent.formResponseUpdate(rol);
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE);
+                    }
                     break;
+                //dar de alta el rol
+                case 2:
+                     try
+                    {
+                        respuesta = rolDao.enableRol(rol);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            rol.habilitado = true;
+                            parent.formResponseUpdate(rol);
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE);
+                    }
+                    break;
+                //dar de baja el rol
                 default:
-                    this.rolDao.disableRol(rol);
-                    parent.formResponseDisable();
+                    try
+                    {
+                        respuesta = rolDao.disableRol(rol);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            rol.habilitado = false;
+                            parent.formResponseUpdate(rol);
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er){
+                        MessageBox.Show(EXCEPTION_MESSAGE);
+                    }
                     break;
             }
 
-            this.Close();
-            this.Dispose();
-            GC.Collect();
+           
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -178,7 +247,8 @@ namespace ABM
         //quitar funcionalidad
         private void buttonQuitar_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentCell.RowIndex != 0) {
+            try
+            {
                 if (this.funcionalidades.Count == 1)
                 {
                     buttonQuitar.Enabled = false;
@@ -187,11 +257,14 @@ namespace ABM
                 funcionalidades.RemoveAt(index);
                 fillFunctionsTable();
             }
+            catch (NullReferenceException err) {
+                buttonQuitar.Enabled = false;
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             try
             {
@@ -210,7 +283,10 @@ namespace ABM
                     count++;
                 }
 
-                buttonQuitar.Enabled = true;
+                if (operacionTipo == 1)
+                {
+                    buttonQuitar.Enabled = true;
+                }
             }
             catch (NullReferenceException err)
             {

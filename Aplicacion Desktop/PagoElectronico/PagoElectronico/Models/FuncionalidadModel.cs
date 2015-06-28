@@ -6,7 +6,7 @@ using System.Data;
 
 namespace Models
 {
-    public class FuncionalidadModel: BasicaModel
+    public class FuncionalidadModel: BasicaModel ,ICloneable
     {
         public Boolean habilitado { get; set; }
 
@@ -26,5 +26,11 @@ namespace Models
             base.mapeoFilaAModel(fila);
             this.habilitado = (Boolean)fila[HABILITADA];
         }
-    }
-}
+
+        public object Clone(){
+            return new FuncionalidadModel(this.id,this.nombre,this.habilitado);
+        }
+            
+     }
+  }
+

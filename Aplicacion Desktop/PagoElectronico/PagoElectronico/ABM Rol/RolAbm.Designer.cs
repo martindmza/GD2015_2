@@ -42,6 +42,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.buttonLimpiar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRoles)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -55,7 +56,7 @@
             this.Codigo,
             this.Nombre,
             this.Habilitada});
-            this.dataGridViewRoles.Location = new System.Drawing.Point(6, 101);
+            this.dataGridViewRoles.Location = new System.Drawing.Point(6, 126);
             this.dataGridViewRoles.MultiSelect = false;
             this.dataGridViewRoles.Name = "dataGridViewRoles";
             this.dataGridViewRoles.ReadOnly = true;
@@ -78,13 +79,13 @@
             // 
             // Habilitada
             // 
-            this.Habilitada.HeaderText = "Habilitado";
+            this.Habilitada.HeaderText = "Estado";
             this.Habilitada.Name = "Habilitada";
             this.Habilitada.ReadOnly = true;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(372, 413);
+            this.button1.Location = new System.Drawing.Point(372, 438);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -94,7 +95,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(294, 413);
+            this.button2.Location = new System.Drawing.Point(294, 438);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 1;
@@ -104,7 +105,7 @@
             // 
             // buttonBuscar
             // 
-            this.buttonBuscar.Location = new System.Drawing.Point(354, 19);
+            this.buttonBuscar.Location = new System.Drawing.Point(372, 68);
             this.buttonBuscar.Name = "buttonBuscar";
             this.buttonBuscar.Size = new System.Drawing.Size(75, 23);
             this.buttonBuscar.TabIndex = 1;
@@ -135,17 +136,16 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.buttonBuscar);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(6, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(435, 50);
+            this.groupBox1.Size = new System.Drawing.Size(441, 50);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filtrar:";
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(238, 21);
+            this.textBox2.Location = new System.Drawing.Point(303, 21);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(100, 20);
             this.textBox2.TabIndex = 6;
@@ -153,7 +153,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(189, 24);
+            this.label2.Location = new System.Drawing.Point(254, 24);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(47, 13);
             this.label2.TabIndex = 3;
@@ -162,7 +162,7 @@
             // label4
             // 
             this.label4.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.label4.Location = new System.Drawing.Point(6, 80);
+            this.label4.Location = new System.Drawing.Point(6, 105);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(441, 18);
             this.label4.TabIndex = 7;
@@ -171,7 +171,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(214, 413);
+            this.button3.Location = new System.Drawing.Point(214, 438);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 1;
@@ -179,15 +179,27 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // buttonLimpiar
+            // 
+            this.buttonLimpiar.Location = new System.Drawing.Point(6, 68);
+            this.buttonLimpiar.Name = "buttonLimpiar";
+            this.buttonLimpiar.Size = new System.Drawing.Size(75, 23);
+            this.buttonLimpiar.TabIndex = 1;
+            this.buttonLimpiar.Text = "Limpiar";
+            this.buttonLimpiar.UseVisualStyleBackColor = true;
+            this.buttonLimpiar.Click += new System.EventHandler(this.buttonLimpiar_Click);
+            // 
             // RolAbm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 448);
+            this.ClientSize = new System.Drawing.Size(454, 488);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.buttonLimpiar);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
+            this.Controls.Add(this.buttonBuscar);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridViewRoles);
             this.MaximizeBox = false;
@@ -214,9 +226,10 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Codigo;
         private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
         private System.Windows.Forms.DataGridViewTextBoxColumn Habilitada;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button buttonLimpiar;
     }
 }

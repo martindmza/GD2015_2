@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Models;
+using DAO;
 
 namespace Frame
 {
@@ -42,9 +43,8 @@ namespace Frame
         {
             try
             {
-                Logins.Login.rolSelected = rolesHabilitados[listBox1.SelectedIndex];
+                parentFrame.setRolLogued(rolesHabilitados[listBox1.SelectedIndex]);
                 parentFrame.enableMenu();
-                parentFrame.setRolLogued();
                 MdiParent.Enabled = true;
                 this.Dispose();
                 GC.Collect();
