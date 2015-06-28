@@ -121,12 +121,14 @@ Id_Moneda numeric (18,0) IDENTITY(1,1) NOT NULL,
 Descripcion  varchar(255),);
 ALTER TABLE REZAGADOS.Moneda ADD CONSTRAINT PK_Id_Moneda PRIMARY KEY (Id_Moneda);
 
+/*
 CREATE TABLE REZAGADOS.HistorialCuenta(
 Id_Historial_Cuenta numeric (18,0) IDENTITY(1,1) NOT NULL,
 Id_Cuenta numeric (18,0),
 Fecha datetime,
 Estado varchar(255),);
 ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT PK_Id_Historial_Cuenta PRIMARY KEY (Id_Historial_Cuenta);
+*/
 
 CREATE TABLE REZAGADOS.Deposito (
 Id_Deposito numeric (18,0) IDENTITY (1,1) NOT NULL,
@@ -257,9 +259,11 @@ FOREIGN KEY (Id_Pais) REFERENCES REZAGADOS.Pais (Id_Pais)
 ALTER TABLE REZAGADOS.Cuenta ADD CONSTRAINT FK_Cuenta_to_Moneda
 FOREIGN KEY (Id_Moneda) REFERENCES REZAGADOS.Moneda (Id_Moneda)
 ;
+/*
 ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT FK_Historial_Cuenta_to_Cuenta
 FOREIGN KEY (Id_Cuenta) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
 ;
+*/
 ALTER TABLE REZAGADOS.Deposito ADD CONSTRAINT FK_Deposito_to_Cuenta
 FOREIGN KEY (Id_Cuenta) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
 ;
@@ -547,16 +551,16 @@ CREATE PROCEDURE REZAGADOS.Crear_Cliente(
 					@Nacionalidad VARCHAR(255),
 					@Username VARCHAR (255),
 					@Password VARCHAR(255),
-					@Resultado VARCHAR(255) OUTPUT,
-					@Resultado2 INT OUTPUT)
+					@RespuestaMensaje VARCHAR(255) OUTPUT,
+					@Respuesta NUMERIC(18,0) OUTPUT)
 AS 
 BEGIN TRY
 BEGIN TRANSACTION
 BEGIN
 IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
 	BEGIN
-	SET @Resultado = 'El e-mail ya existe.'
-	SET @Resultado2 = -1
+	SET @RespuestaMensaje = 'El e-mail ya existe.'
+	SET @Respuesta = -1
 	END
 ELSE
 BEGIN
@@ -569,9 +573,9 @@ BEGIN
 	SET @Id_Usuario = (SELECT DISTINCT Id_Usuario FROM REZAGADOS.Usuario WHERE REZAGADOS.Usuario.Nombre = @Username)
 	INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Nacionalidad)
 	VALUES (@Id_Usuario, @Nombre, @Apellido, @Id_Tipo_Documento, @Nro_Documento, @Id_Pais, @Direccion_Calle, @Direccion_Numero_Calle, @Direccion_Piso, @Direccion_Departamento, @Fecha_Nacimiento, @Mail, @Localidad, @Nacionalidad) 		
-	SET @Resultado2 = (SELECT Id_Cliente FROM Cliente WHERE Nombre = @Nombre AND Apellido = @Apellido AND Nro_Documento = @Nro_Documento)
-	INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)			
-	SET @Resultado = 'Los datos se guardaron exitosamente!'
+	INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
+	SET @Respuesta = (SELECT Id_Cliente FROM Cliente WHERE Nombre = @Nombre AND Apellido = @Apellido AND Nro_Documento = @Nro_Documento)			
+	SET @RespuestaMensaje = 'Los datos se guardaron exitosamente!'
 	END
 END
 COMMIT TRANSACTION
@@ -595,12 +599,14 @@ CREATE PROCEDURE REZAGADOS.Modificar_Cliente (
 								@Mail VARCHAR(255),
 								@Localidad VARCHAR(255),
 								@Nacionalidad VARCHAR(255),
-								@Resultado VARCHAR(255) OUTPUT)
+								@RespuestaMensaje VARCHAR(255) OUTPUT,
+								@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 	IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
 	BEGIN
-	SET @Resultado = 'El e-mail ya existe.'
+	SET @RespuestaMensaje = 'El e-mail ya existe.'
+	SET @Respuesta = -1
 	END
 ELSE
 	BEGIN
@@ -616,7 +622,8 @@ ELSE
 	[Nacionalidad] = @Nacionalidad
 	WHERE
    [Id_Cliente] = @Id_Cliente
-  SET @Resultado = 'El cliente ha sido modificado!'
+  SET @RespuestaMensaje = 'El cliente ha sido modificado!'
+  SET @Respuesta = 1
   END
 END
 GO
@@ -625,11 +632,15 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Alta_Cliente (@Id_Cliente varchar(255))
+CREATE PROCEDURE REZAGADOS.Alta_Cliente (	@Id_Cliente varchar(255),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	BEGIN
 		DECLARE @Id_Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM REZAGADOS.Cliente WHERE Id_Cliente = CAST(@Id_Cliente AS NUMERIC(18,0)))
 		UPDATE REZAGADOS.Cliente SET Habilitada=1 WHERE Id_Usuario=@Id_Usuario
+		SET @Respuesta = 1
+		SET @RespuestaMensaje = 'Alta exitosa'
 	END
 GO
 
@@ -637,11 +648,15 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Baja_Cliente  (@Id_Cliente NUMERIC(18,0))
+CREATE PROCEDURE REZAGADOS.Baja_Cliente  (	@Id_Cliente NUMERIC(18,0),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	BEGIN
 		DECLARE @Id_Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM REZAGADOS.Cliente WHERE Id_Cliente = @Id_Cliente)
 		UPDATE REZAGADOS.Cliente SET Habilitada=0 WHERE Id_Usuario=@Id_Usuario
+		SET @Respuesta = 1
+		SET @RespuestaMensaje = 'Baja exitosa'
 	END
 GO
 
@@ -649,13 +664,16 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Alta_Usuario (@Id_Usuario NUMERIC(18,0), @Respuesta VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Alta_Usuario (	@Id_Usuario NUMERIC(18,0),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	BEGIN
 		DECLARE @Contrasenia VARCHAR(255) = (SELECT Contrasenia FROM REZAGADOS.Usuario WHERE Id_Usuario=@Id_Usuario)
 		UPDATE REZAGADOS.Usuario SET Habilitada=1 WHERE Id_Usuario=@Id_Usuario
 		UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos = 0 WHERE Id_Usuario = @Id_Usuario
-		SET @Respuesta = 'Usuario dado de alta, contraseña: ' + (@Contrasenia);
+		SET @RespuestaMensaje = 'Usuario dado de alta, contraseña: ' + (@Contrasenia);
+		SET @Respuesta = 1
 		END
 GO
 
@@ -663,10 +681,14 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Baja_Usuario (@Id_Usuario NUMERIC(18,0))
+CREATE PROCEDURE REZAGADOS.Baja_Usuario (	@Id_Usuario NUMERIC(18,0),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	BEGIN
 		UPDATE REZAGADOS.Usuario SET Habilitada=0 WHERE Id_Usuario=@Id_Usuario
+		SET @Respuesta = 1
+		SET @RespuestaMensaje = 'Baja exitosa'
 	END
 GO
 
@@ -675,7 +697,10 @@ GO
 USE [GD1C2015]
 GO
 
-CREATE PROCEDURE [REZAGADOS].[Login] (@Usuario NVARCHAR(255), @Pass NVARCHAR(255), @Respuesta NVARCHAR(255) OUTPUT, @Respuesta_Contra NVARCHAR(255) OUTPUT)
+CREATE PROCEDURE [REZAGADOS].[Login] (		@Usuario NVARCHAR(255),
+											@Pass NVARCHAR(255),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS 
 BEGIN                  
 	DECLARE @Existe_Usuario INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario);                                     
@@ -693,11 +718,14 @@ BEGIN
 					UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos=0 WHERE Nombre = @Usuario;
 					DECLARE @Existe_Rol INT = (SELECT COUNT(R.Id_Rol) FROM REZAGADOS.Usuario U, REZAGADOS.UsuarioXRol R WHERE U.Nombre = @Usuario AND U.Id_Usuario = R.Id_Usuario)				
 					IF (@Existe_Rol = 0)
-						SET @Respuesta = 'El usuario no tiene asignado un rol, o el rol ha sido inhabilitado'
+					BEGIN
+						SET @RespuestaMensaje = 'El usuario no tiene asignado un rol, o el rol ha sido inhabilitado'
+						SET @Respuesta = -1
+						END
 					ELSE
 					BEGIN								
-						SET @Respuesta = 'Abrir Sesion'
-						SET @Respuesta_Contra = (SELECT U.Id_Usuario FROM REZAGADOS.Usuario U WHERE U.Nombre = @Usuario)				
+						SET @RespuestaMensaje = 'Abrir Sesion'
+						SET @Respuesta = (SELECT U.Id_Usuario FROM REZAGADOS.Usuario U WHERE U.Nombre = @Usuario)		
 					END
 				END
 				ELSE
@@ -705,21 +733,25 @@ BEGIN
 					UPDATE REZAGADOS.Usuario SET Cantidad_Intentos_Fallidos=(Cantidad_Intentos_Fallidos+1) WHERE Nombre = @Usuario;
 					SET @Cantidad_Intentos_Fallidos = (@Cantidad_Intentos_Fallidos + 1);
 					DECLARE @Cantidad_Intentos_Fallidos_String NVARCHAR(255) = @Cantidad_Intentos_Fallidos;
-					SET @Respuesta = 'Contraseña incorrecta, vuelva a intentarlo. Cantidad de intentos fallidos: ' + (@Cantidad_Intentos_Fallidos_String);
+					SET @RespuestaMensaje = 'Contraseña incorrecta, vuelva a intentarlo. Cantidad de intentos fallidos: ' + (@Cantidad_Intentos_Fallidos_String);
+					SET @Respuesta = -1
 				END
 			END
 			ELSE
 			BEGIN
 				DECLARE @Id_User NUMERIC(18,0) = (SELECT Id_Usuario FROM REZAGADOS.Usuario WHERE Nombre = @Usuario)
 				UPDATE REZAGADOS.Usuario SET Habilitada = 0 WHERE @Id_User = Id_Usuario
-				SET @Respuesta = 'Su usuario esta bloqueado, por sobrepasar la cantidad de logueos incorrectos';
+				SET @RespuestaMensaje = 'Su usuario esta bloqueado, por sobrepasar la cantidad de logueos incorrectos';
+				SET @Respuesta = -1
 			END  
 		END
 		ELSE
-		SET @Respuesta = 'El Usuario se encuentra inhabilitado'
+		SET @RespuestaMensaje = 'El Usuario se encuentra inhabilitado'
+		SET @Respuesta = -1
 	END
 	ELSE 
-		SET @Respuesta = 'No existe el usuario, vuelva a intentarlo';                              
+		SET @RespuestaMensaje = 'No existe el usuario, vuelva a intentarlo'; 
+		SET @Respuesta = -1                             
 END
 GO
 
@@ -727,12 +759,16 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Cambio_Contrasenia (@Id_Usuario NUMERIC(18,0), @ContraseniaNueva VARCHAR(255), @Respuesta VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Cambio_Contrasenia (	@Id_Usuario NUMERIC(18,0),
+												@ContraseniaNueva VARCHAR(255),
+												@RespuestaMensaje VARCHAR(255) OUTPUT,
+												@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 	UPDATE REZAGADOS.Usuario SET Contrasenia = @ContraseniaNueva	WHERE Id_Usuario = @Id_Usuario;
 	UPDATE REZAGADOS.Usuario SET Contrasenia_Modificada = 1 WHERE Id_Usuario = @Id_Usuario;
-	SET @Respuesta = 'Contraseña cambiada correctamente!'
+	SET @RespuestaMensaje = 'Contraseña cambiada correctamente!'
+	SET @Respuesta = 1
 END
 GO
 
@@ -740,7 +776,10 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Modificar_Nombre_Funcionalidad(@Nombre_Func VARCHAR(255),@Id_Func NUMERIC(18,0))
+CREATE PROCEDURE REZAGADOS.Modificar_Nombre_Funcionalidad(	@Nombre_Func VARCHAR(255),
+															@Id_Func NUMERIC(18,0),
+															@RespuestaMensaje VARCHAR(255) OUTPUT,
+															@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 	UPDATE REZAGADOS.Funcionalidad SET Nombre = @Nombre_Func WHERE Id_Funcionalidad=@Id_Func
@@ -751,7 +790,9 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Baja_Cuenta(@Nro_Cuenta VARCHAR(255))
+CREATE PROCEDURE REZAGADOS.Baja_Cuenta(		@Nro_Cuenta VARCHAR(255),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 UPDATE REZAGADOS.Cuenta 
@@ -760,6 +801,8 @@ SET Id_Estado=
 	 FROM REZAGADOS.Estado_Cuenta e 
 	 WHERE e.Nombre LIKE 'Inhabilitada') 
 WHERE Cuenta.Id_Cuenta = @Nro_Cuenta
+		SET @Respuesta = 1
+		SET @RespuestaMensaje = 'Baja exitosa'
 END
 GO
 
@@ -767,7 +810,9 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Alta_Cuenta(@Nro_Cuenta VARCHAR(255))
+CREATE PROCEDURE REZAGADOS.Alta_Cuenta(		@Nro_Cuenta VARCHAR(255),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 UPDATE REZAGADOS.Cuenta 
@@ -776,6 +821,8 @@ UPDATE REZAGADOS.Cuenta
 	 FROM REZAGADOS.Estado_Cuenta e 
 	 WHERE e.Nombre LIKE 'Habilitada')
  WHERE Cuenta.Id_Cuenta = @Nro_Cuenta
+ 		SET @Respuesta = 1
+		SET @RespuestaMensaje = 'Alta exitosa'
 END
 GO
 
@@ -783,22 +830,34 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Crear_Cuenta(@Id_Usuario NUMERIC(18,0), @Pais VARCHAR(255), @Moneda VARCHAR(255), @Fecha DATETIME, @Tipo VARCHAR(255), @Respuesta NUMERIC(18,0) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Crear_Cuenta(@Id_Usuario NUMERIC(18,0),
+										@Pais VARCHAR(255),
+										@Moneda VARCHAR(255),
+										@Fecha DATETIME,
+										@Tipo VARCHAR(255),
+										@RespuestaMensaje VARCHAR(255) OUTPUT,
+										@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 IF (@Tipo = 'Gratuito')
-INSERT INTO REZAGADOS.Cuenta(Id_Usuario, Id_Pais, Id_Tipo_Cuenta, Id_Moneda, Id_Estado, Fecha_Creacion)
-VALUES (@Id_Usuario, (SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais), (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo), (SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda), 
-(SELECT e.Id_Estado 
-	 FROM REZAGADOS.Estado_Cuenta e 
-	 WHERE e.Nombre LIKE 'Habilitada'), 
-@Fecha)
+	BEGIN
+		INSERT INTO REZAGADOS.Cuenta(Id_Usuario, Id_Pais, Id_Tipo_Cuenta, Id_Moneda, Id_Estado, Fecha_Creacion)
+		VALUES (	@Id_Usuario,
+					(SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais),
+					(SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo),
+					(SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda),
+					(SELECT e.Id_Estado FROM REZAGADOS.Estado_Cuenta e	WHERE e.Nombre LIKE 'Habilitada'),
+					@Fecha)
+	SET @Respuesta = 1
+	SET @RespuestaMensaje = 'Creación exitosa'
+	END
 ELSE
 INSERT INTO REZAGADOS.Cuenta(Id_Usuario, Id_Pais, Id_Tipo_Cuenta, Id_Moneda, Id_Estado, Fecha_Creacion)
 VALUES (@Id_Usuario, (SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais), (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo), (SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda), 
 (SELECT e.Id_Estado 
 	 FROM REZAGADOS.Estado_Cuenta e 
 	 WHERE e.Nombre LIKE 'Pendiente de activación'), @Fecha)
+SET @RespuestaMensaje = 'Creación exitosa'
 SET @Respuesta = (SELECT @@IDENTITY)
 END
 GO
@@ -807,11 +866,16 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Modificar_Costo_Cuenta (@Categoria VARCHAR(255), @Costo NUMERIC (18,0))
+CREATE PROCEDURE REZAGADOS.Modificar_Costo_Cuenta (	@Categoria VARCHAR(255),
+													@Costo NUMERIC (18,0),
+													@RespuestaMensaje VARCHAR(255) OUTPUT,
+													@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 IF EXISTS (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Categoria)
 UPDATE REZAGADOS.TipoCuenta SET Costo = @Costo WHERE Categoria=@Categoria
+SET @RespuestaMensaje = 'Modifición exitosa'
+SET @Respuesta = 1
 END
 GO
 
@@ -847,10 +911,14 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Alta_Tarjeta(@Nro_Tarjeta NUMERIC(18,0))
+CREATE PROCEDURE REZAGADOS.Alta_Tarjeta(	@Nro_Tarjeta NUMERIC(18,0),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 UPDATE REZAGADOS.Tarjeta SET Habilitada=1 WHERE Tarjeta.Id_Tarjeta = @Nro_Tarjeta
+SET @RespuestaMensaje = 'Alta exitosa'
+SET @Respuesta = 1
 END
 GO
 
@@ -858,10 +926,14 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Baja_Tarjeta(@Nro_Tarjeta NUMERIC(18,0))
+CREATE PROCEDURE REZAGADOS.Baja_Tarjeta(	@Nro_Tarjeta NUMERIC(18,0),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 UPDATE REZAGADOS.Tarjeta SET Habilitada=0 WHERE Tarjeta.Id_Tarjeta = @Nro_Tarjeta
+SET @RespuestaMensaje = 'Baja exitosa'
+SET @Respuesta = 1
 END
 GO
 
@@ -869,29 +941,35 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(@Usuario NUMERIC(18,0), @Nro_Tarjeta NUMERIC(18,0), @Tipo VARCHAR (255), @Fecha DATETIME, @Fecha_Venc DATETIME, @Codigo VARCHAR(255), @Respuesta VARCHAR(255) OUTPUT, @Respuesta2 INT OUTPUT)
+CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(	@Usuario NUMERIC(18,0),
+											@Nro_Tarjeta NUMERIC(18,0),
+											@Tipo VARCHAR (255),
+											@Fecha DATETIME,
+											@Fecha_Venc DATETIME,
+											@Codigo VARCHAR(255),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 IF EXISTS (SELECT Id_Tarjeta FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta)
 BEGIN
-SET @Respuesta = 'Ya existe la tarjeta'
-SET @Respuesta2 = -1
+SET @RespuestaMensaje = 'Ya existe la tarjeta'
+SET @Respuesta = -1
 END
 ELSE
 INSERT INTO REZAGADOS.Tarjeta (Id_Usuario, Numero, Tipo, Codigo_Seguridad, Fecha_Emision, Vencimiento)
 VALUES (@Usuario, @Nro_Tarjeta, @Tipo, @Codigo, @Fecha, @Fecha_Venc)
-SET @Respuesta2 = (SELECT @@IDENTITY)
-SET @Respuesta = 'Exito'
+SET @Respuesta = (SELECT @@IDENTITY)
+SET @RespuestaMensaje = 'Exito'
 END
 GO
 
 ---------------------------------------DEPOSITAR---------------------------------------------------------------
+
 USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Depositar') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Depositar
-
 GO
-
 
 USE [GD1C2015]
 GO
@@ -909,12 +987,16 @@ DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
 DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cliente)
 	IF (@Fecha > (SELECT Vencimiento FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
+	BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Tarjeta Vencida'
+		END
 	ELSE
 		IF (0=(SELECT habilitada FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
+			BEGIN
 			SET @Respuesta = -1
 			SET @RespuestaMensaje = 'Tarjeta Inhabilitada'
+			END
 		ELSE
 			BEGIN
 			INSERT INTO REZAGADOS.Deposito (Id_Cuenta, Id_Tarjeta, Id_Pais, Id_Moneda, Fecha, Importe)
@@ -929,23 +1011,46 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.RetiroEfectivo(@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Nro_Documento NUMERIC(18,0), @Cuenta NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.RetiroEfectivo(	@Usuario VARCHAR(255),
+											@Tipo_Documento NUMERIC(18,0),
+											@Nro_Documento NUMERIC(18,0),
+											@Cuenta NUMERIC(18,0),
+											@Importe NUMERIC(18,0),
+											@Moneda VARCHAR(255),
+											@Fecha DATETIME,
+											@Respuesta NUMERIC(18,0) OUTPUT,
+											@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
 	IF ((@Tipo_Documento <> (SELECT Id_Tipo_Documento FROM Cliente WHERE Id_Usuario = @Usuario)) OR (@Nro_Documento <> (SELECT Nro_Documento FROM Cliente WHERE Id_Usuario = @Usuario)))
-	    SET @Respuesta = 'Documento ingresado diferente al documento del usuario logueado'
-	ELSE	
+	BEGIN
+		SET @Respuesta = -1
+	    SET @RespuestaMensaje = 'Documento ingresado diferente al documento del usuario logueado'
+	END
+	ELSE
 		IF ((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) = 'Inhabilitado')
-			SET @Respuesta = 'Cuenta inhabilitada'
+		BEGIN
+			SET @Respuesta = -1
+			SET @RespuestaMensaje = 'Cuenta inhabilitada'
+		END
 		ELSE
 			IF ((SELECT Saldo from Cuenta WHERE @Cuenta=Id_Cuenta)<=0)
-				SET @Respuesta = 'Cuenta sin saldo'
+			BEGIN
+				SET @Respuesta = -1
+				SET @RespuestaMensaje = 'Cuenta sin saldo'
+			END
 			ELSE
 				IF ((SELECT Saldo from Cuenta WHERE @Cuenta=Id_Cuenta)>=@Importe)
-					SET @Respuesta = 'Importe mayor al saldo'
+				BEGIN
+					SET @Respuesta = -1
+					SET @RespuestaMensaje = 'Importe mayor al saldo'
+				END
 				ELSE
 					IF (@Moneda <> 'Dolar')
-						SET @Respuesta = 'Importe no expresado en dolares'
+					BEGIN
+						SET @Respuesta = -1
+						SET @RespuestaMensaje = 'Importe no expresado en dolares'
+					END
 					ELSE
 						BEGIN
 							INSERT INTO REZAGADOS.Retiro (Id_Cuenta, Fecha, Id_Moneda, Importe)
@@ -953,7 +1058,8 @@ BEGIN
 
 							INSERT INTO REZAGADOS.Cheque (Fecha, Id_Moneda, Importe)
 							VALUES (@Fecha, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Importe)
-							SET @Respuesta = 'Retiro realizado y Cheque generado'
+							SET @Respuesta = 1
+							SET @RespuestaMensaje = 'Retiro realizado y Cheque generado'
 						END
 END
 GO
@@ -962,21 +1068,41 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Cuenta_Origen NUMERIC(18,0), @Cuenta_Destino NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Usuario VARCHAR(255),
+														@Tipo_Documento NUMERIC(18,0),
+														@Cuenta_Origen NUMERIC(18,0),
+														@Cuenta_Destino NUMERIC(18,0),
+														@Importe NUMERIC(18,0),
+														@Moneda VARCHAR(255),
+														@Fecha DATETIME,
+														@Respuesta NUMERIC(18,0) OUTPUT,
+														@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
 	IF (@Cuenta_Origen NOT IN (SELECT Id_Cuenta from Cuenta WHERE @Usuario=Id_Usuario))
-		SET @Respuesta = 'Cuenta origen no pertenece al cliente'
+	BEGIN
+		SET @Respuesta = -1	
+		SET @RespuestaMensaje = 'Cuenta origen no pertenece al cliente'
+	END
 	ELSE
 		IF (((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) = 'Cerrada') OR
 			((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) = 'Pendiente de activación'))
-			SET @Respuesta = 'Cuenta destino cerrada o pendiente de activacion'
+		BEGIN
+			SET @Respuesta = -1		
+			SET @RespuestaMensaje = 'Cuenta destino cerrada o pendiente de activacion'
+		END
 		ELSE
 			IF (@Importe<=0)
-				SET @Respuesta = 'Importe menor o igual a cero'
+			BEGIN
+				SET @Respuesta = -1			
+				SET @RespuestaMensaje = 'Importe menor o igual a cero'
+			END
 			ELSE
 				IF ((SELECT Saldo from Cuenta WHERE @Cuenta_Origen=Id_Cuenta)>=@Importe)
-					SET @Respuesta = 'Importe mayor al saldo'
+				BEGIN
+					SET @Respuesta = -1			
+					SET @RespuestaMensaje = 'Importe mayor al saldo'
+				END
 				ELSE
 						UPDATE REZAGADOS.Cuenta SET
 						Saldo=Saldo-@Importe
@@ -987,11 +1113,13 @@ BEGIN
 						
 						IF ((SELECT Id_Usuario from Cuenta WHERE @Cuenta_Origen=Id_Cuenta)=(SELECT Id_Usuario from Cuenta WHERE @Cuenta_Destino=Id_Cuenta))
 						BEGIN
-							SET @Respuesta = 'Transferencia realizada sin costo'
+							SET @Respuesta = 1						
+							SET @RespuestaMensaje = 'Transferencia realizada sin costo'
 						END
 						ELSE
 							BEGIN
-								SET @Respuesta = 'Transferencia realizada con costo'
+								SET @Respuesta = 1						
+								SET @RespuestaMensaje = 'Transferencia realizada con costo'
 							END
 END
 GO
@@ -1028,7 +1156,9 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Top5Depositos (@Cuenta NUMERIC(18,0))
+CREATE PROCEDURE REZAGADOS.Top5Depositos (	@Cuenta NUMERIC(18,0),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
     SELECT TOP 5 D.Id_Deposito, D.Codigo, D.Id_Cuenta, D.Id_Tarjeta, D. Id_Pais, D.Id_Moneda, D.Fecha, D.Importe, T.Numero AS 'Numero Tjta'
@@ -1036,6 +1166,8 @@ BEGIN
     WHERE D.Id_Cuenta = @Cuenta
     AND D.Id_Tarjeta = T.Id_Tarjeta
     ORDER BY Fecha DESC, Id_Deposito DESC
+SET @RespuestaMensaje = 'Listado exitoso'
+SET @Respuesta = 1
 END
 GO
 
@@ -1043,7 +1175,9 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Top5Retiros (@Cuenta NUMERIC(18,0))
+CREATE PROCEDURE REZAGADOS.Top5Retiros (	@Cuenta NUMERIC(18,0),
+											@RespuestaMensaje VARCHAR(255) OUTPUT,
+											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 
@@ -1052,6 +1186,8 @@ FROM REZAGADOS.Retiro R, REZAGADOS.Cheque C
 WHERE R.Id_Cuenta = @Cuenta
 AND R.Id_Retiro = C.Id_Retiro
 ORDER BY R.Fecha DESC, C.Id_Retiro DESC
+SET @RespuestaMensaje = 'Listado exitoso'
+SET @Respuesta = 1
 END
 GO
 
@@ -1059,13 +1195,17 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Top10Transferencias (@Cuenta_Emi NUMERIC(18,0))
+CREATE PROCEDURE REZAGADOS.Top10Transferencias (@Cuenta_Emi NUMERIC(18,0),
+												@RespuestaMensaje VARCHAR(255) OUTPUT,
+												@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
     SELECT TOP 10 T.Id_Transferencia, T.Id_Cuenta_Emi, T.Id_Cuenta_Dest, T.Fecha, T.Id_Moneda, T.Importe
     FROM REZAGADOS.Transferencia T
     WHERE T.Id_Cuenta_Emi = @Cuenta_Emi
     ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
+    SET @RespuestaMensaje = 'Listado exitoso'
+	SET @Respuesta = 1
 END
 GO
 
@@ -1261,7 +1401,9 @@ IF OBJECT_ID ('REZAGADOS.Crear_Rol') IS NOT NULL
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Crear_Rol(@Nombre_Rol NVARCHAR(255), @Respuesta NUMERIC(18,0) OUTPUT, @RespuestaMensaje VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Crear_Rol(	@Nombre_Rol NVARCHAR(255),
+										@Respuesta NUMERIC(18,0) OUTPUT,
+										@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
 	IF EXISTS(SELECT * FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
@@ -1291,7 +1433,9 @@ IF OBJECT_ID ('REZAGADOS.Baja_Rol') IS NOT NULL
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Baja_Rol(@Id_Rol NUMERIC(18,09), @Respuesta NUMERIC(18,0) OUTPUT, @RespuestaMensaje VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Baja_Rol(@Id_Rol NUMERIC(18,09),
+									@Respuesta NUMERIC(18,0) OUTPUT,
+									@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
 	BEGIN TRY
@@ -1313,7 +1457,9 @@ IF OBJECT_ID ('REZAGADOS.Alta_Rol') IS NOT NULL
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Alta_Rol(@Id_Rol NUMERIC(18,09),@Respuesta NUMERIC(18,0) OUTPUT, @RespuestaMensaje VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Alta_Rol(	@Id_Rol NUMERIC(18,09),
+										@Respuesta NUMERIC(18,0) OUTPUT,
+										@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
 	BEGIN TRY
@@ -1335,11 +1481,11 @@ IF OBJECT_ID ('REZAGADOS.Modificar_Rol') IS NOT NULL
 
 GO
 CREATE PROCEDURE REZAGADOS.Modificar_Rol (
-@Id_Rol NUMERIC(18,0),
-@Nombre_Rol VARCHAR(255),
-@Funcionalidades IdLista READONLY,
-@Respuesta INT OUTPUT,
-@RespuestaMensaje VARCHAR(255) OUTPUT)
+	@Id_Rol NUMERIC(18,0),
+	@Nombre_Rol VARCHAR(255),
+	@Funcionalidades IdLista READONLY,
+	@Respuesta NUMERIC(18,0) OUTPUT,
+	@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 SET NOCOUNT ON
 BEGIN TRY
@@ -1374,7 +1520,10 @@ IF OBJECT_ID ('REZAGADOS.Asignar_Rol') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Asignar_Rol
 
 GO
-CREATE PROCEDURE REZAGADOS.Asignar_Rol (@Id_Usuario NUMERIC(18,0), @Id_Rol NUMERIC(18,0),  @Respuesta NUMERIC(18,0) OUTPUT, @RespuestaMensaje VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Asignar_Rol (	@Id_Usuario NUMERIC(18,0),
+											@Id_Rol NUMERIC(18,0),
+											@Respuesta NUMERIC(18,0) OUTPUT,
+											@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS 
 BEGIN 
 	BEGIN TRY
@@ -1400,7 +1549,10 @@ IF OBJECT_ID ('REZAGADOS.Desasignar_Rol') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Desasignar_Rol
     
 GO
-CREATE PROCEDURE REZAGADOS.Desasignar_Rol(@Id_Usuario NUMERIC(18,0), @Id_Rol NUMERIC(18,0), @Respuesta NUMERIC(18,0) OUTPUT, @RespuestaMensaje VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Desasignar_Rol(	@Id_Usuario NUMERIC(18,0),
+											@Id_Rol NUMERIC(18,0),
+											@Respuesta NUMERIC(18,0) OUTPUT,
+											@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 	BEGIN TRY
 		BEGIN TRANSACTION
@@ -1413,7 +1565,7 @@ AS
 	END TRY
 	BEGIN CATCH
 		SET @Respuesta = -1
-		SET @RespuestaMensaje = 'el Rol no se pudo desasignar'
+		SET @RespuestaMensaje = 'El Rol no se pudo desasignar'
 		ROLLBACK TRANSACTION
 	END CATCH
 GO
@@ -1517,7 +1669,7 @@ SELECT	f.Id_Funcionalidad ID,
 END
 GO
 
------------------------------------------Listar Cuenta Tipo----------------------------------------
+-----------------------------------------LISTAR CUENTA TIPO----------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1532,7 +1684,7 @@ SELECT	ct.Id_Tipo_Cuenta ID,
 END
 GO
 
--------------------------------------------------------------------------------------------------
+----------------------------------------BUSCAR CUENTA TIPO ID---------------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1553,7 +1705,7 @@ SELECT	ct.Id_Tipo_Cuenta ID,
 END
 GO
 
------------------------------------------Listar_Documento----------------------------------------
+-----------------------------------------LISTAR DOCUMENTO----------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1590,7 +1742,10 @@ IF OBJECT_ID ('[REZAGADOS].[Facturar]') IS NOT NULL
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE [REZAGADOS].[Facturar] (@Id_Items IdLista READONLY, @Id_Usuario NUMERIC(18,0), @Respuesta INT OUTPUT, @Respuesta2 VARCHAR(255) OUTPUT)
+CREATE PROCEDURE [REZAGADOS].[Facturar] (	@Id_Items IdLista READONLY,
+											@Id_Usuario NUMERIC(18,0),
+											@Respuesta NUMERIC(18,0) OUTPUT,
+											@RespuestaMensaje VARCHAR(255) OUTPUT)
  AS
 SET NOCOUNT ON
 BEGIN TRY
@@ -1602,22 +1757,31 @@ BEGIN TRANSACTION
 		DECLARE @Id_Factura NUMERIC(18,0) = (SELECT @@IDENTITY)
 		UPDATE REZAGADOS.Item SET Id_Factura=@Id_Factura WHERE Id_Item IN (SELECT * FROM @Id_Items)
 		SET @Respuesta = 1
-		SET @Respuesta2 = 'Items pagados exitosamente'
+		SET @RespuestaMensaje = 'Items pagados exitosamente'
 	END
 COMMIT TRANSACTION
 END TRY
 BEGIN CATCH
 	ROLLBACK TRANSACTION
 	SET @Respuesta = - 1
-	SET @Respuesta2 =  ERROR_MESSAGE()
+	SET @RespuestaMensaje =  ERROR_MESSAGE()
 END CATCH
 GO 
+
 ---------------------------------------------------MODIFICAR TIPO CUENTA----------------------------------------
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE [REZAGADOS].[Modificar_Tipo_Cuenta] (@Numero_Cuenta NUMERIC(18,0), @Id_Tipo NUMERIC(18,0))
+CREATE PROCEDURE [REZAGADOS].[Modificar_Tipo_Cuenta] (		@Numero_Cuenta NUMERIC(18,0),
+															@Id_Tipo NUMERIC(18,0),
+															@RespuestaMensaje VARCHAR(255) OUTPUT,
+															@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	UPDATE REZAGADOS.Cuenta SET Id_Tipo_Cuenta = @Id_Tipo WHERE Id_Cuenta=@Numero_Cuenta
+	SET @RespuestaMensaje = 'Modifición exitosa'
+	SET @Respuesta = 1
 GO
+
+-----------------------------------------------LISTADOS ESTADISTICOS----------------------------------------------
+---------------------------------CLIENTES CON ALGUNA CUENTA INHABILITADA POR TRIMESTRE----------------------------
 
