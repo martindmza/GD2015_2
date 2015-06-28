@@ -27,7 +27,7 @@ namespace Models
         public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-            //this.nacionalidad = fila[NACIONALIDAD].ToString();
+            this.nacionalidad = this.nombre;
         }
     }
 }

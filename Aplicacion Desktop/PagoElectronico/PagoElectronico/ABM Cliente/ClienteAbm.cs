@@ -99,6 +99,7 @@ namespace ABM
             KeyValuePair<UInt32, String> empty = new KeyValuePair<UInt32, String>(0,"");
             comboBox1.Items.Add(empty);
             TipoDocumentoDAO docDao = new TipoDocumentoDAO();
+
             foreach (TipoDocumentoModel tipo in docDao.getListado())
             {
                 comboBox1.Items.Add(new KeyValuePair<Decimal, String>(tipo.id, tipo.nombre));
@@ -119,17 +120,17 @@ namespace ABM
                 row = new String[] {    cliente.id.ToString(),
                                         cliente.apellido,
                                         cliente.nombre,
-                                        cliente.tipoDocumento.nombre,
+                                        //cliente.tipoDocumento.nombre,
                                         cliente.nroDocumento,
                                         cliente.email,
                                         cliente.nacimiento.ToString(),
-                                        cliente.pais.nacionalidad.ToString(),
+                                        //cliente.pais.nacionalidad.ToString(),
 										cliente.direccionCalle.ToString(),
 										cliente.direccionNumeroCalle.ToString(),
 										cliente.direccionPiso.ToString(),
 										cliente.direccionDepto.ToString(),
-                                        cliente.localidad.nombre.ToString(),
-										cliente.pais.nombre.ToString(),
+                                       // cliente.localidad.nombre.ToString(),
+										//cliente.pais.nombre.ToString(),
 										cliente.habilitado.ToString()
                                         };
                 dataGridView1.Rows.Add(row);
@@ -337,3 +338,4 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
     }
 }
+

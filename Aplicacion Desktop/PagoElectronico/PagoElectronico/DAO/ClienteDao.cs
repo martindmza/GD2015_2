@@ -41,10 +41,10 @@ namespace DAO
         public ClienteModel getClienteByUser(UserModel userModel)
         {
             List<ClienteModel> clientes = new List<ClienteModel>();
-            DataTable dataRoles = this.getClientsDeBasePorIdUsuario(userModel.id);
-            if (dataRoles != null)
+            DataTable dataClientes = this.getClientsDeBasePorIdUsuario(userModel.id);
+            if (dataClientes != null)
             {
-                foreach (DataRow clienteBase in dataRoles.Rows)
+                foreach (DataRow clienteBase in dataClientes.Rows)
                 {
                     ClienteModel rolModel = new ClienteModel(clienteBase);
                     clientes.Add(rolModel);

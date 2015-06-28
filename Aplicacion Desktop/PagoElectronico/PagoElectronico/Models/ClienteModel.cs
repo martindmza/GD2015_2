@@ -136,22 +136,16 @@ namespace Models
         {
             base.mapeoFilaAModel(fila);
             this.apellido = fila[APELLIDO].ToString();
-            
-           // this.documento = fila[DOCUMENTO].ToString();
             this.nacimiento = fila[NACIMIENTO] != DBNull.Value ? DateTime.Parse(fila[NACIMIENTO].ToString()) : DateTime.MinValue;
-            
             this.email = fila[EMAIL].ToString();
-            
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
             this.direccionNumeroCalle = (Decimal)fila[DIRECCION_NRO_CALLE];
             this.direccionPiso = (Decimal)fila[DIRECCION_PISO];
             this.direccionDepto = fila[DIRECCION_DEPTO].ToString();
             this.localidad = new LocalidadModel(0, fila[LOCALIDAD].ToString());
             this.pais = new PaisDAO().dameTuModelo(fila[PAIS].ToString());
-            //this.nacionalidad = pais.nacionalidad;
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
         }
-
     }
 }
 

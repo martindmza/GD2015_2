@@ -43,12 +43,13 @@ namespace Models
 
         {
             this.roles = this.getMisRoles();
-            this.cuentas = this.getMisCuentas();
             this.cliente = this.getMiCliente();
+            this.cuentas = this.getMisCuentas();
+            
 
         }
 
-        private ClienteModel getMiCliente()
+        public ClienteModel getMiCliente()
         {
             return new ClienteDao().getClienteByUser(this);
         }

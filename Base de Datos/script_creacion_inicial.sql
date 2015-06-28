@@ -357,7 +357,7 @@ INSERT INTO REZAGADOS.Rol (Nombre)
 VALUES ('Administrador'),('Cliente')
 
 --------------------------------------FUNCIONALIDAD---------------------------------------------
-TRUNCATE TABLE REZAGADOS.Funcionalidad
+--TRUNCATE TABLE REZAGADOS.Funcionalidad
 INSERT INTO REZAGADOS.Funcionalidad (Nombre)
 VALUES	('ABM de Rol'),
 		('Registro de Usuario'),
@@ -1316,7 +1316,7 @@ BEGIN
 GO
 
 ---------------------------------------------MODIFICAR ROL------------------------------------------------
-CREATE TYPE REZAGADOS.FuncionalidadesLista AS TABLE 
+CREATE TYPE REZAGADOS.IdLista AS TABLE 
 ( Id_Funcionalidad NUMERIC(18,0) );
 GO
 
@@ -1327,7 +1327,7 @@ GO
 CREATE PROCEDURE REZAGADOS.Modificar_Rol (
 @Id_Rol NUMERIC(18,0),
 @Nombre_Rol VARCHAR(255),
-@Funcionalidades FuncionalidadesLista READONLY,
+@Funcionalidades IdLista READONLY,
 @Respuesta INT OUTPUT,
 @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
@@ -1517,6 +1517,51 @@ SELECT	ct.Id_Tipo_Cuenta ID,
 		ct.Costo COSTO		,
 		ct.Dias_Vigencia VIGENCIA
 	FROM [REZAGADOS].TipoCuenta ct 
+END
+GO
+-------------------------------------------------------------------------------------------------
+USE [GD1C2015]
+GO
+/****** Object:  StoredProcedure [REZAGADOS].[Buscar_CuentaTipo_ID]    Script Date: 06/27/2015 23:47:13 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [REZAGADOS].[Buscar_CuentaTipo_ID] 
+@Id NUMERIC(18,0)
+AS
+BEGIN
+SELECT	ct.Id_Tipo_Cuenta ID,
+		ct.Categoria NOMBRE,
+		ct.Costo COSTO		,
+		ct.Dias_Vigencia VIGENCIA
+	FROM [REZAGADOS].TipoCuenta ct 
+	WHERE ct.Id_Tipo_Cuenta = @Id
+END
+GO
+-----------------------------------------Listar_Documento----------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Listar_Documento 
+AS
+BEGIN
+SELECT	td.Id_Tipo_Documento ID,
+		td.Descripcion NOMBRE
+	FROM [REZAGADOS].TipoDocumento td 
+END
+GO
+
+-----------------------------------------Buscar_Documento_ID----------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Buscar_Documento_ID 
+@Id NUMERIC(18,0)
+AS
+BEGIN
+SELECT	td.Id_Tipo_Documento ID,
+		td.Descripcion NOMBRE
+	FROM [REZAGADOS].TipoDocumento td 
+	WHERE td.Id_Tipo_Documento = @Id
 END
 GO
 
