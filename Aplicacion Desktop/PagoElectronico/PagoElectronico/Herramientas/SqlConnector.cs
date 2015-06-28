@@ -72,7 +72,20 @@ namespace PagoElectronico.Herramientas
             com.Dispose();
             com = null;
         }
+        public SqlCommand getCommand()
+        {
+            return this.Conn.CreateCommand();
+        }
 
+        public SqlConnection getConnection()
+        {
+            return this.Conn;
+        }
+
+        public SqlTransaction getBeginTransaction()
+        {
+            return this.getConnection().BeginTransaction();
+        }
         public void CerrarConexion()
         {
             this.conn.Close();

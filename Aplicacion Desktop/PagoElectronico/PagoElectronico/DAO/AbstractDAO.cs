@@ -9,8 +9,7 @@ namespace DAO
 {
     public abstract class AbstractDAO
     {
-        
-        private SqlConnection _connection = null;
+        private SqlConnector _connection = null;
 		private SqlTransaction _transaction = null;
 		private bool _conTransaccion = false;
 
@@ -29,34 +28,24 @@ namespace DAO
 			set { _transaction = value; }
 		}
 
-		public SqlConnection Connection
+        public SqlConnector Connection
 		{
 			get { return _connection; }
 		}
 		public SqlCommand InitializeConnection(string sp)
         {
-			if (Transaction != null)
-				_connection = Transaction.Connection;
-			else
-			{
-				_connection = new SqlConnection(Config.Base.ConnectionString);
-				_connection.Open();
-			}
-
-			SqlCommand command = _connection.CreateCommand();
-
-			
+			_connection = SqlConnector.Instance;
+			SqlCommand command = _connection.getCommand();
 			if (_conTransaccion && _transaction == null)
 			{
 				//Si la transaccion ya esta abierta que tome la q esta abierta
-				_transaction = _connection.BeginTransaction();
+                _transaction = _connection.getBeginTransaction();
 			}
 
-			command.Connection = _connection;
+			command.Connection = _connection.getConnection();
 			command.Transaction = _transaction;
             command.CommandType = System.Data.CommandType.StoredProcedure;
             command.CommandText = "REZAGADOS." + sp;
-          
             return command;
         }
 
@@ -73,9 +62,7 @@ namespace DAO
 		}
         public virtual void CerrarConexion()
         {
-            _connection.Close();
+            _connection.CerrarConexion();
         }
-
-
     }
 }

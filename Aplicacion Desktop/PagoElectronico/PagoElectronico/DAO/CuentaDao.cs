@@ -27,27 +27,24 @@ namespace DAO
 
         public List<CuentaModel> getCuentasByCliente(ClienteModel cliente) {
             List<CuentaModel> cuentas = new List<CuentaModel>();
-            DataTable dataRoles = this.getCuentasDeBasePorIdCliente(cliente.id);
-            foreach(DataRow cuentaBase in dataRoles.Rows){
-                CuentaModel rolModel = new CuentaModel(cuentaBase);
-                cuentas.Add(rolModel);
+            DataTable dataCuentas = this.getCuentasDeBasePorIdCliente(cliente.id);
+            foreach (DataRow cuentaBase in dataCuentas.Rows)
+            {
+                CuentaModel cuentaModel = new CuentaModel(cuentaBase);
+                cuentaModel.setPropietario(cliente);
+                cuentas.Add(cuentaModel);
             }
             return cuentas;
         }
 
         public List<CuentaModel> getCuentasByUsuario(UserModel usuario)
         {
-            List<CuentaModel> cuentas = new List<CuentaModel>();
-            DataTable dataRoles = this.getCuentasDeBasePorIdUsuario(usuario.id);
-            if (dataRoles != null)
+            ClienteModel cliente = usuario.getMiCliente();
+            if (cliente == null)
             {
-                foreach (DataRow cuentaBase in dataRoles.Rows)
-                {
-                    CuentaModel rolModel = new CuentaModel(cuentaBase);
-                    cuentas.Add(rolModel);
-                }
+                return new List<CuentaModel>();
             }
-            return cuentas;
+            return this.getCuentasByCliente(cliente);
         }
 
         private DataTable getCuentasDeBase()
