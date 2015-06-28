@@ -116,6 +116,7 @@
     <Compile Include="DAO\FuncionalidadDao.cs" />
     <Compile Include="DAO\LocalidadDAO.cs" />
     <Compile Include="DAO\PaisDAO.cs" />
+    <Compile Include="DAO\respuestas\RolRespuesta.cs" />
     <Compile Include="DAO\RetiroDao.cs" />
     <Compile Include="DAO\RolDao.cs" />
     <Compile Include="DAO\TarjetaDeCreditoDao.cs" />
