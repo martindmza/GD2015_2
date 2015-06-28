@@ -317,10 +317,6 @@ FOREIGN KEY (Id_Usuario) REFERENCES REZAGADOS.Usuario (Id_Usuario)
 ------------------------------------MIGRACION----------------------------------------
 -------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------
-
-DECLARE @fecha datetime
-SET @fecha = getdate()
-
 ---------------------------------------PAIS------------------------------------------
 
 INSERT INTO REZAGADOS.Pais (Id_Pais, Descripcion)(
@@ -342,14 +338,12 @@ GROUP BY Cuenta_Pais_Codigo, Cuenta_Pais_Desc
 INSERT INTO REZAGADOS.Estado_Cuenta (Nombre)
 VALUES ('Pendiente de activación'), ('Cerrada'), ('Inhabilitada'), ('Habilitada');
 
-
 --------------------------------------TIPO DOCUMENTO--------------------------------------------
 
 INSERT INTO REZAGADOS.TipoDocumento (Id_Tipo_Documento, Descripcion) (
 SELECT Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc
 FROM gd_esquema.Maestra
-GROUP BY Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc
-)
+GROUP BY Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc)
 
 -------------------------------------------ROL--------------------------------------------------
 
@@ -357,7 +351,8 @@ INSERT INTO REZAGADOS.Rol (Nombre)
 VALUES ('Administrador'),('Cliente')
 
 --------------------------------------FUNCIONALIDAD---------------------------------------------
---TRUNCATE TABLE REZAGADOS.Funcionalidad
+--TRUNCATE TABLE REZAGADOS.Funcionalidad--------------------------------------------------------
+
 INSERT INTO REZAGADOS.Funcionalidad (Nombre)
 VALUES	('ABM de Rol'),
 		('Registro de Usuario'),
@@ -372,9 +367,9 @@ VALUES	('ABM de Rol'),
 		('Listado Estadístico'),
 		('ABMs'),
 		('Movimientos')
-		
 
 -------------------------------------ROL X FUNCIONALIDAD------------------------------------------
+
 INSERT INTO REZAGADOS.FuncionalidadXRol (Id_Rol,Id_Funcionalidad)
 SELECT R.Id_Rol, F.Id_Funcionalidad
 FROM REZAGADOS.Rol R, REZAGADOS.Funcionalidad F
@@ -392,12 +387,12 @@ WHERE	R.Nombre = 'Cliente' AND
 ----------------------LA-PASS-SERA-REZAGADOS-ENCRIPTADA-EN-SHA-256---------------------------------
 
 INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
-SELECT DISTINCT Cli_Mail, '1E57CBAAA510CD149EE657799EF3EE2D2A2815F98B249AAC81904BF54549F5ED', @fecha, @fecha
+SELECT DISTINCT Cli_Mail, '1E57CBAAA510CD149EE657799EF3EE2D2A2815F98B249AAC81904BF54549F5ED', GETDATE(), GETDATE()
 FROM gd_esquema.Maestra
 WHERE Cli_Mail IS NOT NULL
 
 INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
-VALUES ('admin','83725956498A914502C515217D3310E5E7FA4DE8083DFAD999B63EED48EE6', @fecha, @fecha)
+VALUES ('admin','83725956498A914502C515217D3310E5E7FA4DE8083DFAD999B63EED48EE6', GETDATE(), GETDATE())
 
 ----------------------------------------ADMINISTRADOR-----------------------------------------------
 
@@ -446,6 +441,7 @@ INSERT INTO REZAGADOS.TipoCuenta (Categoria, Costo, Dias_Vigencia)
 VALUES ('Oro', 10, 10), ('Plata', 5, 20), ('Bronce', 5, 30), ('Gratuita', 0, 0);
 
 -----------------------------------------CUENTA---------------------------------------------------
+
 INSERT INTO REZAGADOS.Cuenta (Id_Cuenta, Id_Usuario, Id_Tipo_Cuenta, Id_Pais, Id_Estado, Fecha_Creacion, Fecha_Cierre)
 SELECT g.Cuenta_Numero, u.Id_Usuario, 
 	(SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria='Gratuita') , g.Cuenta_Pais_Codigo, 
@@ -523,6 +519,13 @@ GROUP BY Cheque_Numero, Retiro_Codigo, Banco_Cogido, Cheque_Fecha, Cheque_Import
 --------------------------------------------PROCESOS--------------------------------------------------
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
+-----------------------------------------CREAR TIPO LISTA---------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE TYPE REZAGADOS.IdLista AS TABLE 
+( Id_Funcionalidad NUMERIC(18,0) );
+GO
 
 ------------------------------------------CREAR CLIENTE------------------------------------------------
 
@@ -667,7 +670,6 @@ AS
 	END
 GO
 
-
 -----------------------------------------LOGIN------------------------------------------------
 
 USE [GD1C2015]
@@ -734,8 +736,6 @@ BEGIN
 END
 GO
 
-
-
 -----------------------------------------MODIFICAR NOMBRE FUNCIONALIDAD--------------------------------------------
 
 USE [GD1C2015]
@@ -746,7 +746,6 @@ BEGIN
 	UPDATE REZAGADOS.Funcionalidad SET Nombre = @Nombre_Func WHERE Id_Funcionalidad=@Id_Func
 END
 GO
-
 
 -----------------------------------------BAJA CUENTA------------------------------------------------
 
@@ -817,6 +816,7 @@ END
 GO
 
 ----------------------------------------ESTADO CUENTA------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].[Listar_Estado]
@@ -827,6 +827,8 @@ BEGIN
 	FROM [REZAGADOS].Estado_Cuenta e
 END
 GO
+
+--------------------------------------BUSCAR ESTADO ID---------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -908,6 +910,7 @@ END
 GO
 
 -----------------------------------------RETIRO EFECTIVO--------------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.RetiroEfectivo(@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Nro_Documento NUMERIC(18,0), @Cuenta NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
@@ -940,6 +943,7 @@ END
 GO
 
 ----------------------------------------------TRANSFERENCIA ENTRE CUENTAS-------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (@Usuario VARCHAR(255), @Tipo_Documento NUMERIC(18,0), @Cuenta_Origen NUMERIC(18,0), @Cuenta_Destino NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
@@ -975,8 +979,6 @@ BEGIN
 							END
 END
 GO
-
-
 
 ----------------------------------------------TRANSFERENCIA ROL-------------------------------------------------------
 
@@ -1050,7 +1052,9 @@ BEGIN
     ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
 END
 GO
+
 -------------------------------------------------BUSCAR USER ID----------------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1069,6 +1073,7 @@ END
 GO
 
 -------------------------------------------------LISTAR CUENTA-------------------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1084,6 +1089,7 @@ END
 GO
 
 ----------------------------------------------LISTAR CUENTA USUARIO------------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1101,6 +1107,7 @@ END
 GO
 
 ---------------------------------------------LISTAR CUENTA CLIENTE--------------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1117,7 +1124,9 @@ BEGIN
 	WHERE cli.Id_Cliente = @Id_Cliente
 END
 GO
+
 -----------------------------------------LISTAR CLIENTE ID USUARIO-------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1139,6 +1148,7 @@ END
 GO
 
 ----------------------------------------------LISTAR CLIENTE----------------------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1158,6 +1168,7 @@ END
 GO
 
 ---------------------------------------------BUSCAR CLIENTE ID----------------------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1179,6 +1190,7 @@ END
 GO
 
 --------------------------------------------BUSCAR PAIS ID-------------------------------------------
+
 USE [GD1C2015]
 GO
 
@@ -1194,10 +1206,9 @@ BEGIN
 END
 GO
 
-
-
-------------------------------------------------ROLES--------------------------------------------------------
+------------------------------------------------ROLES--------------------------------------------------------------------
 ----------------------------------------------LISTAR ROLES USUARIO-------------------------------------------------------
+
 IF OBJECT_ID ('REZAGADOS.[Listar_Rol_Usuario]') IS NOT NULL
     DROP PROCEDURE REZAGADOS.[Listar_Rol_Usuario]
 
@@ -1226,6 +1237,7 @@ BEGIN
 	EXEC(@sqlCommand)	
 END
 GO
+
 ----------------------------------------------CREAR ROL------------------------------------------------------
 
 IF OBJECT_ID ('REZAGADOS.Crear_Rol') IS NOT NULL
@@ -1279,6 +1291,7 @@ END
 GO
 
 -----------------------------------------------ALTA ROL------------------------------------------------
+
 IF OBJECT_ID ('REZAGADOS.Alta_Rol') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Alta_Rol
 
@@ -1300,9 +1313,6 @@ BEGIN
 GO
 
 ---------------------------------------------MODIFICAR ROL------------------------------------------------
-CREATE TYPE REZAGADOS.IdLista AS TABLE 
-( Id_Funcionalidad NUMERIC(18,0) );
-GO
 
 IF OBJECT_ID ('REZAGADOS.Modificar_Rol') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Modificar_Rol
@@ -1372,7 +1382,7 @@ GO
 USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Desasignar_Rol') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Desasignar_Rol
-
+    
 GO
 CREATE PROCEDURE REZAGADOS.Desasignar_Rol(@Id_Usuario NUMERIC(18,0), @Id_Rol NUMERIC(18,0), @Respuesta NUMERIC(18,0) OUTPUT, @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
@@ -1397,7 +1407,6 @@ GO
 
 USE [GD1C2015]
 GO
-
 CREATE PROCEDURE [REZAGADOS].[Buscar_Rol_Id]
 @Id NUMERIC(18,0)
 AS
@@ -1411,6 +1420,7 @@ END
 GO
 
 --------------------------------------------------BUSCAR ROL FILTROS-------------------------------------------
+
 USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Buscar_Rol_Filtros') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Buscar_Rol_Filtros
@@ -1447,6 +1457,7 @@ END
 GO
 
 ----------------------------------------------LISTAR FUNCIONALIDAD ROL-------------------------------------------------------
+
 USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Listar_Funcionalidad_Rol') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Listar_Funcionalidad_Rol
@@ -1491,6 +1502,7 @@ END
 GO
 
 -----------------------------------------Listar Cuenta Tipo----------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Listar_CuentaTipo 
@@ -1503,10 +1515,11 @@ SELECT	ct.Id_Tipo_Cuenta ID,
 	FROM [REZAGADOS].TipoCuenta ct 
 END
 GO
+
 -------------------------------------------------------------------------------------------------
+
 USE [GD1C2015]
 GO
-/****** Object:  StoredProcedure [REZAGADOS].[Buscar_CuentaTipo_ID]    Script Date: 06/27/2015 23:47:13 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1523,7 +1536,9 @@ SELECT	ct.Id_Tipo_Cuenta ID,
 	WHERE ct.Id_Tipo_Cuenta = @Id
 END
 GO
+
 -----------------------------------------Listar_Documento----------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Listar_Documento 
@@ -1535,7 +1550,8 @@ SELECT	td.Id_Tipo_Documento ID,
 END
 GO
 
------------------------------------------Buscar_Documento_ID----------------------------------------
+-----------------------------------------BUSCAR DOCUMENTO ID----------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Buscar_Documento_ID 
@@ -1550,10 +1566,13 @@ END
 GO
 
 ----------------------------------------------------FACTURACION DE COSTOS------------------------------------------
-USE [GD1C2015]
-IF OBJECT_ID ('REZAGADOS.Facturar') IS NOT NULL
-    DROP PROCEDURE REZAGADOS.Facturar
+--------------------------------------------------------FACTURAR---------------------------------------------------
 
+USE [GD1C2015]
+IF OBJECT_ID ('[REZAGADOS].[Facturar]') IS NOT NULL
+    DROP PROCEDURE [REZAGADOS].[Facturar]
+
+USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].[Facturar] (@Id_Items IdLista READONLY, @Id_Usuario NUMERIC(18,0), @Respuesta INT OUTPUT, @Respuesta2 VARCHAR(255) OUTPUT)
  AS
