@@ -1785,3 +1785,14 @@ GO
 -----------------------------------------------LISTADOS ESTADISTICOS----------------------------------------------
 ---------------------------------CLIENTES CON ALGUNA CUENTA INHABILITADA POR TRIMESTRE----------------------------
 
+/*
+
+SELECT TOP 5 Id_Cliente
+FROM REZAGADOS.Cuenta, REZAGADOS.Cliente
+WHERE Cuenta.Id_Usuario = Cliente.Id_Usuario
+AND (SELECT COUNT(Item.Id_Cuenta)
+	FROM REZAGADOS.Item
+	WHERE Id_Factura IS NULL AND Item.Fecha > GETDATE()
+	GROUP BY Item.Id_Cuenta) > 5
+	
+*/
