@@ -725,7 +725,8 @@ BEGIN
 					ELSE
 					BEGIN								
 						SET @RespuestaMensaje = 'Abrir Sesion'
-						SET @Respuesta = (SELECT U.Id_Usuario FROM REZAGADOS.Usuario U WHERE U.Nombre = @Usuario)		
+						SET @Respuesta = (SELECT U.Id_Usuario FROM REZAGADOS.Usuario U WHERE U.Nombre = @Usuario)	
+						RETURN
 					END
 				END
 				ELSE
@@ -735,6 +736,7 @@ BEGIN
 					DECLARE @Cantidad_Intentos_Fallidos_String NVARCHAR(255) = @Cantidad_Intentos_Fallidos;
 					SET @RespuestaMensaje = 'Contraseña incorrecta, vuelva a intentarlo. Cantidad de intentos fallidos: ' + (@Cantidad_Intentos_Fallidos_String);
 					SET @Respuesta = -1
+					PRINT @RespuestaMensaje	
 				END
 			END
 			ELSE
@@ -743,15 +745,17 @@ BEGIN
 				UPDATE REZAGADOS.Usuario SET Habilitada = 0 WHERE @Id_User = Id_Usuario
 				SET @RespuestaMensaje = 'Su usuario esta bloqueado, por sobrepasar la cantidad de logueos incorrectos';
 				SET @Respuesta = -1
+				PRINT @RespuestaMensaje	
 			END  
 		END
 		ELSE
 		SET @RespuestaMensaje = 'El Usuario se encuentra inhabilitado'
 		SET @Respuesta = -1
+		PRINT @RespuestaMensaje	
 	END
 	ELSE 
 		SET @RespuestaMensaje = 'No existe el usuario, vuelva a intentarlo'; 
-		SET @Respuesta = -1                             
+		SET @Respuesta = -1 	                       
 END
 GO
 
