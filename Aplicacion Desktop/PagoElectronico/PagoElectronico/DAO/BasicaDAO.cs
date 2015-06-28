@@ -104,7 +104,6 @@ namespace DAO
                 if (value != -1)
                 {
                     entity.id = value;
-                    this.Commit();
                 }
                 else
                 {
@@ -114,7 +113,6 @@ namespace DAO
             }
             catch (Exception excepcion)
             {
-                this.RollBack();
                 throw excepcion;
             }
         }

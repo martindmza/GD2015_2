@@ -884,25 +884,41 @@ END
 GO
 
 ---------------------------------------DEPOSITAR---------------------------------------------------------------
+USE [GD1C2015]
+IF OBJECT_ID ('REZAGADOS.Depositar') IS NOT NULL
+    DROP PROCEDURE REZAGADOS.Depositar
+
+GO
+
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Depositar(@Cuenta NUMERIC(18,0), @Importe NUMERIC(18,0), @Moneda VARCHAR(255), @Nro_Tarjeta NUMERIC(18,0), @Fecha DATETIME, @Respuesta VARCHAR(255) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Depositar(
+@Cuenta NUMERIC(18,0),
+@Importe NUMERIC(18,0),
+@Moneda NUMERIC(18,0),
+@Nro_Tarjeta NUMERIC(18,0), 
+@Fecha DATETIME,
+@Respuesta NUMERIC(18,0) OUTPUT,
+@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
 DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
 DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cliente)
 	IF (@Fecha > (SELECT Vencimiento FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
-		SET @Respuesta = 'Tarjeta Vencida'
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Tarjeta Vencida'
 	ELSE
 		IF (0=(SELECT habilitada FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
-			SET @Respuesta = 'Tarjeta Inhabilitada'
+			SET @Respuesta = -1
+			SET @RespuestaMensaje = 'Tarjeta Inhabilitada'
 		ELSE
 			BEGIN
 			INSERT INTO REZAGADOS.Deposito (Id_Cuenta, Id_Tarjeta, Id_Pais, Id_Moneda, Fecha, Importe)
 			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Usuario=@Usuario), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
-			SET @Respuesta = 'Deposito realizado'
+			SET @Respuesta = @@IDENTITY
+			SET @RespuestaMensaje = 'Deposito realizado'
 			END
 END
 GO
@@ -1532,7 +1548,6 @@ BEGIN CATCH
 	SET @Respuesta2 =  ERROR_MESSAGE()
 END CATCH
 GO 
-
 ---------------------------------------------------MODIFICAR TIPO CUENTA----------------------------------------
 
 USE [GD1C2015]

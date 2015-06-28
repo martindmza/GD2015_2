@@ -55,7 +55,7 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------
-        public RolRespuesta createRol(RolModel entity)
+        public Respuesta createRol(RolModel entity)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------
-        public RolRespuesta updateRol(RolModel rol)
+        public Respuesta updateRol(RolModel rol)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------
-        public RolRespuesta disableRol(RolModel rol)
+        public Respuesta disableRol(RolModel rol)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------
-        public RolRespuesta enableRol(RolModel rol)
+        public Respuesta enableRol(RolModel rol)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace DAO
             return result;
         }
        
-        public RolRespuesta operacionDml(SqlCommand command)
+        public Respuesta operacionDml(SqlCommand command)
         {
             try
             {
@@ -186,13 +186,12 @@ namespace DAO
                 Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (Decimal)(pOut.Value);
                 String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
 
-                return new RolRespuesta(value,mensaje);
+                return new Respuesta(value,mensaje);
             }
             catch (Exception excepcion)
             {
                 throw excepcion;
             }
-            
         }
 
         protected override string getProcedureCrearBasica()

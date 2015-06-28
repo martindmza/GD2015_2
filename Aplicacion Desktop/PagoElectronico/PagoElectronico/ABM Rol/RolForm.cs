@@ -114,7 +114,7 @@ namespace ABM
         //aceptar
         private void button1_Click(object sender, EventArgs e)
         {
-            RolRespuesta respuesta;
+            Respuesta respuesta;
 
             switch (operacionTipo)
             {
