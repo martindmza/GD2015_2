@@ -30,5 +30,20 @@ namespace DAO
         {
             throw new NotImplementedException();
         }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaAgregar(System.Data.SqlClient.SqlCommand command, TipoDocumentoModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaModificar(System.Data.SqlClient.SqlCommand command, TipoDocumentoModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -23,6 +23,7 @@ namespace DAO
             DataTable dt = new DataTable();
             SqlCommand command = InitializeConnection("Login");
 
+<<<<<<< HEAD
             command.Parameters.Add("@Usuario", System.Data.SqlDbType.NVarChar, 50).Value = usuario;
             command.Parameters.Add("@Pass", System.Data.SqlDbType.NVarChar, 100).Value = passwordHash;
             var pOut = command.Parameters.Add("@Respuesta", SqlDbType.Decimal);
@@ -81,6 +82,21 @@ namespace DAO
         protected override string getProcedureCrearBasica()
         {
             return "Crear_User";
+        }
+
+        public override SqlCommand addParametrosParaAgregar(SqlCommand command, UserModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SqlCommand addParametrosParaModificar(SqlCommand command, UserModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
         }
     }
 }

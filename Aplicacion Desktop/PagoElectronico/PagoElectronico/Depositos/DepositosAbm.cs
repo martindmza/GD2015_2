@@ -152,21 +152,33 @@ namespace Depositos
             //set importe
             Double importe = Double.Parse(importeText.Text);
 
+            deposito = new DepositoModel();
+            deposito.depositante = cliente;
+            deposito.cuentaDestino = cuenta;
+            deposito.importe = importe;
+            deposito.monedaId = new MonedaDAO().dameTuModelo(monedaId.ToString());
+            deposito.tarjetaDeCredito = tarjeta;
+            deposito.fecha = extraDao.getDayToday();
+
             try
             {
-                deposito = new DepositoModel(cliente, cuenta, importe, monedaId, monedaNombre, tarjeta, extraDao.getDayToday());
                 Respuesta respuesta = depositoDao.createDeposito(deposito);
-                MessageBox.Show(respuesta.mensaje);
+
                 if (respuesta.codigo > 0)
                 {
                     deposito.id = respuesta.codigo;
-                    Form f = new DepositosComprobante(deposito);
-                    f.MdiParent = this.MdiParent;
-                    f.Show();
+                    MessageBox.Show(respuesta.mensaje);
+                    if (respuesta.codigo > 0)
+                    {
+                        deposito.id = respuesta.codigo;
+                        Form f = new DepositosComprobante(deposito);
+                        f.MdiParent = this.MdiParent;
+                        f.Show();
 
-                    this.Close();
-                    this.Dispose();
-                    GC.Collect();
+                        this.Close();
+                        this.Dispose();
+                        GC.Collect();
+                    }
                 }
             }
             catch (Exception err)

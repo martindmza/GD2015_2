@@ -9,6 +9,7 @@ namespace Models
     public class BasicaModel: AbstractModel
     {
         public const String NOMBRE = "NOMBRE";
+        public const String SIN_NOMBRE = "SIN_NOMBRE";
 
         public String nombre;
 
@@ -31,7 +32,14 @@ namespace Models
         public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-            this.nombre = fila[NOMBRE].ToString();
+            try
+            {
+                this.nombre = fila[NOMBRE].ToString();
+            }
+            catch (Exception e)
+            {
+                this.nombre = SIN_NOMBRE;
+            }
         }
     }
 }

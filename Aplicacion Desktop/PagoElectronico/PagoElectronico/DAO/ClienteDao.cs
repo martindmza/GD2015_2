@@ -189,7 +189,8 @@ namespace DAO
             return result;
         }
 
-        private SqlCommand llenarParametros(ClienteModel cliente,SqlCommand command) {
+        private SqlCommand llenarParametros(ClienteModel cliente, SqlCommand command)
+        {
 
             if (cliente.id != 0)
             {
@@ -249,6 +250,21 @@ namespace DAO
             }
 
             return command;
+        }
+
+        public override SqlCommand addParametrosParaAgregar(SqlCommand command, ClienteModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SqlCommand addParametrosParaModificar(SqlCommand command, ClienteModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
         }
     }
 }

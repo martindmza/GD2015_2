@@ -116,7 +116,7 @@ namespace ABM
             openedToSelect = true;
             this.cuentaDao = new CuentaDao();
             this.extraDao = new ExtraDao();
-            this.cuentas = cuentaDao.getCuentas();
+            this.cuentas = cuentaDao.getListado();
 
             if (doFillTable){
                 fillTable();
@@ -160,9 +160,12 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         public void formResponseCliente(ClienteModel cliente)
         {
-            clienteSeleccionado = cliente;
-            clienteText.Text = cliente.id.ToString();
-            nombreLabel.Text = cliente.apellido + ", " + cliente.nombre;
+            if (cliente != null)
+            {
+                clienteSeleccionado = cliente;
+                clienteText.Text = cliente.id.ToString();
+                nombreLabel.Text = cliente.apellido + ", " + cliente.nombre;
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 

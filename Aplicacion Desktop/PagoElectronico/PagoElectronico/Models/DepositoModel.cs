@@ -3,48 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using DAO;
 
 namespace Models
 {
     public class DepositoModel : AbstractModel
+
     {
+        public const String DEPOSITANTE = "DEPOSITANTE";
+        public const String CUENTA_DESTINO = "CUENTA_DESTINO";
+        public const String IMPORTE = "IMPORTE";
+        public const String MONEDA = "MONEDA";
+        public const String TARJETA = "TARJETA";
+        public const String FECHA = "FECHA";
+
         public ClienteModel depositante;
         public CuentaModel cuentaDestino;
         public Double importe;
-        public UInt32 monedaId;
-        public String monedaNombre;
+        public MonedaModel monedaId;
         public TarjetaDeCreditoModel tarjetaDeCredito;
         public DateTime fecha;
-
-        public DepositoModel(ClienteModel depositante, CuentaModel cuentaDestino, Double importe, UInt32 monedaId, 
-                                String monedaNombre, TarjetaDeCreditoModel tarjetaDeCredito, DateTime fecha) 
-        {
-            this.depositante = depositante;
-            this.cuentaDestino = cuentaDestino;
-            this.importe = importe;
-            this.monedaId = monedaId;
-            this.monedaNombre = monedaNombre;
-            this.tarjetaDeCredito = tarjetaDeCredito;
-            this.fecha = fecha;
-        }
-
-        public DepositoModel(UInt32 id,ClienteModel depositante, CuentaModel cuentaDestino, Double importe, UInt32 monedaId,
-                                String monedaNombre, TarjetaDeCreditoModel tarjetaDeCredito, DateTime fecha)
-        {
-            this.id = id;
-            this.depositante = depositante;
-            this.cuentaDestino = cuentaDestino;
-            this.importe = importe;
-            this.monedaId = monedaId;
-            this.monedaNombre = monedaNombre;
-            this.tarjetaDeCredito = tarjetaDeCredito;
-            this.fecha = fecha;
-        }
 
         public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-
+            this.depositante = new ClienteDao().dameTuModelo(fila[DEPOSITANTE].ToString());
+            this.cuentaDestino = new CuentaDao().dameTuModelo(fila[CUENTA_DESTINO].ToString());
+            this.importe = Double.Parse(fila[CUENTA_DESTINO].ToString());
+            this.monedaId = new MonedaDAO().dameTuModelo(fila[MONEDA].ToString());
+            this.tarjetaDeCredito = null;
+            this.fecha = fila[FECHA] != DBNull.Value ? DateTime.Parse(fila[FECHA].ToString()) : DateTime.MinValue;
         }
     }
 }

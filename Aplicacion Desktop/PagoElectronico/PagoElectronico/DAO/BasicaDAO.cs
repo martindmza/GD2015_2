@@ -8,11 +8,10 @@ using System.Windows.Forms;
 using Models;
 
 namespace DAO
-{
+{   
     public abstract class BasicaDAO<TEntity>: AbstractDAO
         where TEntity : BasicaModel , new()
     {
-
         public List<TEntity> getListado()
         {
             List<TEntity> lista = new List<TEntity>();
@@ -24,8 +23,8 @@ namespace DAO
             }
             return lista;
         }
-        public abstract TEntity getModeloBasico(DataRow fila);
 
+        public abstract TEntity getModeloBasico(DataRow fila);
         /*
          *Recibe un string para despues transformarlo y poder encontrar y generar una Instancia de su propia
          *caracteristicas
@@ -50,7 +49,6 @@ namespace DAO
             }
             catch (FormatException ex)
             {
-                
                 return null;
             }
             return null;
@@ -88,15 +86,16 @@ namespace DAO
             {
                 DataTable dt = new DataTable();
                 SqlCommand command = InitializeConnection(this.getProcedureCrearBasica());
-
-                command.Parameters.Add("Nombre", System.Data.SqlDbType.NVarChar, 50).Value = entity.nombre;
-                //
+                if (!entity.nombre.Equals(BasicaModel.SIN_NOMBRE))
+                {
+                    command.Parameters.Add("Nombre", System.Data.SqlDbType.NVarChar, 50).Value = entity.nombre;
+                }
+                command = addParametrosParaAgregar(command,entity);
                 var pOut = command.Parameters.Add("Respuesta", SqlDbType.Int);
                 var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
                 pOut.Direction = ParameterDirection.Output;
                 pOut2.Direction = ParameterDirection.Output;
                 //
-                
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 da.Fill(dt);
                 Int32 value = Convert.IsDBNull(pOut.Value) ? 0 : (Int32)(pOut.Value);
@@ -117,7 +116,13 @@ namespace DAO
             }
         }
 
+        public abstract SqlCommand addParametrosParaAgregar(SqlCommand command, TEntity entity);
+
+        public abstract SqlCommand addParametrosParaModificar(SqlCommand command, TEntity entity);
+
         protected abstract string getProcedureCrearBasica();
+
+        protected abstract string getProcedureModificarBasica();
 
         public abstract string getProcedureEncontrarPorId();
 

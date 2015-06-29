@@ -6,7 +6,7 @@ using Models;
 
 namespace DAO
 {
-    class TarjetaDeCreditoDao: BasicaDAO<TarjetaDeCreditoModel>
+    public class TarjetaDeCreditoDao: BasicaDAO<TarjetaDeCreditoModel>
     {
         public List<TarjetaDeCreditoModel> getTarjetasByCliente(ClienteModel cliente) {
 
@@ -64,6 +64,23 @@ namespace DAO
         }
 
         protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaAgregar(System.Data.SqlClient.SqlCommand command, TarjetaDeCreditoModel entity)
+        {
+            //TODO agregar parametros para agregar
+            return command;
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaModificar(System.Data.SqlClient.SqlCommand command, TarjetaDeCreditoModel entity)
+        {
+            //TODO agregar parametros para modificar
+            return command;
+        }
+
+        protected override string getProcedureModificarBasica()
         {
             throw new NotImplementedException();
         }

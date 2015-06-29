@@ -150,6 +150,8 @@ namespace Models
             this.pais = new PaisDAO().dameTuModelo(fila[PAIS].ToString());
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
             this.nroDocumento = (Decimal)fila[NRO_DOCUMENTO];
+            this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO].ToString());
+
         }
     }
 }

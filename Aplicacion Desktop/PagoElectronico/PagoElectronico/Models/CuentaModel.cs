@@ -7,7 +7,7 @@ using DAO;
 
 namespace Models
 {
-    public class CuentaModel: AbstractModel
+    public class CuentaModel: BasicaModel
     {
         public const String PAIS = "PAIS";
         public const String CUENTATIPO = "TIPO_CUENTA";
@@ -31,6 +31,7 @@ namespace Models
         public Double saldo = 0;
         public bool habilitado = true;
 
+        public CuentaModel() { }
         public CuentaModel(DataRow fila)
             : base(fila)
         {

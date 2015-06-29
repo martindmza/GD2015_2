@@ -8,24 +8,9 @@ using System.Data.SqlClient;
 
 namespace DAO
 {
-    public class CuentaDao: AbstractDAO
+    public class CuentaDao: BasicaDAO<CuentaModel>
     {
-
-        public List<CuentaModel> getCuentas()
-        {
-
-            List<CuentaModel> cuentas = new List<CuentaModel>();
-            DataTable dataRoles = this.getCuentasDeBase();
-            foreach (DataRow cuentaBase in dataRoles.Rows)
-            {
-                CuentaModel rolModel = new CuentaModel(cuentaBase);
-                cuentas.Add(rolModel);
-            }
-            return cuentas;
-        }
-
-
-        public List<CuentaModel> getCuentasByCliente(ClienteModel cliente) {
+       public List<CuentaModel> getCuentasByCliente(ClienteModel cliente) {
             List<CuentaModel> cuentas = new List<CuentaModel>();
             DataTable dataCuentas = this.getCuentasDeBasePorIdCliente(cliente.id);
             foreach (DataRow cuentaBase in dataCuentas.Rows)
@@ -93,10 +78,21 @@ namespace DAO
             return new CuentaTipoDAO().getListado();
         }
 
-        public CuentaModel addNewCuenta(CuentaModel cuenta)
+        public CuentaModel addNewCuenta(CuentaModel entity)
         {
-            cuenta.id = 99;
-            return cuenta;
+            this.agregarBasica(entity);
+            try
+            {
+                SqlCommand command = InitializeConnection("Crear_Rol");
+                command.Parameters.Add("Nombre_Rol", System.Data.SqlDbType.NVarChar, 255).Value = entity.monedaId;
+                return entity;
+                //return operacionDml(command);
+            }
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                throw excepcion;
+            }
         }
 
         public CuentaModel updateCuenta(CuentaModel cuenta)
@@ -109,6 +105,46 @@ namespace DAO
         {
             cuenta.habilitado = false;
             return cuenta;
+        }
+
+        public override CuentaModel getModeloBasico(DataRow fila)
+        {
+            return new CuentaModel(fila);
+        }
+
+        protected override string getProcedureCrearBasica()
+        {
+            return "CrearCuenta";
+        }
+
+        public override string getProcedureEncontrarPorId()
+        {
+            return "Buscar_Cuenta_ID";
+        }
+
+        public override string getProcedureListar()
+        {
+            return "Listar_Cuenta";
+        }
+
+        public override SqlCommand addParametrosParaAgregar(SqlCommand command, CuentaModel entity)
+        {
+            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
+            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
+            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
+            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
+            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
+            return command;
+        }
+
+        public override SqlCommand addParametrosParaModificar(SqlCommand command, CuentaModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
         }
     }
 }

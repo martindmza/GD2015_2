@@ -51,7 +51,7 @@ namespace ABM
                     row = new String[]  {   d.id.ToString(),
                                             d.depositante.apellido + ", " + d.depositante.nombre,
                                             d.importe.ToString(),
-                                            d.monedaNombre.ToString(),
+                                            d.monedaId.nombre.ToString(),
                                             d.tarjetaDeCredito.numero.ToString(),
                                             d.fecha.ToShortDateString()
                                         };
