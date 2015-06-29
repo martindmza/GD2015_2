@@ -99,6 +99,7 @@ namespace ABM
             KeyValuePair<UInt32, String> empty = new KeyValuePair<UInt32, String>(0,"");
             comboBox1.Items.Add(empty);
             TipoDocumentoDAO docDao = new TipoDocumentoDAO();
+
             foreach (TipoDocumentoModel tipo in docDao.getListado())
             {
                 comboBox1.Items.Add(new KeyValuePair<Decimal, String>(tipo.id, tipo.nombre));
@@ -337,3 +338,4 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
     }
 }
+

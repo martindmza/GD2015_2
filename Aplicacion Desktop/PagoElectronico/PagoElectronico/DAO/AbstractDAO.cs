@@ -49,17 +49,6 @@ namespace DAO
             return command;
         }
 
-		public void RollBack()
-		{
-			if (_conTransaccion)
-				_transaction.Rollback();
-		}
-
-		public void Commit()
-		{
-			if (_conTransaccion)
-				Transaction.Commit();
-		}
         public virtual void CerrarConexion()
         {
             _connection.CerrarConexion();
