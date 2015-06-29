@@ -232,9 +232,9 @@ namespace ABM
             switch (operacionTipo)
             {
                 case 0:
-                    cuenta = new CuentaModel(0, paisCuenta, tipoActivo, monedaId, monedaNombre, estado, apertura.Value, this.cliente);
+                    cuenta = new CuentaModel(0, this.paisCuenta, this.tipoActivo, monedaId, monedaNombre, estado, apertura.Value, this.cliente);
 
-                    cuenta = cuentaDao.addNewCuenta(cuenta);
+                    cuenta = cuentaDao.agregarBasica(cuenta);
                     parentCuenta.formResponseAdd(cuenta);
                     MessageBox.Show("Cuenta creada exitosamente");
                     break;

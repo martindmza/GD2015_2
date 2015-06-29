@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Models;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace DAO
 {
@@ -25,6 +26,21 @@ namespace DAO
         }
 
         protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SqlCommand addParametrosParaAgregar(SqlCommand command, PaisModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SqlCommand addParametrosParaModificar(SqlCommand command, PaisModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
         {
             throw new NotImplementedException();
         }

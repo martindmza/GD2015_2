@@ -199,5 +199,20 @@ namespace DAO
         {
             throw new NotImplementedException();
         }
+
+        public override SqlCommand addParametrosParaAgregar(SqlCommand command, RolModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SqlCommand addParametrosParaModificar(SqlCommand command, RolModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

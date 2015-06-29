@@ -208,6 +208,11 @@ namespace Frame
             f.MdiParent = this;
             f.Show();
         }
+
+        private void usuariosToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
         //-----------------------------------------------------------------------------------------------------------------
     }
 }

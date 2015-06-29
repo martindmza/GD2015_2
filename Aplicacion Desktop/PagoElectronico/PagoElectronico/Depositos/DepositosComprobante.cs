@@ -21,7 +21,7 @@ namespace Depositos
             cliente.Text    = deposito.depositante.apellido + ", " + deposito.depositante.nombre;
             cuenta.Text     = deposito.cuentaDestino.id.ToString();
             importe.Text    = deposito.importe.ToString();
-            moneda.Text     = deposito.monedaNombre;
+            moneda.Text     = deposito.monedaId.nombre;
             tarjeta.Text    = deposito.tarjetaDeCredito.numero.ToString();
         }
 

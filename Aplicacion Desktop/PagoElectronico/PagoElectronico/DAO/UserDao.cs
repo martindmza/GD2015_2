@@ -79,5 +79,20 @@ namespace DAO
         {
             return "Crear_User";
         }
+
+        public override SqlCommand addParametrosParaAgregar(SqlCommand command, UserModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SqlCommand addParametrosParaModificar(SqlCommand command, UserModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

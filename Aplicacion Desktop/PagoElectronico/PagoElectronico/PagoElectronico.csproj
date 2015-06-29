@@ -115,6 +115,7 @@
     <Compile Include="DAO\FacturaDao.cs" />
     <Compile Include="DAO\FuncionalidadDao.cs" />
     <Compile Include="DAO\LocalidadDAO.cs" />
+    <Compile Include="DAO\MonedaDAO.cs" />
     <Compile Include="DAO\PaisDAO.cs" />
     <Compile Include="DAO\respuestas\RolRespuesta.cs" />
     <Compile Include="DAO\RetiroDao.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="Models\CuentaModel.cs" />
     <Compile Include="Models\CuentaTipoModel.cs" />
     <Compile Include="Models\DepositoModel.cs" />
+    <Compile Include="Models\MonedaModel.cs" />
     <Compile Include="Models\TipoDocumentoModel.cs" />
     <Compile Include="Models\EstadoModel.cs" />
     <Compile Include="Models\FacturaModel.cs" />

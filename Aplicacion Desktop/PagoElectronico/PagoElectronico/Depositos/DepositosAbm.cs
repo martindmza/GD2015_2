@@ -153,10 +153,18 @@ namespace Depositos
             //set importe
             Double importe = Double.Parse(importeText.Text);
 
-            deposito = new DepositoModel(cliente,cuenta,importe,monedaId,monedaNombre,tarjeta,extraDao.getDayToday());
+            deposito = new DepositoModel();
+            deposito.depositante = cliente;
+            deposito.cuentaDestino = cuenta;
+            deposito.importe = importe;
+            deposito.monedaId = new MonedaDAO().dameTuModelo(monedaId.ToString());
+            deposito.tarjetaDeCredito = tarjeta;
+            deposito.fecha = extraDao.getDayToday();
+
+
             deposito = depositoDao.createDeposito(deposito);
 
-            if (deposito.id != null)
+            if (deposito.id >0)
             {
                 Form f = new DepositosComprobante(deposito);
                 f.MdiParent = this.MdiParent;
