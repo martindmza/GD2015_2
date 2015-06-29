@@ -145,6 +145,7 @@ namespace Models
             this.localidad = new LocalidadModel(0, fila[LOCALIDAD].ToString());
             this.pais = new PaisDAO().dameTuModelo(fila[PAIS].ToString());
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
+            this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO].ToString());
         }
     }
 }

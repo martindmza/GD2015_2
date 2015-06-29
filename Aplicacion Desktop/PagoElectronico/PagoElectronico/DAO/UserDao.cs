@@ -25,8 +25,9 @@ namespace DAO
 
             command.Parameters.Add("Usuario", System.Data.SqlDbType.NVarChar, 50).Value = usuario;
             command.Parameters.Add("Pass", System.Data.SqlDbType.NVarChar, 100).Value = passwordHash;
+            var pInOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
             var pInOut = command.Parameters.Add("Respuesta", SqlDbType.NVarChar,255);
-            var pInOut2 = command.Parameters.Add("Respuesta_Contra", SqlDbType.NVarChar, 255);
+            
             pInOut.Direction = ParameterDirection.Output;
             pInOut2.Direction = ParameterDirection.Output;
 
@@ -34,10 +35,10 @@ namespace DAO
             da.Fill(dt);
             string value = Convert.IsDBNull(pInOut.Value) ? null : (string)pInOut.Value;
             string value2 = Convert.IsDBNull(pInOut2.Value) ? null : (string)pInOut2.Value;
-            
-            if (value.Equals("Abrir Sesion"))
+
+            if (value2.Equals("Abrir Sesion"))
             {
-                return new UserDao().dameTuModelo(value2);
+                return new UserDao().dameTuModelo(value);
             }
             MessageBox.Show(value, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             return null;
