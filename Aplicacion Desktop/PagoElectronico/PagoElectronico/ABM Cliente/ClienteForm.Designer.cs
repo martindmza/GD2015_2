@@ -48,11 +48,9 @@
             this.domNumero = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label21 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
             this.button6 = new System.Windows.Forms.Button();
             this.paisText = new System.Windows.Forms.TextBox();
             this.paislabel = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.domPiso = new System.Windows.Forms.TextBox();
             this.localidadText = new System.Windows.Forms.TextBox();
             this.domDepartamento = new System.Windows.Forms.TextBox();
@@ -238,11 +236,9 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label21);
-            this.groupBox1.Controls.Add(this.label20);
             this.groupBox1.Controls.Add(this.button6);
             this.groupBox1.Controls.Add(this.paisText);
             this.groupBox1.Controls.Add(this.paislabel);
-            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.domPiso);
@@ -268,15 +264,6 @@
             this.label21.Size = new System.Drawing.Size(11, 13);
             this.label21.TabIndex = 9;
             this.label21.Text = "*";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(214, 91);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(11, 13);
-            this.label20.TabIndex = 9;
-            this.label20.Text = "*";
             // 
             // button6
             // 
@@ -306,16 +293,6 @@
             this.paislabel.TabIndex = 3;
             this.paislabel.Text = "País:";
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(191, 91);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(24, 20);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "...";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // domPiso
             // 
             this.domPiso.Location = new System.Drawing.Point(64, 60);
@@ -327,7 +304,6 @@
             // 
             // localidadText
             // 
-            this.localidadText.Enabled = false;
             this.localidadText.Location = new System.Drawing.Point(64, 91);
             this.localidadText.Name = "localidadText";
             this.localidadText.Size = new System.Drawing.Size(122, 20);
@@ -560,7 +536,6 @@
         private System.Windows.Forms.TextBox domDepartamento;
         private System.Windows.Forms.TextBox email;
         private System.Windows.Forms.TextBox localidadText;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox id;
@@ -572,7 +547,6 @@
         private System.Windows.Forms.Label paislabel;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;

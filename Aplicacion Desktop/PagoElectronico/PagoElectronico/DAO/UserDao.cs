@@ -23,24 +23,27 @@ namespace DAO
             DataTable dt = new DataTable();
             SqlCommand command = InitializeConnection("Login");
 
-            command.Parameters.Add("Usuario", System.Data.SqlDbType.NVarChar, 50).Value = usuario;
-            command.Parameters.Add("Pass", System.Data.SqlDbType.NVarChar, 100).Value = passwordHash;
-            var pInOut = command.Parameters.Add("Respuesta", SqlDbType.NVarChar,255);
-            var pInOut2 = command.Parameters.Add("Respuesta_Contra", SqlDbType.NVarChar, 255);
-            pInOut.Direction = ParameterDirection.Output;
-            pInOut2.Direction = ParameterDirection.Output;
+            command.Parameters.Add("@Usuario", System.Data.SqlDbType.NVarChar, 50).Value = usuario;
+            command.Parameters.Add("@Pass", System.Data.SqlDbType.NVarChar, 100).Value = passwordHash;
+            var pOut = command.Parameters.Add("@Respuesta", SqlDbType.Decimal);
+            var pOut2 = command.Parameters.Add("@RespuestaMensaje", SqlDbType.NVarChar, 255);
+            pOut.Direction = ParameterDirection.Output;
+            pOut2.Direction = ParameterDirection.Output;
 
             SqlDataAdapter da = new SqlDataAdapter(command);
             da.Fill(dt);
-            string value = Convert.IsDBNull(pInOut.Value) ? null : (string)pInOut.Value;
-            string value2 = Convert.IsDBNull(pInOut2.Value) ? null : (string)pInOut2.Value;
-            
-            if (value.Equals("Abrir Sesion"))
+            Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (Decimal)(pOut.Value);
+            String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+
+            if (value > 0)
             {
-                return new UserDao().dameTuModelo(value2);
+                return new UserDao().dameTuModelo(value.ToString());
             }
-            MessageBox.Show(value, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            return null;
+            else {
+                MessageBox.Show(value.ToString(), "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                return null;
+            }
+            
         }
         //-----------------------------------------------------------------------------------------------------------------
 

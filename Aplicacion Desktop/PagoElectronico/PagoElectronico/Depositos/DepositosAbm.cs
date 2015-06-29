@@ -152,23 +152,30 @@ namespace Depositos
             //set importe
             Double importe = Double.Parse(importeText.Text);
 
-            deposito = new DepositoModel(cliente,cuenta,importe,monedaId,monedaNombre,tarjeta,extraDao.getDayToday());
-            deposito = depositoDao.createDeposito(deposito);
-
-            if (deposito.id != null)
+            try
             {
-                Form f = new DepositosComprobante(deposito);
-                f.MdiParent = this.MdiParent;
-                f.Show();
+                deposito = new DepositoModel(cliente, cuenta, importe, monedaId, monedaNombre, tarjeta, extraDao.getDayToday());
+                Respuesta respuesta = depositoDao.createDeposito(deposito);
+                MessageBox.Show(respuesta.mensaje);
+                if (respuesta.codigo > 0)
+                {
+                    deposito.id = respuesta.codigo;
+                    Form f = new DepositosComprobante(deposito);
+                    f.MdiParent = this.MdiParent;
+                    f.Show();
+
+                    this.Close();
+                    this.Dispose();
+                    GC.Collect();
+                }
             }
-            else {
-                throw new Exception("No se pudo crear la transacción");
+            catch (Exception err)
+            {
+                MessageBox.Show("No se pudo completar la operación");
             }
 
 
-            this.Close();
-            this.Dispose();
-            GC.Collect();
+            
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

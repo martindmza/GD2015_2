@@ -83,7 +83,7 @@ Direccion_Departamento varchar(10),
 Fecha_Nacimiento datetime,
 Mail varchar(255) UNIQUE,
 Localidad varchar(255),
-Nacionalidad varchar(255),
+Id_Nacionalidad numeric(18,0),
 Habilitada bit DEFAULT 1,);
 ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT PK_Id_Cliente PRIMARY KEY (Id_Cliente);
 				
@@ -243,6 +243,9 @@ FOREIGN KEY (Id_Tipo_Documento) REFERENCES REZAGADOS.TipoDocumento (Id_Tipo_Docu
 ;
 ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT FK_Cliente_to_Pais
 FOREIGN KEY (Id_Pais) REFERENCES REZAGADOS.Pais (Id_Pais)
+;
+ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT FK_Cliente_to_Nacionalidad
+FOREIGN KEY (Id_Nacionalidad) REFERENCES REZAGADOS.Pais (Id_Pais)
 ;
 ALTER TABLE REZAGADOS.Cuenta ADD CONSTRAINT FK_Cuenta_to_Usuario
 FOREIGN KEY (Id_Usuario) REFERENCES REZAGADOS.Usuario (Id_Usuario)
@@ -538,9 +541,9 @@ GO
 CREATE PROCEDURE REZAGADOS.Crear_Cliente(
 					@Nombre VARCHAR(255),
 					@Apellido VARCHAR(255),
-					@Tipo_Documento NUMERIC(18, 0),
+					@Id_Tipo_Documento NUMERIC(18, 0),
 					@Nro_Documento NUMERIC(18, 0),
-					@Pais VARCHAR(255),
+					@Id_Pais NUMERIC(18, 0),
 					@Direccion_Calle VARCHAR (255),
 					@Direccion_Numero_Calle NUMERIC(18, 0),
 					@Direccion_Piso NUMERIC(18,0),
@@ -548,40 +551,37 @@ CREATE PROCEDURE REZAGADOS.Crear_Cliente(
 					@Fecha_Nacimiento DATETIME,
 					@Mail VARCHAR(255),
 					@Localidad VARCHAR(255),
-					@Nacionalidad VARCHAR(255),
-					@Username VARCHAR (255),
-					@Password VARCHAR(255),
+					@Id_Nacionalidad NUMERIC(18, 0),
 					@RespuestaMensaje VARCHAR(255) OUTPUT,
 					@Respuesta NUMERIC(18,0) OUTPUT)
 AS 
 BEGIN TRY
-BEGIN TRANSACTION
-BEGIN
-IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
-	BEGIN
-	SET @RespuestaMensaje = 'El e-mail ya existe.'
-	SET @Respuesta = -1
-	END
-ELSE
-BEGIN
-	INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia) VALUES (@Username, @Password)
-	DECLARE @Id_Usuario NUMERIC(18,0)
-	DECLARE @Id_Tipo_Documento NUMERIC(18,0)
-	DECLARE @Id_Pais NUMERIC (18,0)
-	SET @Id_Pais = (SELECT DISTINCT Id_Pais FROM REZAGADOS.Pais WHERE REZAGADOS.Pais.Descripcion = @Pais)
-	SET @Id_Tipo_Documento = (SELECT DISTINCT Id_Tipo_Documento FROM REZAGADOS.TipoDocumento WHERE REZAGADOS.TipoDocumento.Descripcion = @Tipo_Documento)
-	SET @Id_Usuario = (SELECT DISTINCT Id_Usuario FROM REZAGADOS.Usuario WHERE REZAGADOS.Usuario.Nombre = @Username)
-	INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Nacionalidad)
-	VALUES (@Id_Usuario, @Nombre, @Apellido, @Id_Tipo_Documento, @Nro_Documento, @Id_Pais, @Direccion_Calle, @Direccion_Numero_Calle, @Direccion_Piso, @Direccion_Departamento, @Fecha_Nacimiento, @Mail, @Localidad, @Nacionalidad) 		
-	INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
-	SET @Respuesta = (SELECT Id_Cliente FROM Cliente WHERE Nombre = @Nombre AND Apellido = @Apellido AND Nro_Documento = @Nro_Documento)			
-	SET @RespuestaMensaje = 'Los datos se guardaron exitosamente!'
-	END
-END
-COMMIT TRANSACTION
+	BEGIN TRANSACTION
+		BEGIN
+		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
+			BEGIN
+			SET @RespuestaMensaje = 'El e-mail ya existe.'
+			SET @Respuesta = -1
+			END
+		ELSE
+		BEGIN
+			INSERT INTO REZAGADOS.Usuario (Nombre) VALUES (@Nombre + '.' + @Apellido)
+			DECLARE @Id_Usuario NUMERIC(18,0) = @@IDENTITY
+			
+			INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Id_Nacionalidad)
+			VALUES (@Id_Usuario, @Nombre, @Apellido, @Id_Tipo_Documento, @Nro_Documento, @Id_Pais, @Direccion_Calle, @Direccion_Numero_Calle, @Direccion_Piso, @Direccion_Departamento, @Fecha_Nacimiento, @Mail, @Localidad, @Id_Nacionalidad) 		
+			
+			INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
+			SET @Respuesta = @@IDENTITY
+			SET @RespuestaMensaje = 'Los datos se guardaron exitosamente!'
+			END
+		END
+	COMMIT TRANSACTION
 END TRY
 BEGIN CATCH
-ROLLBACK TRANSACTION
+	SET @Respuesta = -1
+	SET @RespuestaMensaje = 'El Cliente no se pudo guardar por datos duplicados o porque no especificó bien los datos'
+	ROLLBACK TRANSACTION
 END CATCH
 GO
 
@@ -591,6 +591,11 @@ USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Modificar_Cliente (
 								@Id_Cliente NUMERIC(18,0),
+								@Nombre VARCHAR(255),
+								@Apellido VARCHAR(255),
+								@Id_Tipo_Documento NUMERIC(18, 0),
+								@Nro_Documento NUMERIC(18, 0),
+								@Id_Pais NUMERIC(18, 0),
 								@Direccion_Calle VARCHAR (255),
 								@Direccion_Numero_Calle NUMERIC(18, 0),
 								@Direccion_Piso NUMERIC(18,0),
@@ -598,33 +603,46 @@ CREATE PROCEDURE REZAGADOS.Modificar_Cliente (
 								@Fecha_Nacimiento DATETIME,
 								@Mail VARCHAR(255),
 								@Localidad VARCHAR(255),
-								@Nacionalidad VARCHAR(255),
+								@Id_Nacionalidad NUMERIC(18, 0),
 								@RespuestaMensaje VARCHAR(255) OUTPUT,
 								@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
-	IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
-	BEGIN
-	SET @RespuestaMensaje = 'El e-mail ya existe.'
+BEGIN TRY
+	BEGIN TRANSACTION
+		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
+			BEGIN
+			SET @RespuestaMensaje = 'El e-mail ya existe.'
+			SET @Respuesta = -1
+		END
+		ELSE
+			BEGIN
+			 UPDATE	REZAGADOS.Cliente
+				SET	Nombre = @Nombre,
+					Apellido = @Apellido,
+					Id_Tipo_Documento = @Id_Tipo_Documento,
+					Nro_Documento = @Nro_Documento,
+					Id_Pais = @Id_Pais,
+					Direccion_Calle = @Direccion_Calle,
+					Direccion_Numero_Calle = @Direccion_Numero_Calle,
+					Direccion_Piso = @Direccion_Piso,
+					Direccion_Departamento = @Direccion_Departamento,
+					Fecha_Nacimiento = @Fecha_Nacimiento,
+					Mail = @Mail,
+					Localidad = @Localidad,
+					Id_Nacionalidad = @Id_Nacionalidad
+			  WHERE Id_Cliente = @Id_Cliente
+
+			SET @RespuestaMensaje = 'El cliente ha sido modificado!'
+			SET @Respuesta = 1
+		END
+	COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
 	SET @Respuesta = -1
-	END
-ELSE
-	BEGIN
-	UPDATE REZAGADOS.Cliente
-	SET
-	[Direccion_Calle] = @Direccion_Calle,
-	[Direccion_Numero_Calle] = @Direccion_Numero_Calle,
-	[Direccion_Piso] = @Direccion_Piso,
-	[Direccion_Departamento] = @Direccion_Departamento,
-	[Fecha_Nacimiento] = @Fecha_Nacimiento,
-	[Mail] = @Mail,
-	[Localidad] = @Localidad,
-	[Nacionalidad] = @Nacionalidad
-	WHERE
-   [Id_Cliente] = @Id_Cliente
-  SET @RespuestaMensaje = 'El cliente ha sido modificado!'
-  SET @Respuesta = 1
-  END
+	SET @RespuestaMensaje = 'El Cliente no se pudo guardar por datos duplicados o porque no especificó bien los datos'
+	ROLLBACK TRANSACTION
+END CATCH
 END
 GO
 
@@ -1301,7 +1319,7 @@ BEGIN
 	c.Id_Pais PAIS,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
 	c.Direccion_Piso DIRECCION_PISO, c.Direccion_Departamento DIRECCION_DEPTO, 
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
-	c.Habilitada HABILITADA
+	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD
 	FROM  [REZAGADOS].Cliente c 
 	WHERE c.Id_Usuario = @Id_Usuario
 END
