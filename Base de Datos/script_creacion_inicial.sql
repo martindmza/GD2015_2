@@ -1947,6 +1947,7 @@ BEGIN
 SELECT Categoria, SUM(Item.Importe) Cantidad
 FROM REZAGADOS.Item, REZAGADOS.Cuenta, REZAGADOS.TipoCuenta
 WHERE Cuenta.Id_Cuenta=Item.Id_Cuenta
+AND Item.Id_Factura IS NOT NULL
 AND TipoCuenta.Id_Tipo_Cuenta=Cuenta.Id_Tipo_Cuenta
 AND Item.Fecha > @FechaInic
 AND Item.Fecha < @FechaFin
