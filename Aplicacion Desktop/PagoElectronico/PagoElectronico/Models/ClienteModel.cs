@@ -44,8 +44,6 @@ namespace Models
         public ClienteModel(DataRow fila)
             : base(fila)
         {
-            this.tipoDocumento = this.getTipoDocumento();
-            this.pais = this.getPais();
             this.localidad = this.getLocalidad();
             this.cuentas = this.getListaDeCuentas();
         }
@@ -60,15 +58,6 @@ namespace Models
             return new CuentaDao().getCuentasByCliente(this);
         }
 
-        private TipoDocumentoModel getTipoDocumento()
-        {
-            return null;
-        }
-
-        private PaisModel getPais()
-        {
-            return null;
-        }
 
         public ClienteModel(String apellido, String nombre, TipoDocumentoModel documento,
             DateTime nacimiento, String email, PaisModel nacionalidad, String direccionCalle, UInt32 direccionNumeroCalle,
@@ -135,17 +124,17 @@ namespace Models
         public override void mapeoFilaAModel(System.Data.DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-            this.apellido = fila[APELLIDO].ToString();
-            this.nacimiento = fila[NACIMIENTO] != DBNull.Value ? DateTime.Parse(fila[NACIMIENTO].ToString()) : DateTime.MinValue;
-            this.email = fila[EMAIL].ToString();
-            this.direccionCalle = fila[DIRECCION_CALLE].ToString();
-            this.direccionNumeroCalle = (Decimal)fila[DIRECCION_NRO_CALLE];
-            this.direccionPiso = (Decimal)fila[DIRECCION_PISO];
-            this.direccionDepto = fila[DIRECCION_DEPTO].ToString();
-            this.localidad = new LocalidadModel(0, fila[LOCALIDAD].ToString());
-            this.pais = new PaisDAO().dameTuModelo(fila[PAIS].ToString());
-            this.direccionCalle = fila[DIRECCION_CALLE].ToString();
-            this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO].ToString());
+            this.apellido = this.mapearValor(fila[APELLIDO]);
+            this.nacimiento = this.mapearFecha(fila[NACIMIENTO]);
+            this.email = this.mapearValor(fila[EMAIL]);
+            this.direccionCalle = this.mapearValor(fila[DIRECCION_CALLE]);
+            this.direccionNumeroCalle = this.mapearNum(fila[DIRECCION_NRO_CALLE]);
+            this.direccionPiso = this.mapearNum(fila[DIRECCION_PISO]);
+            this.direccionDepto = this.mapearValor(fila[DIRECCION_DEPTO]);
+            this.localidad = new LocalidadDAO().dameTuModelo(this.mapearValor(fila[LOCALIDAD]));
+            this.pais = new PaisDAO().dameTuModelo(this.mapearValor(fila[PAIS]));
+            this.direccionCalle = this.mapearValor(fila[DIRECCION_CALLE]);
+            this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(this.mapearValor(fila[DOCUMENTO]));
         }
     }
 }
