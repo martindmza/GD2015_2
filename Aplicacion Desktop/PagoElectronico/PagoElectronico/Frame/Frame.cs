@@ -29,7 +29,7 @@ namespace Frame
         //______________________________________________________________________________________________________________________
         public Frame(Login parent)
         {
-            UserModel usuario = Login.userLogued;
+            UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
             if (usuario != null)
             {
                 InitializeComponent();
@@ -51,8 +51,8 @@ namespace Frame
                 //Si tiene un rol activo entrar a la aplicacion directamente
                 else if (usuario.roles.Count == 1)
                 {
-                    Login.rolSelected = usuario.roles.First();
-                    setRolLogued(Login.rolSelected);
+                    UsuarioSingleton.getInstance().setRol(usuario.roles.First());
+                    setRolLogued(UsuarioSingleton.getInstance().getRol());
                     enableMenu();
                 }
                 //Si tiene más de un rol, muestra opciones de rol con el cual entrar

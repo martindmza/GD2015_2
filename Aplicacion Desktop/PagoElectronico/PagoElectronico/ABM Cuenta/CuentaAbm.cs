@@ -62,7 +62,7 @@ namespace ABM
             this.parentRetiros = parentRetiros;
             this.parentRetiros.Enabled = false;
 
-            formResponseCliente(Logins.Login.userLogued.cliente);
+            formResponseCliente(Logins.UsuarioSingleton.getInstance().getUsuario().cliente);
             cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
             fillTable();
             button1.Enabled = false;
@@ -73,7 +73,7 @@ namespace ABM
         {
             if (origenOdestino == 0) {
                 initToSelect(false);
-                formResponseCliente(Logins.Login.userLogued.cliente);
+                formResponseCliente(Logins.UsuarioSingleton.getInstance().getUsuario().cliente);
                 cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
                 fillTable();
                 button1.Enabled = false;

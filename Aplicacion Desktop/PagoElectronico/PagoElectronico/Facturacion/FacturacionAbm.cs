@@ -26,7 +26,7 @@ namespace Facturacion
 
         public FacturacionAbm()
         {
-            cliente = Login.userLogued.cliente;
+            cliente = UsuarioSingleton.getInstance().getUsuario().cliente;
             transaccionDao = new TransaccionDao();
             extraDao = new ExtraDao();
             transacciones = transaccionDao.getTransaccionesPendientesByCliente(cliente);

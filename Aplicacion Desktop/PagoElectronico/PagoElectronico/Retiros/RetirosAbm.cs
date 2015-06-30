@@ -10,6 +10,7 @@ using Models;
 using DAO;
 using FormsExtras;
 using ABM;
+using Logins;
 
 namespace Retiros
 {
@@ -110,7 +111,8 @@ namespace Retiros
         private void aceptar_Click(object sender, EventArgs e)
         {
             //validar Documento
-            if ( ! dniText.Text.Equals(Logins.Login.userLogued.cliente.nroDocumento.ToString())) {
+            if (!dniText.Text.Equals(UsuarioSingleton.getInstance().getUsuario().cliente.nroDocumento.ToString()))
+            {
                 MessageBox.Show("Número de Documento Inválido");
                 dniText.Text = "";
                 return;
