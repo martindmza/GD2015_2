@@ -47,9 +47,6 @@ namespace Models
         public ClienteModel(DataRow fila)
             : base(fila)
         {
-            //this.tipoDocumento = this.getTipoDocumento();
-            //this.pais = this.getPais();
-            //this.nacionalidad = 
             this.cuentas = this.getListaDeCuentas();
         }
 
@@ -57,16 +54,6 @@ namespace Models
         private List<CuentaModel> getListaDeCuentas()
         {
             return new CuentaDao().getCuentasByCliente(this);
-        }
-
-        private TipoDocumentoModel getTipoDocumento()
-        {
-            return this.tipoDocumento;
-        }
-
-        private PaisModel getPais()
-        {
-            return this.pais;
         }
 
         public ClienteModel(String apellido, String nombre, TipoDocumentoModel tipoDocumento, Decimal nroDocumento,
@@ -149,6 +136,7 @@ namespace Models
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
             this.nroDocumento = (Decimal)fila[NRO_DOCUMENTO];
             this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO_TIPO_COD].ToString());
+
         }
     }
 }

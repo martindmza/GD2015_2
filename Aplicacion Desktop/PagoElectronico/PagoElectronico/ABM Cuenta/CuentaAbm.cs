@@ -62,7 +62,7 @@ namespace ABM
             this.parentRetiros = parentRetiros;
             this.parentRetiros.Enabled = false;
 
-            formResponseCliente(Logins.Login.userLogued.cliente);
+            formResponseCliente(Logins.UsuarioSingleton.getInstance().getUsuario().cliente);
             cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
             fillTable();
             button1.Enabled = false;
@@ -73,7 +73,7 @@ namespace ABM
         {
             if (origenOdestino == 0) {
                 initToSelect(false);
-                formResponseCliente(Logins.Login.userLogued.cliente);
+                formResponseCliente(Logins.UsuarioSingleton.getInstance().getUsuario().cliente);
                 cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
                 fillTable();
                 button1.Enabled = false;
@@ -145,13 +145,13 @@ namespace ABM
             {
                 row = new String[] {    cuenta.id.ToString(),
                                         cuenta.pais.nombre,
-                                        cuenta.monedaNombre,
+                                        cuenta.moneda.nombre,
                                         cuenta.tipo.nombre,
                                         cuenta.fechaCreacion.ToString(),
                                         cuenta.fechaCierre.ToString(),
                                         cuenta.estado.nombre,
-                                        cuenta.saldo.ToString(),
-                                        cuenta.habilitado.ToString()};
+                                        cuenta.saldo.ToString()
+                                        };
                 dataGridView1.Rows.Add(row);
             }
         }

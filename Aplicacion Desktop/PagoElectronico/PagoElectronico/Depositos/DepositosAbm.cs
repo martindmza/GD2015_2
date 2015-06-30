@@ -29,7 +29,7 @@ namespace Depositos
         {
             extraDao = new ExtraDao();
             depositoDao = new DepositoDao();
-            cliente = Login.userLogued.cliente;
+            cliente = UsuarioSingleton.getInstance().getUsuario().cliente;
 
             InitializeComponent();
             fillComboBox();

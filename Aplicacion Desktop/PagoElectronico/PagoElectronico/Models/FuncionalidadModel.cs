@@ -12,6 +12,9 @@ namespace Models
 
         public const String HABILITADA = "HABILITADA";
 
+
+        public FuncionalidadModel() { }
+
         public FuncionalidadModel(DataRow fila) : base(fila) { }
 
         public FuncionalidadModel(Decimal id, String nombre, Boolean habilitado) {

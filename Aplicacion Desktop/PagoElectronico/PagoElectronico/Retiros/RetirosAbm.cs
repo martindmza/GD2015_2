@@ -10,6 +10,7 @@ using Models;
 using DAO;
 using FormsExtras;
 using ABM;
+using Logins;
 
 namespace Retiros
 {
@@ -38,7 +39,7 @@ namespace Retiros
         public void formResponseCuenta(CuentaModel cuenta)
         {
 
-            if (cuenta.habilitado == false) 
+            if (cuenta.estado.nombre.Equals(EstadoModel.INHABILITADA)) 
             {
                 MessageBox.Show("Seleccione una cuenta que se encuentre habilitada");
             }
@@ -110,7 +111,8 @@ namespace Retiros
         private void aceptar_Click(object sender, EventArgs e)
         {
             //validar Documento
-            if ( ! dniText.Text.Equals(Logins.Login.userLogued.cliente.nroDocumento.ToString())) {
+            if (!dniText.Text.Equals(UsuarioSingleton.getInstance().getUsuario().cliente.nroDocumento.ToString()))
+            {
                 MessageBox.Show("Número de Documento Inválido");
                 dniText.Text = "";
                 return;
@@ -128,7 +130,7 @@ namespace Retiros
             } 
 
             retiro = new RetiroModel(cuenta, importe,monedaId,monedaNombre,extraDao.getDayToday());
-            retiro = retiroDao.createRetiro(retiro);
+            retiro = retiroDao.agregarBasica(retiro);
 
             if (retiro.id != null)
             {

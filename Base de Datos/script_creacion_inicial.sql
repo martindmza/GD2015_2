@@ -1756,6 +1756,32 @@ SELECT	td.Id_Tipo_Documento ID,
 END
 GO
 
+-----------------------------------------Listar_Moneda----------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Listar_Moneda 
+AS
+BEGIN
+SELECT	m.Id_Moneda ID,
+		m.Descripcion NOMBRE
+	FROM [REZAGADOS].Moneda m 
+END
+GO
+
+-----------------------------------------Buscar_Moneda_ID----------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Buscar_Moneda_ID 
+@Id NUMERIC(18,0)
+AS
+BEGIN
+SELECT	m.Id_Moneda ID,
+		m.Descripcion NOMBRE
+	FROM [REZAGADOS].Moneda m 
+	WHERE m.Id_Moneda = @Id
+END
+GO
+
 ----------------------------------------------------FACTURACION DE COSTOS------------------------------------------
 --------------------------------------------------------FACTURAR---------------------------------------------------
 

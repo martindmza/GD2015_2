@@ -80,19 +80,7 @@ namespace DAO
 
         public CuentaModel addNewCuenta(CuentaModel entity)
         {
-            this.agregarBasica(entity);
-            try
-            {
-                SqlCommand command = InitializeConnection("Crear_Rol");
-                command.Parameters.Add("Nombre_Rol", System.Data.SqlDbType.NVarChar, 255).Value = entity.monedaId;
-                return entity;
-                //return operacionDml(command);
-            }
-            catch (Exception excepcion)
-            {
-                Console.Write(excepcion);
-                throw excepcion;
-            }
+            return this.agregarBasica(entity);
         }
 
         public CuentaModel updateCuenta(CuentaModel cuenta)
@@ -103,7 +91,7 @@ namespace DAO
 
         public CuentaModel unsubscribeCuenta(CuentaModel cuenta)
         {
-            cuenta.habilitado = false;
+            //cuenta.habilitado = false;
             return cuenta;
         }
 

@@ -6,16 +6,8 @@ using Models;
 
 namespace DAO
 {
-    public class RetiroDao
+    public class RetiroDao:BasicaDAO<RetiroModel>
     {
-        public RetiroModel createRetiro(RetiroModel retiro) {
-
-            retiro.chequeId = 1000;
-            retiro.banco = new BancoModel(1,"Nación");
-            retiro.id = 99;
-            return retiro;
-        }
-
         public List<RetiroModel> getRetirosByCuenta(CuentaModel cuenta, int limit)
         {
 
@@ -35,6 +27,41 @@ namespace DAO
             retiros.Add(new RetiroModel(5, c1, 5555, 1, "Dolar", DateTime.Today, 1, new BancoModel(1, "Nacion")));
             */
             return retiros;
+        }
+
+        public override RetiroModel getModeloBasico(System.Data.DataRow fila)
+        {
+            return new RetiroModel(fila);
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaAgregar(System.Data.SqlClient.SqlCommand command, RetiroModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaModificar(System.Data.SqlClient.SqlCommand command, RetiroModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string getProcedureEncontrarPorId()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string getProcedureListar()
+        {
+            throw new NotImplementedException();
         }
     }
 }

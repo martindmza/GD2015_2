@@ -30,7 +30,7 @@ namespace Tarjetas
             InitializeComponent();
 
             dao = new TarjetaDeCreditoDao();
-            cliente = Login.userLogued.cliente;
+            cliente = UsuarioSingleton.getInstance().getUsuario().cliente;
             tarjetas = dao.getTarjetasByCliente(cliente);
             fillData();
 

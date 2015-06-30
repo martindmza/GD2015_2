@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 
 namespace DAO
 {
-    class FuncionalidadDao: AbstractDAO
+    class FuncionalidadDao: BasicaDAO<FuncionalidadModel>
     {
         public const String LISTAR_FUNCIONALIDAD_ROL = "Listar_Funcionalidad_Rol";
         public const String LISTAR_FUNCIONALIDAD = "Listar_Funcionalidad";
@@ -59,5 +59,40 @@ namespace DAO
             return result;
         }
         //-------------------------------------------------------------------------------------------------------------
+
+        public override FuncionalidadModel getModeloBasico(DataRow fila)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SqlCommand addParametrosParaAgregar(SqlCommand command, FuncionalidadModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override SqlCommand addParametrosParaModificar(SqlCommand command, FuncionalidadModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string getProcedureEncontrarPorId()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string getProcedureListar()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

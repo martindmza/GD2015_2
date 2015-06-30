@@ -17,7 +17,6 @@ namespace Logins
     public partial class Login : Form
     {
 
-        public static UserModel userLogued;
         public static RolModel rolSelected;
         public UserDao dao = new UserDao();
 
@@ -34,9 +33,10 @@ namespace Logins
             String usuario = this.usuario.Text;
             String password = this.password.Text;
 
-            userLogued = dao.loguin(usuario,password);
+            UsuarioSingleton.getInstance().setUsuario(dao.loguin(usuario,password));
 
-            if(userLogued!= null){
+            if (UsuarioSingleton.getInstance().getUsuario() != null)
+            {
                 Frame.Frame frame = new Frame.Frame(this);
                 this.Hide();
                 frame.Show();

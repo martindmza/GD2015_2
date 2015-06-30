@@ -232,7 +232,7 @@ namespace ABM
                     cliente = new ClienteModel(apellido.Text,nombre.Text,documentoToSend,Decimal.Parse(docNumero.Text),
                                                 nacimiento.Value,email.Text,nacionalidad,domCalle.Text,
                                                Decimal.Parse(domNumero.Text),Decimal.Parse(domPiso.Text),
-                                               domDepartamento.Text,localidadText.Text,pais);
+                                               domDepartamento.Text,null,pais);
                     try
                     {
                         Respuesta respuesta = clienteDao.addNewCliente(cliente);
@@ -256,7 +256,7 @@ namespace ABM
                                                 Decimal.Parse(docNumero.Text),
                                                 nacimiento.Value, email.Text, nacionalidad, domCalle.Text,
                                                 Decimal.Parse(domNumero.Text), Decimal.Parse(domPiso.Text),
-                                                domDepartamento.Text, localidadText.Text, pais);
+                                                domDepartamento.Text, null, pais);
 
                     try
                     {

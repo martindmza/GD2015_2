@@ -161,7 +161,7 @@ namespace DAO
 
         protected override string getProcedureCrearBasica()
         {
-            throw new NotImplementedException();
+            return "Crear_Cliente";
         }
 
 
@@ -269,17 +269,17 @@ namespace DAO
 
         public override SqlCommand addParametrosParaAgregar(SqlCommand command, ClienteModel entity)
         {
-            throw new NotImplementedException();
+            return command;
         }
 
         public override SqlCommand addParametrosParaModificar(SqlCommand command, ClienteModel entity)
         {
-            throw new NotImplementedException();
+            return command;
         }
 
         protected override string getProcedureModificarBasica()
         {
-            throw new NotImplementedException();
+            return "Modificar_Cliente";
         }
     }
 }

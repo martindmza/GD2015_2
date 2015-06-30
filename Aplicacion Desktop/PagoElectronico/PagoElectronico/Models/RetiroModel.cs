@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Models
 {
-    public class RetiroModel
+    public class RetiroModel : BasicaModel
     {
         public UInt32 id;
         public CuentaModel cuenta;
@@ -16,6 +17,14 @@ namespace Models
 
         public UInt32 chequeId;
         public BancoModel banco;
+
+        public RetiroModel()
+        {
+        }
+
+        public RetiroModel(DataRow fila): base(fila)
+        {
+        }
 
         public RetiroModel(CuentaModel cuenta, Double importe, UInt32 monedaId, 
                                 String monedaNombre, DateTime fecha) 
