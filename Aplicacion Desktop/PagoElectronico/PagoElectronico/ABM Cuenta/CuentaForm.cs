@@ -27,6 +27,8 @@ namespace ABM
         private List<CuentaTipoModel> tipos;
         private CuentaTipoModel tipoActivo;
         private PaisModel paisCuenta;
+        private MonedaDAO monedaDao;
+        private MonedaModel monedaModel;
 
         private const int SELECCIONAR_PAIS = 0;
         private const int OPEN_CLIENTE_ABM_TO_SELECT = 1;
@@ -43,6 +45,7 @@ namespace ABM
             this.clienteDao = new ClienteDao();
             this.extraDao = new ExtraDao();
             this.estadoDao = new EstadoDao();
+            this.monedaDao = new MonedaDAO();
             this.parentCuenta = parentCuenta;
 
 
@@ -118,6 +121,7 @@ namespace ABM
                 tipoActivo = tipos[0];
                 moneda.SelectedItem = moneda.Items[0];
                 estado = estadoDao.dameTuModelo(1.ToString());
+                monedaModel = monedaDao.dameTuModelo(moneda.ValueMember);
             }
             else
             {
@@ -232,14 +236,14 @@ namespace ABM
             switch (operacionTipo)
             {
                 case 0:
-                    cuenta = new CuentaModel(0, this.paisCuenta, this.tipoActivo, monedaId, monedaNombre, estado, apertura.Value, this.cliente);
+                    cuenta = new CuentaModel(0, this.paisCuenta, this.tipoActivo, monedaModel, estado, apertura.Value, this.cliente);
 
                     cuenta = cuentaDao.agregarBasica(cuenta);
                     parentCuenta.formResponseAdd(cuenta);
                     MessageBox.Show("Cuenta creada exitosamente");
                     break;
                 case 1:
-                    cuenta = new CuentaModel(cuenta.id, paisCuenta, tipoActivo, monedaId, monedaNombre, estado, apertura.Value, this.cliente);
+                    cuenta = new CuentaModel(cuenta.id, paisCuenta, tipoActivo, monedaModel, estado, apertura.Value, this.cliente);
 
                     MessageBox.Show("Cliente modificado exitosamente");
                     cuenta = cuentaDao.updateCuenta(cuenta);

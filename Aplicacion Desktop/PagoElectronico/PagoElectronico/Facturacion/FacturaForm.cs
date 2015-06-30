@@ -14,7 +14,7 @@ namespace Facturacion
     public partial class FacturaForm : Form
     {
         private FacturaDao facturaDao;
-        private TranscaccionDao transaccionDao;
+        private TransaccionDao transaccionDao;
         private FacturacionAbm parent;
 
         private FacturaModel factura;
@@ -23,7 +23,7 @@ namespace Facturacion
         public FacturaForm(FacturaModel factura,Double total, FacturacionAbm parent)
         {
             facturaDao = new FacturaDao();
-            transaccionDao = new TranscaccionDao();
+            transaccionDao = new TransaccionDao();
             this.factura = factura;
             this.total = total;
             this.parent = parent;

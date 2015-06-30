@@ -145,13 +145,13 @@ namespace ABM
             {
                 row = new String[] {    cuenta.id.ToString(),
                                         cuenta.pais.nombre,
-                                        cuenta.monedaNombre,
+                                        cuenta.moneda.nombre,
                                         cuenta.tipo.nombre,
                                         cuenta.fechaCreacion.ToString(),
                                         cuenta.fechaCierre.ToString(),
                                         cuenta.estado.nombre,
-                                        cuenta.saldo.ToString(),
-                                        cuenta.habilitado.ToString()};
+                                        cuenta.saldo.ToString()
+                                        };
                 dataGridView1.Rows.Add(row);
             }
         }

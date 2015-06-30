@@ -38,7 +38,7 @@ namespace Retiros
         public void formResponseCuenta(CuentaModel cuenta)
         {
 
-            if (cuenta.habilitado == false) 
+            if (cuenta.estado.nombre.Equals(EstadoModel.INHABILITADA)) 
             {
                 MessageBox.Show("Seleccione una cuenta que se encuentre habilitada");
             }
@@ -128,7 +128,7 @@ namespace Retiros
             } 
 
             retiro = new RetiroModel(cuenta, importe,monedaId,monedaNombre,extraDao.getDayToday());
-            retiro = retiroDao.createRetiro(retiro);
+            retiro = retiroDao.agregarBasica(retiro);
 
             if (retiro.id != null)
             {

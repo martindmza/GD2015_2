@@ -6,7 +6,7 @@ using Models;
 
 namespace DAO
 {
-    class TranscaccionDao
+    class TransaccionDao:BasicaDAO<TransaccionModel>
     {
 
         public List<TransaccionModel> getTransaccionesPendientesByCliente(ClienteModel cliente) {
@@ -40,5 +40,40 @@ namespace DAO
             return transaccion;
         }
 
+
+        public override TransaccionModel getModeloBasico(System.Data.DataRow fila)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaAgregar(System.Data.SqlClient.SqlCommand command, TransaccionModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaModificar(System.Data.SqlClient.SqlCommand command, TransaccionModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string getProcedureEncontrarPorId()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string getProcedureListar()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

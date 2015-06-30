@@ -7,7 +7,7 @@ using DAO;
 
 namespace Models
 {
-    public class DepositoModel : AbstractModel
+    public class DepositoModel : BasicaModel
 
     {
         public const String DEPOSITANTE = "DEPOSITANTE";
@@ -23,6 +23,14 @@ namespace Models
         public MonedaModel monedaId;
         public TarjetaDeCreditoModel tarjetaDeCredito;
         public DateTime fecha;
+
+
+        public DepositoModel() { 
+        }
+
+        public DepositoModel(DataRow fila):base(fila) { 
+        
+        }
 
         public override void mapeoFilaAModel(DataRow fila)
         {

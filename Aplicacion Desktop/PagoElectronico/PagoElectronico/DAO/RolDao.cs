@@ -183,7 +183,7 @@ namespace DAO
 
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 da.Fill(dt);
-                Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (Decimal)(pOut.Value);
+                Decimal value = Convert.IsDBNull(pOut.Value) ? -1 : (Decimal)(pOut.Value);
                 String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
 
                 return new Respuesta(value,mensaje);

@@ -160,23 +160,34 @@ namespace Depositos
             deposito.tarjetaDeCredito = tarjeta;
             deposito.fecha = extraDao.getDayToday();
 
-
-            deposito = depositoDao.createDeposito(deposito);
-
-            if (deposito.id >0)
+            try
             {
-                Form f = new DepositosComprobante(deposito);
-                f.MdiParent = this.MdiParent;
-                f.Show();
+                Respuesta respuesta = depositoDao.createDeposito(deposito);
+
+                if (respuesta.codigo > 0)
+                {
+                    deposito.id = respuesta.codigo;
+                    MessageBox.Show(respuesta.mensaje);
+                    if (respuesta.codigo > 0)
+                    {
+                        deposito.id = respuesta.codigo;
+                        Form f = new DepositosComprobante(deposito);
+                        f.MdiParent = this.MdiParent;
+                        f.Show();
+
+                        this.Close();
+                        this.Dispose();
+                        GC.Collect();
+                    }
+                }
             }
-            else {
-                throw new Exception("No se pudo crear la transacción");
+            catch (Exception err)
+            {
+                MessageBox.Show("No se pudo completar la operación");
             }
 
 
-            this.Close();
-            this.Dispose();
-            GC.Collect();
+            
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

@@ -27,6 +27,7 @@ namespace ABM
 
         private const int SELECCIONAR_PAIS = 0;
         private const int SELECCIONAR_NACIONALIDAD = 1;
+        private const String EXCEPTION_MESSAGE = "La operacion no se pudo completar";
 
         public ClienteForm(int operacionTipo, ClienteModel cliente, ClienteDao clienteDao, ClienteAbm parent, ExtraDao extraDao)
         {
@@ -76,7 +77,6 @@ namespace ABM
             nombre.Enabled = false;
             nacimiento.Enabled = false;
             email.Enabled = false;
-            button1.Enabled = false;
             button4.Enabled = false;
             button6.Enabled = false;
             domCalle.Enabled = false;
@@ -125,7 +125,7 @@ namespace ABM
                     }
                 }
 
-                docNumero.Text = cliente.nroDocumento;
+                docNumero.Text = cliente.nroDocumento.ToString();
                 apellido.Text = cliente.apellido;
                 nombre.Text = cliente.nombre;
                 nacimiento.Value = cliente.nacimiento;
@@ -150,11 +150,10 @@ namespace ABM
 
                 nacionalidadText.Text = cliente.pais.nacionalidad;
                 paisText.Text = cliente.pais.nombre;
-                localidadText.Text = cliente.localidad.nombre;
+                localidadText.Text = cliente.localidad;
 
                 nacionalidad = cliente.pais;
                 pais = cliente.pais;
-                localidad = cliente.localidad;
                 tipoDocumento = cliente.tipoDocumento;
                 
             }
@@ -213,36 +212,77 @@ namespace ABM
             String[] result = docTipo.SelectedItem.ToString().Split(',');
             String[] valueString = result[0].Split('[');
             UInt32 docTipoSelected = UInt32.Parse(valueString[1]);
-             TipoDocumentoDAO docDao = new TipoDocumentoDAO();
+            TipoDocumentoDAO docDao = new TipoDocumentoDAO();
            
             TipoDocumentoModel documentoToSend = docDao.dameTuModelo(docTipoSelected.ToString());
-            //documentoToSend.numero = UInt64.Parse(docNumero.Text);
 
             switch (operacionTipo)
             {
+                //agregar Cliente
                 case 0:
-                    cliente = new ClienteModel(apellido.Text,nombre.Text, documentoToSend,
-                                            nacimiento.Value, email.Text, nacionalidad,
-                                            domCalle.Text, UInt32.Parse(domNumero.Text),
-                                            UInt32.Parse(domPiso.Text),domDepartamento.Text,
-                                            localidad,pais);
-
-                    cliente = clienteDao.addNewCliente(cliente);
-                    MessageBox.Show("Cliente creado exitosamente");
-                    parent.formResponseAdd(cliente);
+                    cliente = new ClienteModel(apellido.Text,nombre.Text,documentoToSend,Decimal.Parse(docNumero.Text),
+                                                nacimiento.Value,email.Text,nacionalidad,domCalle.Text,
+                                               Decimal.Parse(domNumero.Text),Decimal.Parse(domPiso.Text),
+                                               domDepartamento.Text,null,pais);
+                    try
+                    {
+                        Respuesta respuesta = clienteDao.addNewCliente(cliente);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            cliente.id = respuesta.codigo;
+                            parent.formResponseAdd(cliente);
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE);
+                    }
                     break;
                 case 1:
-                    cliente = new ClienteModel(apellido.Text, nombre.Text, documentoToSend,
-                                            nacimiento.Value, email.Text, nacionalidad,
-                                            domCalle.Text, UInt32.Parse(domNumero.Text),
-                                            UInt32.Parse(domPiso.Text), domDepartamento.Text,
-                                            localidad, pais);
-                    MessageBox.Show("Cliente modificado exitosamente");
-                    parent.formResponseUpdate(cliente);
+                    cliente = new ClienteModel(cliente.id,apellido.Text, nombre.Text, documentoToSend, 
+                                                Decimal.Parse(docNumero.Text),
+                                                nacimiento.Value, email.Text, nacionalidad, domCalle.Text,
+                                                Decimal.Parse(domNumero.Text), Decimal.Parse(domPiso.Text),
+                                                domDepartamento.Text, null, pais);
+
+                    try
+                    {
+                        Respuesta respuesta = clienteDao.updateCliente(cliente);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            parent.formResponseUpdate(cliente);
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE);
+                    }
                     break;
                 default:
-                    cliente = clienteDao.unsubscribeCliente(cliente);
-                    parent.formResponseDisable(cliente);
+                    try
+                    {
+                        Respuesta respuesta = clienteDao.unsubscribeCliente(cliente);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            parent.formResponseDisable(cliente);
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE);
+                    }
                     break;
             }
             parent.Enabled = true;
@@ -333,16 +373,6 @@ namespace ABM
         private void button4_Click(object sender, EventArgs e)
         {
             PaisesForm clienteForm = new PaisesForm(this, SELECCIONAR_NACIONALIDAD);
-            clienteForm.MdiParent = this.MdiParent;
-            clienteForm.Show();
-        }
-        //-----------------------------------------------------------------------------------------------------------------
-
-        //-----------------------------------------------------------------------------------------------------------------
-        //Localidad
-        private void button1_Click(object sender, EventArgs e)
-        {
-            LocalidadesForm clienteForm = new LocalidadesForm(this);
             clienteForm.MdiParent = this.MdiParent;
             clienteForm.Show();
         }

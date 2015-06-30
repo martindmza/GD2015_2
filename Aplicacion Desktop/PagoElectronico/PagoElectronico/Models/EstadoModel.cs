@@ -8,6 +8,10 @@ namespace Models
 {
     public class EstadoModel: BasicaModel
     {
+        public static String HABILITADA = "Habilitada";
+        public static String CERRADA = "Cerrada";
+        public static String PENDIENTE = "Pendiente de activación";
+        public static String INHABILITADA = "Inhabilitada";
         public EstadoModel()
         {
         }

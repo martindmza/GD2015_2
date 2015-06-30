@@ -13,7 +13,7 @@ namespace DAO
         private const String DEPOSITAR = "Depositar";
 
 
-        public DepositoModel createDeposito(DepositoModel deposito){
+        public Respuesta createDeposito(DepositoModel deposito){
 
             try
             {
@@ -38,7 +38,7 @@ namespace DAO
                 Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (Decimal)(pOut.Value);
                 String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
 
-                return null;
+                return new Respuesta(value,mensaje);
             }
             catch (Exception excepcion)
             {

@@ -83,7 +83,7 @@ Direccion_Departamento varchar(10),
 Fecha_Nacimiento datetime,
 Mail varchar(255) UNIQUE,
 Localidad varchar(255),
-Nacionalidad varchar(255),
+Id_Nacionalidad numeric(18,0),
 Habilitada bit DEFAULT 1,);
 ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT PK_Id_Cliente PRIMARY KEY (Id_Cliente);
 				
@@ -243,6 +243,9 @@ FOREIGN KEY (Id_Tipo_Documento) REFERENCES REZAGADOS.TipoDocumento (Id_Tipo_Docu
 ;
 ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT FK_Cliente_to_Pais
 FOREIGN KEY (Id_Pais) REFERENCES REZAGADOS.Pais (Id_Pais)
+;
+ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT FK_Cliente_to_Nacionalidad
+FOREIGN KEY (Id_Nacionalidad) REFERENCES REZAGADOS.Pais (Id_Pais)
 ;
 ALTER TABLE REZAGADOS.Cuenta ADD CONSTRAINT FK_Cuenta_to_Usuario
 FOREIGN KEY (Id_Usuario) REFERENCES REZAGADOS.Usuario (Id_Usuario)
@@ -538,9 +541,9 @@ GO
 CREATE PROCEDURE REZAGADOS.Crear_Cliente(
 					@Nombre VARCHAR(255),
 					@Apellido VARCHAR(255),
-					@Tipo_Documento NUMERIC(18, 0),
+					@Id_Tipo_Documento NUMERIC(18, 0),
 					@Nro_Documento NUMERIC(18, 0),
-					@Pais VARCHAR(255),
+					@Id_Pais NUMERIC(18, 0),
 					@Direccion_Calle VARCHAR (255),
 					@Direccion_Numero_Calle NUMERIC(18, 0),
 					@Direccion_Piso NUMERIC(18,0),
@@ -548,40 +551,37 @@ CREATE PROCEDURE REZAGADOS.Crear_Cliente(
 					@Fecha_Nacimiento DATETIME,
 					@Mail VARCHAR(255),
 					@Localidad VARCHAR(255),
-					@Nacionalidad VARCHAR(255),
-					@Username VARCHAR (255),
-					@Password VARCHAR(255),
+					@Id_Nacionalidad NUMERIC(18, 0),
 					@RespuestaMensaje VARCHAR(255) OUTPUT,
 					@Respuesta NUMERIC(18,0) OUTPUT)
 AS 
 BEGIN TRY
-BEGIN TRANSACTION
-BEGIN
-IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
-	BEGIN
-	SET @RespuestaMensaje = 'El e-mail ya existe.'
-	SET @Respuesta = -1
-	END
-ELSE
-BEGIN
-	INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia) VALUES (@Username, @Password)
-	DECLARE @Id_Usuario NUMERIC(18,0)
-	DECLARE @Id_Tipo_Documento NUMERIC(18,0)
-	DECLARE @Id_Pais NUMERIC (18,0)
-	SET @Id_Pais = (SELECT DISTINCT Id_Pais FROM REZAGADOS.Pais WHERE REZAGADOS.Pais.Descripcion = @Pais)
-	SET @Id_Tipo_Documento = (SELECT DISTINCT Id_Tipo_Documento FROM REZAGADOS.TipoDocumento WHERE REZAGADOS.TipoDocumento.Descripcion = @Tipo_Documento)
-	SET @Id_Usuario = (SELECT DISTINCT Id_Usuario FROM REZAGADOS.Usuario WHERE REZAGADOS.Usuario.Nombre = @Username)
-	INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Nacionalidad)
-	VALUES (@Id_Usuario, @Nombre, @Apellido, @Id_Tipo_Documento, @Nro_Documento, @Id_Pais, @Direccion_Calle, @Direccion_Numero_Calle, @Direccion_Piso, @Direccion_Departamento, @Fecha_Nacimiento, @Mail, @Localidad, @Nacionalidad) 		
-	INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
-	SET @Respuesta = (SELECT Id_Cliente FROM Cliente WHERE Nombre = @Nombre AND Apellido = @Apellido AND Nro_Documento = @Nro_Documento)			
-	SET @RespuestaMensaje = 'Los datos se guardaron exitosamente!'
-	END
-END
-COMMIT TRANSACTION
+	BEGIN TRANSACTION
+		BEGIN
+		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
+			BEGIN
+			SET @RespuestaMensaje = 'El e-mail ya existe.'
+			SET @Respuesta = -1
+			END
+		ELSE
+		BEGIN
+			INSERT INTO REZAGADOS.Usuario (Nombre) VALUES (@Nombre + '.' + @Apellido)
+			DECLARE @Id_Usuario NUMERIC(18,0) = @@IDENTITY
+			
+			INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Id_Nacionalidad)
+			VALUES (@Id_Usuario, @Nombre, @Apellido, @Id_Tipo_Documento, @Nro_Documento, @Id_Pais, @Direccion_Calle, @Direccion_Numero_Calle, @Direccion_Piso, @Direccion_Departamento, @Fecha_Nacimiento, @Mail, @Localidad, @Id_Nacionalidad) 		
+			
+			INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
+			SET @Respuesta = @@IDENTITY
+			SET @RespuestaMensaje = 'Los datos se guardaron exitosamente!'
+			END
+		END
+	COMMIT TRANSACTION
 END TRY
 BEGIN CATCH
-ROLLBACK TRANSACTION
+	SET @Respuesta = -1
+	SET @RespuestaMensaje = 'El Cliente no se pudo guardar por datos duplicados o porque no especificó bien los datos'
+	ROLLBACK TRANSACTION
 END CATCH
 GO
 
@@ -591,6 +591,11 @@ USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Modificar_Cliente (
 								@Id_Cliente NUMERIC(18,0),
+								@Nombre VARCHAR(255),
+								@Apellido VARCHAR(255),
+								@Id_Tipo_Documento NUMERIC(18, 0),
+								@Nro_Documento NUMERIC(18, 0),
+								@Id_Pais NUMERIC(18, 0),
 								@Direccion_Calle VARCHAR (255),
 								@Direccion_Numero_Calle NUMERIC(18, 0),
 								@Direccion_Piso NUMERIC(18,0),
@@ -598,33 +603,46 @@ CREATE PROCEDURE REZAGADOS.Modificar_Cliente (
 								@Fecha_Nacimiento DATETIME,
 								@Mail VARCHAR(255),
 								@Localidad VARCHAR(255),
-								@Nacionalidad VARCHAR(255),
+								@Id_Nacionalidad NUMERIC(18, 0),
 								@RespuestaMensaje VARCHAR(255) OUTPUT,
 								@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
-	IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
-	BEGIN
-	SET @RespuestaMensaje = 'El e-mail ya existe.'
+BEGIN TRY
+	BEGIN TRANSACTION
+		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
+			BEGIN
+			SET @RespuestaMensaje = 'El e-mail ya existe.'
+			SET @Respuesta = -1
+		END
+		ELSE
+			BEGIN
+			 UPDATE	REZAGADOS.Cliente
+				SET	Nombre = @Nombre,
+					Apellido = @Apellido,
+					Id_Tipo_Documento = @Id_Tipo_Documento,
+					Nro_Documento = @Nro_Documento,
+					Id_Pais = @Id_Pais,
+					Direccion_Calle = @Direccion_Calle,
+					Direccion_Numero_Calle = @Direccion_Numero_Calle,
+					Direccion_Piso = @Direccion_Piso,
+					Direccion_Departamento = @Direccion_Departamento,
+					Fecha_Nacimiento = @Fecha_Nacimiento,
+					Mail = @Mail,
+					Localidad = @Localidad,
+					Id_Nacionalidad = @Id_Nacionalidad
+			  WHERE Id_Cliente = @Id_Cliente
+
+			SET @RespuestaMensaje = 'El cliente ha sido modificado!'
+			SET @Respuesta = 1
+		END
+	COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
 	SET @Respuesta = -1
-	END
-ELSE
-	BEGIN
-	UPDATE REZAGADOS.Cliente
-	SET
-	[Direccion_Calle] = @Direccion_Calle,
-	[Direccion_Numero_Calle] = @Direccion_Numero_Calle,
-	[Direccion_Piso] = @Direccion_Piso,
-	[Direccion_Departamento] = @Direccion_Departamento,
-	[Fecha_Nacimiento] = @Fecha_Nacimiento,
-	[Mail] = @Mail,
-	[Localidad] = @Localidad,
-	[Nacionalidad] = @Nacionalidad
-	WHERE
-   [Id_Cliente] = @Id_Cliente
-  SET @RespuestaMensaje = 'El cliente ha sido modificado!'
-  SET @Respuesta = 1
-  END
+	SET @RespuestaMensaje = 'El Cliente no se pudo guardar por datos duplicados o porque no especificó bien los datos'
+	ROLLBACK TRANSACTION
+END CATCH
 END
 GO
 
@@ -1301,7 +1319,7 @@ BEGIN
 	c.Id_Pais PAIS,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
 	c.Direccion_Piso DIRECCION_PISO, c.Direccion_Departamento DIRECCION_DEPTO, 
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
-	c.Habilitada HABILITADA
+	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD
 	FROM  [REZAGADOS].Cliente c 
 	WHERE c.Id_Usuario = @Id_Usuario
 END
@@ -1786,17 +1804,171 @@ AS
 	SET @Respuesta = 1
 GO
 
+--------------------------------------------------BUSCAR CLIENTES FILTROS-------------------------------------------
+
+USE [GD1C2015]
+IF OBJECT_ID ('REZAGADOS.Buscar_Cliente_Filtros') IS NOT NULL
+    DROP PROCEDURE REZAGADOS.Buscar_Cliente_Filtros
+
+GO
+CREATE PROCEDURE [REZAGADOS].[Buscar_Cliente_Filtros] (@Nombre VARCHAR(MAX)=NULL, @Id_Cliente NUMERIC(18,0)=NULL)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @sqlCommand VARCHAR(MAX)
+	DECLARE @sqlWhere VARCHAR(MAX)
+
+	SET @sqlCommand = '	SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO, c.Direccion_Calle CALLE, c.Direccion_Numero_Calle NUMERO_CALLE, c.Direccion_Departamento DEPARTAMENTO, c.Direccion_Piso PISO, c.Fecha_Nacimiento NACIMIENTO, c.Id_Pais PAIS, c.Habilitada HABILITADO, c.Id_Tipo_Documento TIPO_DOC, c.Id_Usuario USUARIO, c.Localidad LOCALIDAD, c.Mail MAIL, c.Nacionalidad NACIONALIDAD, c.Nro_Documento NRO_DOC
+						FROM [REZAGADOS].Cliente c '
+	SET @sqlWhere = ''
+	
+	IF(@Id_Cliente IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Id_Cliente = ' + CAST(@Id_Cliente AS VARCHAR(MAX))
+	END
+	
+	IF(@Nombre IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Nombre LIKE  ''%'+@Nombre+'%'''
+	END
+	
+	IF (@sqlWhere <> '')
+	BEGIN
+		SET @sqlWhere = ' WHERE ' + SUBSTRING (@sqlWhere, 5, Len(@sqlWhere)  )
+		SET @sqlCommand = @sqlCommand + @sqlWhere
+	END
+	EXEC(@sqlCommand)
+END
+GO
+
 -----------------------------------------------LISTADOS ESTADISTICOS----------------------------------------------
 ---------------------------------CLIENTES CON ALGUNA CUENTA INHABILITADA POR TRIMESTRE----------------------------
 
-/*
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Clientes_Cuentas_Inhabilitadas] (@FechaInic DATETIME, @FechaFin DATETIME)
+AS
+BEGIN
+	SELECT TOP 5 SubSelect2.Id_Cliente
+	FROM   (SELECT SubSelect.Id_Cuenta, Cliente.Id_Cliente
+			FROM   (SELECT Id_Cuenta
+					FROM REZAGADOS.Item
+					WHERE Id_Factura IS NULL
+					AND Fecha > @FechaInic
+					AND Fecha < @FechaFin
+					GROUP BY Id_Cuenta
+					HAVING COUNT(Id_Cuenta) > 5 ) AS SubSelect,	
+			REZAGADOS.Cuenta,	
+			REZAGADOS.Cliente	
+			WHERE SubSelect.Id_Cuenta = Cuenta.Id_Cuenta
+			AND Cliente.Id_Usuario = Cuenta.Id_Usuario) AS SubSelect2
+	GROUP BY SubSelect2.Id_Cliente
+	HAVING COUNT(SubSelect2.Id_Cliente) > 0
+	ORDER BY COUNT(SubSelect2.Id_Cliente) DESC
+END
+GO
 
-SELECT TOP 5 Id_Cliente
-FROM REZAGADOS.Cuenta, REZAGADOS.Cliente
-WHERE Cuenta.Id_Usuario = Cliente.Id_Usuario
-AND (SELECT COUNT(Item.Id_Cuenta)
-	FROM REZAGADOS.Item
-	WHERE Id_Factura IS NULL AND Item.Fecha > GETDATE()
-	GROUP BY Item.Id_Cuenta) > 5
-	
-*/
+-------------------------CLIENTE CON MAYOR CANTIDAD DE ITEMS FACTURADOS-------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Clientes_Mayor_Facturados] (@FechaInic DATETIME, @FechaFin DATETIME)
+AS
+BEGIN
+SELECT TOP 5 Id_Cliente, SUM(cantidad) cant
+FROM (
+		SELECT Id_Cuenta, COUNT(Id_Cuenta) cantidad
+		FROM REZAGADOS.Item
+		WHERE Id_Factura IS NOT NULL
+		AND Fecha > @FechaInic
+		AND Fecha < @FechaFin
+		GROUP BY Id_Cuenta) AS SubSelect,
+		REZAGADOS.Cuenta,
+		REZAGADOS.Cliente
+WHERE Cuenta.Id_Cuenta = SubSelect.Id_Cuenta
+AND Cuenta.Id_Usuario = Cliente.Id_Usuario
+GROUP BY Id_Cliente
+ORDER BY cant DESC
+END
+GO
+
+-------------------------CLIENTES MAYOR TRANSACCION ENTRE SUS CUENTAS-----------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Clientes_Mayor_Transacciones] (@FechaInic DATETIME, @FechaFin DATETIME)
+AS
+BEGIN
+SELECT TOP 5 Cliente.Id_Cliente
+FROM REZAGADOS.Transferencia, REZAGADOS.Cuenta AS C1, REZAGADOS.Cuenta AS C2, REZAGADOS.Cliente
+WHERE C1.Id_Usuario = Cliente.Id_Usuario
+AND C2.Id_Usuario = Cliente.Id_Usuario
+AND Transferencia.Id_Cuenta_Emi = C1.Id_Cuenta
+AND Transferencia.Id_Cuenta_Dest = C2.Id_Cuenta
+AND C1.Id_Usuario = C2.Id_Usuario
+AND Transferencia.Fecha > @FechaInic
+AND Transferencia.Fecha < @FechaFin
+GROUP BY Cliente.Id_Cliente
+ORDER BY COUNT(Cliente.Id_Cliente) DESC
+END
+GO
+
+------------------------------------PAISES CON MAYOR MOVIMIENTO----------------------------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Paises_Mayor_Movimiento] (@FechaInic DATETIME, @FechaFin DATETIME)
+AS
+BEGIN
+SELECT TOP 5 C1.Id_Pais
+FROM(
+	SELECT Id_Pais, COUNT(Id_Pais) AS Cantidad
+	FROM REZAGADOS.Deposito
+	WHERE Deposito.Fecha > @FechaInic
+	AND Deposito.Fecha < @FechaFin
+	GROUP BY Id_Pais) AS C1
+FULL OUTER JOIN(
+	SELECT Id_Pais, COUNT(Id_Pais) AS Cantidad
+	FROM REZAGADOS.Retiro, REZAGADOS.Cuenta
+	WHERE Cuenta.Id_Cuenta=Retiro.Id_Cuenta
+	AND Retiro.Fecha > @FechaInic
+	AND Retiro.Fecha < @FechaFin
+	GROUP BY Id_Pais) AS C2
+ON C1.Id_Pais =  C2.Id_Pais
+FULL OUTER JOIN(
+	SELECT Id_Pais, COUNT(Id_Pais) AS Cantidad
+	FROM REZAGADOS.Transferencia, REZAGADOS.Cuenta
+	WHERE Cuenta.Id_Cuenta=Transferencia.Id_Cuenta_Dest
+	AND Transferencia.Fecha > @FechaInic
+	AND Transferencia.Fecha < @FechaFin
+	GROUP BY Id_Pais) AS C3
+ON C2.Id_Pais = C3.Id_Pais
+FULL OUTER JOIN(
+	SELECT Id_Pais, COUNT(Id_Pais) AS Cantidad
+	FROM REZAGADOS.Transferencia, REZAGADOS.Cuenta
+	WHERE Cuenta.Id_Cuenta=Transferencia.Id_Cuenta_Emi
+	AND Transferencia.Fecha > @FechaInic
+	AND Transferencia.Fecha < @FechaFin
+	GROUP BY Id_Pais) AS C4
+ON C3.Id_Pais=C4.Id_Pais
+ORDER BY C1.Cantidad+C2.Cantidad+C3.Cantidad+C4.Cantidad DESC
+END
+GO
+
+------------------------------------TOTAL FACTURADO DISTINTAS CUENTAS--------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Total_Facturado_Cuentas] (@FechaInic DATETIME, @FechaFin DATETIME)
+AS
+BEGIN
+SELECT Categoria, SUM(Item.Importe) Cantidad
+FROM REZAGADOS.Item, REZAGADOS.Cuenta, REZAGADOS.TipoCuenta
+WHERE Cuenta.Id_Cuenta=Item.Id_Cuenta
+AND Item.Id_Factura IS NOT NULL
+AND TipoCuenta.Id_Tipo_Cuenta=Cuenta.Id_Tipo_Cuenta
+AND Item.Fecha > @FechaInic
+AND Item.Fecha < @FechaFin
+GROUP BY Categoria
+END
+GO

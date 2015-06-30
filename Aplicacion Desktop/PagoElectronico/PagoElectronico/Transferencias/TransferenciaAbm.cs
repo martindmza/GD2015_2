@@ -37,7 +37,7 @@ namespace Transferencias
         public void formResponseCuentaOrigen(CuentaModel cuenta)
         {
 
-            if (cuenta.habilitado == false) 
+            if (cuenta.estado.nombre.Equals(EstadoModel.INHABILITADA)) 
             {
                 MessageBox.Show("Seleccione una cuenta que se encuentre habilitada");
             }

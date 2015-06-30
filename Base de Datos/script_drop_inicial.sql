@@ -178,6 +178,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP TABLE REZAGADOS.Item;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[HistorialUsuario]') AND type in (N'U'))
 	DROP TABLE REZAGADOS.HistorialUsuario;
+
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Crear_Cliente]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Crear_Cliente;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Cliente]') AND type in (N'P', N'PC'))	
@@ -280,9 +281,21 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE REZAGADOS.[Modificar_Tipo_Cuenta];
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Facturar]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.[Facturar];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Clientes_Cuentas_Inhabilitadas]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.[Clientes_Cuentas_Inhabilitadas];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Cliente_Filtros]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.[Buscar_Cliente_Filtros];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Clientes_Mayor_Facturados]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.[Clientes_Mayor_Facturados];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Clientes_Mayor_Transacciones]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.[Clientes_Mayor_Transacciones];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Paises_Mayor_Movimiento]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.[Paises_Mayor_Movimiento];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Total_Facturado_Cuentas]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.[Total_Facturado_Cuentas];
 
-
-DROP TYPE REZAGADOS.IdLista;
+IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
+	DROP TYPE REZAGADOS.IdLista;
 
 USE [GD1C2015]
 GO

@@ -15,7 +15,7 @@ namespace Facturacion
     public partial class FacturacionAbm : Form
     {
 
-        private TranscaccionDao transaccionDao;
+        private TransaccionDao transaccionDao;
         private ExtraDao extraDao;
 
         private List<TransaccionModel> transacciones;
@@ -27,7 +27,7 @@ namespace Facturacion
         public FacturacionAbm()
         {
             cliente = Login.userLogued.cliente;
-            transaccionDao = new TranscaccionDao();
+            transaccionDao = new TransaccionDao();
             extraDao = new ExtraDao();
             transacciones = transaccionDao.getTransaccionesPendientesByCliente(cliente);
             transaccionesSeleccionadas = new List<TransaccionModel>();

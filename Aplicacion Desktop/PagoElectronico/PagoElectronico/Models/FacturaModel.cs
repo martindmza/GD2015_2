@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Models
 {
-    public class FacturaModel
+    public class FacturaModel: BasicaModel
     {
-        public UInt32 id;
         public DateTime fecha;
         public List<TransaccionModel> transacciones;
+
+
+        public FacturaModel() { }
+
+        public FacturaModel(DataRow fila):base(fila) { }
 
         public FacturaModel( DateTime fecha, List<TransaccionModel> transacciones)
         {

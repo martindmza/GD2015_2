@@ -6,7 +6,7 @@ using Models;
 
 namespace DAO
 {
-    public class TransferenciaDao
+    public class TransferenciaDao: BasicaDAO<TransferenciaModel>
     {
         public TransferenciaModel createTransferencia(TransferenciaModel transferencia){
             transferencia.id = 99;
@@ -39,6 +39,41 @@ namespace DAO
             transf.Add(new TransferenciaModel(10, c1, c2, 20000, 1, "dolar", 123));
           */  
             return transf;
+        }
+
+        public override TransferenciaModel getModeloBasico(System.Data.DataRow fila)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaAgregar(System.Data.SqlClient.SqlCommand command, TransferenciaModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override System.Data.SqlClient.SqlCommand addParametrosParaModificar(System.Data.SqlClient.SqlCommand command, TransferenciaModel entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureCrearBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureModificarBasica()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string getProcedureEncontrarPorId()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string getProcedureListar()
+        {
+            throw new NotImplementedException();
         }
     }
 }
