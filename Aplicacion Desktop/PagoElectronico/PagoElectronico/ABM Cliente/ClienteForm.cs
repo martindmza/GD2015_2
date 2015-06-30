@@ -61,6 +61,12 @@ namespace ABM
                     this.button3.Text = "Dar de Baja";
                     disableInputs();
                     break;
+                default:
+                    this.Text = "Dar de Alta Cliente";
+                    this.button2.Visible = false;
+                    this.button3.Text = "Dar de Baja";
+                    disableInputs();
+                    break;
             }
 
             checkBox1.Enabled = false;
@@ -83,6 +89,7 @@ namespace ABM
             domDepartamento.Enabled = false;
             domNumero.Enabled = false;
             domPiso.Enabled = false;
+            localidadText.Enabled = false;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -200,7 +207,9 @@ namespace ABM
                 button3.Enabled = true;
             }
             else {
-                button3.Enabled = false;
+                if(operacionTipo < 2){
+                    button3.Enabled = false;
+                }
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -266,14 +275,34 @@ namespace ABM
                         MessageBox.Show(EXCEPTION_MESSAGE);
                     }
                     break;
-                default:
+                case 2:
                     try
                     {
                         Respuesta respuesta = clienteDao.unsubscribeCliente(cliente);
                         MessageBox.Show(respuesta.mensaje);
                         if (respuesta.codigo > 0)
                         {
+                            cliente.habilitado = false;
                             parent.formResponseDisable(cliente);
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE);
+                    }
+                    break;
+                default:
+                    try
+                    {
+                        Respuesta respuesta = clienteDao.habilitarCliente(cliente);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            cliente.habilitado = true;
+                            parent.formResponseEnable(cliente);
                             this.Close();
                             this.Dispose();
                             GC.Collect();

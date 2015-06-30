@@ -17,6 +17,7 @@ namespace ABM
         private const int AGREGAR_CLIENTE = 0;
         private const int MODIFICAR_CLIENTE = 1;
         private const int DESHABILITAR_CLIENTE = 2;
+        private const int HABILITAR_CLIENTE = 3;
 
         int operacionTipo;
 
@@ -120,24 +121,25 @@ namespace ABM
                 row = new String[] {    cliente.id.ToString(),
                                         cliente.apellido,
                                         cliente.nombre,
-                                        cliente.tipoDocumento.nombre,
-                                        cliente.nroDocumento.ToString(),
+                                       (cliente.tipoDocumento != null)? cliente.tipoDocumento.nombre.ToString() : "",
+                                       (cliente.nroDocumento != 0)? cliente.nroDocumento.ToString() : "",
                                         cliente.email,
-                                        cliente.nacimiento.ToString(),
-                                        cliente.pais.nacionalidad.ToString(),
-										cliente.direccionCalle.ToString(),
-										cliente.direccionNumeroCalle.ToString(),
-										cliente.direccionPiso.ToString(),
-										cliente.direccionDepto.ToString(),
-                                        // cliente.localidad.nombre.ToString(),
-										//cliente.pais.nombre.ToString(),
-										cliente.habilitado.ToString()
+                                       (cliente.nacimiento != null)? cliente.nacimiento.ToString() : "",
+                                       (cliente.nacionalidad != null)? cliente.nacionalidad.nombre : "",
+										cliente.direccionCalle,
+									   (cliente.direccionNumeroCalle != 0)? cliente.direccionNumeroCalle.ToString() : "",
+									   (cliente.direccionPiso != 0)? cliente.direccionPiso.ToString() : "",
+                                        cliente.direccionDepto,
+                                        cliente.localidad,
+									   (cliente.pais != null)? cliente.pais.nombre : "",
+									   (cliente.habilitado == false)? "Deshabilitado" : "Habilitado",
                                         };
                 dataGridView1.Rows.Add(row);
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
+        
         //-----------------------------------------------------------------------------------------------------------------
         public void formResponseAdd(ClienteModel cliente)
         {
@@ -158,6 +160,16 @@ namespace ABM
         public void formResponseDisable(ClienteModel cliente)
         {
             clientes[clienteActivoIndex] = cliente;
+            button4.Text = "Dar de Alta";
+            fillClientsTable();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        public void formResponseEnable(ClienteModel cliente)
+        {
+            clientes[clienteActivoIndex] = cliente;
+            button4.Text = "Dar de Baja";
             fillClientsTable();
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -235,7 +247,10 @@ namespace ABM
                     }
                     count++;
                 }
-
+                button4.Text = "Dar de Baja";
+                if(clienteActivo.habilitado == false){
+                    button4.Text = "Dar de Alta";
+                }
                 
                 button3.Enabled = true;
                 button4.Enabled = true;
@@ -268,11 +283,16 @@ namespace ABM
         }
         //-----------------------------------------------------------------------------------------------------------------
 
-        //Dar de Baja Cliente
+        //Dar de Baja Cliente o alta
         //-----------------------------------------------------------------------------------------------------------------
         private void button4_Click(object sender, EventArgs e)
         {
-            ClienteForm clienteForm = new ClienteForm(DESHABILITAR_CLIENTE, clienteActivo, clienteDao, this, extraDao);
+            int operacion = DESHABILITAR_CLIENTE;
+            if (clienteActivo.habilitado == false){
+                operacion = HABILITAR_CLIENTE;
+            }
+
+            ClienteForm clienteForm = new ClienteForm(operacion, clienteActivo, clienteDao, this, extraDao);
             clienteForm.MdiParent = this.MdiParent;
             clienteForm.Show();
         }

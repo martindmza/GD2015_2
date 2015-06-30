@@ -96,6 +96,21 @@ namespace DAO
             }
         }
 
+        public Respuesta habilitarCliente(ClienteModel cliente)
+        {
+            try
+            {
+                SqlCommand command = InitializeConnection("Alta_Cliente");
+                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = cliente.id;
+                return operacionDml(command);
+            }
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                throw excepcion;
+            }
+        }
+
         public ClienteModel getClienteByUser(UserModel userModel)
         {
             List<ClienteModel> clientes = new List<ClienteModel>();
@@ -206,7 +221,7 @@ namespace DAO
             }
             if (cliente.tipoDocumento != null)
             {
-                command.Parameters.Add("@Tipo_Documento", System.Data.SqlDbType.Decimal).Value = cliente.tipoDocumento;
+                command.Parameters.Add("@Id_Tipo_Documento", System.Data.SqlDbType.Decimal).Value = cliente.tipoDocumento.id;
             }
             if (cliente.nroDocumento != 0)
             {
@@ -246,7 +261,7 @@ namespace DAO
             }
             if (cliente.nacionalidad != null)
             {
-                command.Parameters.Add("@Id_Nacionalidad", System.Data.SqlDbType.Decimal).Value = cliente.nacionalidad;
+                command.Parameters.Add("@Id_Nacionalidad", System.Data.SqlDbType.Decimal).Value = cliente.nacionalidad.id;
             }
 
             return command;

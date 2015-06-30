@@ -74,18 +74,20 @@ Id_Usuario numeric(18,0),
 Nombre varchar(255),
 Apellido varchar(255),
 Id_Tipo_Documento numeric(18,0),
-Nro_Documento numeric(18,0) UNIQUE,
+Nro_Documento numeric(18,0),
 Id_Pais numeric(18,0),
 Direccion_Calle varchar(255),
 Direccion_Numero_Calle numeric(18,0),
 Direccion_Piso numeric(18,0),
 Direccion_Departamento varchar(10),
 Fecha_Nacimiento datetime,
-Mail varchar(255) UNIQUE,
+Mail varchar(255),
 Localidad varchar(255),
 Id_Nacionalidad numeric(18,0),
 Habilitada bit DEFAULT 1,);
 ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT PK_Id_Cliente PRIMARY KEY (Id_Cliente);
+ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT UQ_Nro_Documento UNIQUE (Nro_Documento);
+ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT UQ_Mail UNIQUE (Mail);
 				
 CREATE TABLE REZAGADOS.TipoDocumento (
 Id_Tipo_Documento numeric(18,0) NOT NULL,
@@ -352,6 +354,8 @@ SELECT Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc
 FROM gd_esquema.Maestra
 GROUP BY Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc)
 
+INSERT INTO REZAGADOS.TipoDocumento VALUES (80,'DNI')
+
 -------------------------------------------ROL--------------------------------------------------
 
 INSERT INTO REZAGADOS.Rol (Nombre)
@@ -565,22 +569,21 @@ BEGIN TRY
 			END
 		ELSE
 		BEGIN
-			INSERT INTO REZAGADOS.Usuario (Nombre) VALUES (@Nombre + '.' + @Apellido)
+			INSERT INTO REZAGADOS.Usuario (Nombre) VALUES (@Mail)
 			DECLARE @Id_Usuario NUMERIC(18,0) = @@IDENTITY
 			
 			INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Id_Nacionalidad)
 			VALUES (@Id_Usuario, @Nombre, @Apellido, @Id_Tipo_Documento, @Nro_Documento, @Id_Pais, @Direccion_Calle, @Direccion_Numero_Calle, @Direccion_Piso, @Direccion_Departamento, @Fecha_Nacimiento, @Mail, @Localidad, @Id_Nacionalidad) 		
-			
-			INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
 			SET @Respuesta = @@IDENTITY
+			INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
+			COMMIT TRANSACTION
 			SET @RespuestaMensaje = 'Los datos se guardaron exitosamente!'
-			END
 		END
-	COMMIT TRANSACTION
+	END
 END TRY
 BEGIN CATCH
 	SET @Respuesta = -1
-	SET @RespuestaMensaje = 'El Cliente no se pudo guardar por datos duplicados o porque no especificó bien los datos'
+	SET @RespuestaMensaje = ERROR_MESSAGE ( ) 
 	ROLLBACK TRANSACTION
 END CATCH
 GO
@@ -650,13 +653,12 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Alta_Cliente (	@Id_Cliente varchar(255),
+CREATE PROCEDURE REZAGADOS.Alta_Cliente (	@Id_Cliente NUMERIC(18,0),
 											@RespuestaMensaje VARCHAR(255) OUTPUT,
 											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	BEGIN
-		DECLARE @Id_Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM REZAGADOS.Cliente WHERE Id_Cliente = CAST(@Id_Cliente AS NUMERIC(18,0)))
-		UPDATE REZAGADOS.Cliente SET Habilitada=1 WHERE Id_Usuario=@Id_Usuario
+		UPDATE REZAGADOS.Cliente SET Habilitada=1 WHERE Id_Cliente=@Id_Cliente
 		SET @Respuesta = 1
 		SET @RespuestaMensaje = 'Alta exitosa'
 	END
@@ -671,8 +673,7 @@ CREATE PROCEDURE REZAGADOS.Baja_Cliente  (	@Id_Cliente NUMERIC(18,0),
 											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	BEGIN
-		DECLARE @Id_Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM REZAGADOS.Cliente WHERE Id_Cliente = @Id_Cliente)
-		UPDATE REZAGADOS.Cliente SET Habilitada=0 WHERE Id_Usuario=@Id_Usuario
+		UPDATE REZAGADOS.Cliente SET Habilitada=0  WHERE Id_Cliente=@Id_Cliente
 		SET @Respuesta = 1
 		SET @RespuestaMensaje = 'Baja exitosa'
 	END
@@ -1336,11 +1337,11 @@ BEGIN
 	SET NOCOUNT ON;
 
 	SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO,
-	c.Id_Usuario USUARIO, c.Id_Tipo_Documento DOCUMENTO, c.Nro_Documento NRO_DOCUMENTO,
-	c.Id_Pais PAIS,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
+	c.Id_Usuario USUARIO, c.Id_Tipo_Documento DOCUMENTO_TIPO_COD, c.Nro_Documento NRO_DOCUMENTO,
+	c.Id_Pais PAIS_ID,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
 	c.Direccion_Piso DIRECCION_PISO, c.Direccion_Departamento DIRECCION_DEPTO, 
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
-	c.Habilitada HABILITADA
+	c.Habilitada HABILITADA, c.Id_Nacionalidad NACIONALIDAD_ID
 	FROM  [REZAGADOS].Cliente c 
 END
 GO

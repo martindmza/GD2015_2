@@ -9,9 +9,8 @@ namespace Models
 {
     public class ClienteModel: BasicaModel
     {
-
         public const String APELLIDO = "APELLIDO";
-        public const String DOCUMENTO = "DOCUMENTO";
+        public const String DOCUMENTO_TIPO_COD = "DOCUMENTO_TIPO_COD";
         public const String NRO_DOCUMENTO = "NRO_DOCUMENTO";
         public const String NACIMIENTO = "FECHA_NACIMIENTO";
         public const String EMAIL = "EMAIL";
@@ -21,7 +20,9 @@ namespace Models
         public const String DIRECCION_DEPTO = "DIRECCION_DEPTO";
         public const String DIRECCION_PISO = "DIRECCION_PISO";
         public const String LOCALIDAD = "LOCALIDAD";
-        public const String PAIS = "PAIS";
+        public const String PAIS_ID = "PAIS_ID";
+        public const String NACIONALIDAD_ID = "NACIONALIDAD_ID";
+
         /********************/
         public String apellido { get; set; }
         public DateTime nacimiento { get; set; }
@@ -46,15 +47,12 @@ namespace Models
         public ClienteModel(DataRow fila)
             : base(fila)
         {
-            this.tipoDocumento = this.getTipoDocumento();
-            this.pais = this.getPais();
+            //this.tipoDocumento = this.getTipoDocumento();
+            //this.pais = this.getPais();
+            //this.nacionalidad = 
             this.cuentas = this.getListaDeCuentas();
         }
 
-        private LocalidadModel getLocalidad()
-        {
-            return null;
-        }
 
         private List<CuentaModel> getListaDeCuentas()
         {
@@ -63,21 +61,21 @@ namespace Models
 
         private TipoDocumentoModel getTipoDocumento()
         {
-            return null;
+            return this.tipoDocumento;
         }
 
         private PaisModel getPais()
         {
-            return null;
+            return this.pais;
         }
 
-        public ClienteModel(String apellido, String nombre, TipoDocumentoModel documento, Decimal nroDocumento,
+        public ClienteModel(String apellido, String nombre, TipoDocumentoModel tipoDocumento, Decimal nroDocumento,
             DateTime nacimiento, String email, PaisModel nacionalidad, String direccionCalle, Decimal direccionNumeroCalle,
             Decimal direccionPiso, String direccionDepto, String localidad, PaisModel pais)
         {
             this.apellido = apellido;
             this.nombre = nombre;
-            this.tipoDocumento = documento;
+            this.tipoDocumento = tipoDocumento;
             this.nroDocumento = nroDocumento;
             this.nacimiento = nacimiento;
             this.email = email;
@@ -90,7 +88,7 @@ namespace Models
             this.pais = pais;
         }
 
-        public ClienteModel(Decimal id,String apellido, String nombre, TipoDocumentoModel documento, Decimal nroDocumento,
+        public ClienteModel(Decimal id, String apellido, String nombre, TipoDocumentoModel tipoDocumento, Decimal nroDocumento,
             DateTime nacimiento, String email, PaisModel nacionalidad, String direccionCalle, Decimal direccionNumeroCalle,
             Decimal direccionPiso, String direccionDepto, String localidad, PaisModel pais)
         {
@@ -141,17 +139,16 @@ namespace Models
             this.apellido = fila[APELLIDO].ToString();
             this.nacimiento = fila[NACIMIENTO] != DBNull.Value ? DateTime.Parse(fila[NACIMIENTO].ToString()) : DateTime.MinValue;
             this.email = fila[EMAIL].ToString();
-            this.nacionalidad = new PaisDAO().dameTuModelo(fila[NACIONALIDAD].ToString());
+            this.nacionalidad = new PaisDAO().dameTuModelo(fila[NACIONALIDAD_ID].ToString());
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
             this.direccionNumeroCalle = (Decimal)fila[DIRECCION_NRO_CALLE];
             this.direccionPiso = (Decimal)fila[DIRECCION_PISO];
             this.direccionDepto = fila[DIRECCION_DEPTO].ToString();
             this.localidad = fila[LOCALIDAD].ToString();
-            this.pais = new PaisDAO().dameTuModelo(fila[PAIS].ToString());
+            this.pais = new PaisDAO().dameTuModelo(fila[PAIS_ID].ToString());
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
             this.nroDocumento = (Decimal)fila[NRO_DOCUMENTO];
-            this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO].ToString());
-
+            this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO_TIPO_COD].ToString());
         }
     }
 }
