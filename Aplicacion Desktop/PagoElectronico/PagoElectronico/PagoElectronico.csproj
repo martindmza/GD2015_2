@@ -104,6 +104,7 @@
       <DependentUpon>ConsultaDeSaldos.cs</DependentUpon>
     </Compile>
     <Compile Include="DAO\AbstractDAO.cs" />
+    <Compile Include="DAO\BancoDAO.cs" />
     <Compile Include="DAO\BasicaDAO.cs" />
     <Compile Include="DAO\ClienteDao.cs" />
     <Compile Include="DAO\CuentaDao.cs" />

@@ -120,8 +120,6 @@ namespace Retiros
 
             //set importe
             Double importe = Double.Parse(importeText.Text);
-            UInt32 monedaId = 1;
-            String monedaNombre = "Dolar";
 
             if (importe > cuenta.saldo) {
                 MessageBox.Show("El importe a retirar no puede ser mayor al saldo de la cuenta");
@@ -129,7 +127,7 @@ namespace Retiros
                 return;
             } 
 
-            retiro = new RetiroModel(cuenta, importe,monedaId,monedaNombre,extraDao.getDayToday());
+            retiro = new RetiroModel(cuenta, importe,null,extraDao.getDayToday());
             retiro = retiroDao.agregarBasica(retiro);
 
             if (retiro.id != null)

@@ -139,8 +139,6 @@ namespace Transferencias
 
             //set importe
             Double importe = Double.Parse(importeText.Text);
-            UInt32 monedaId = 1;
-            String monedaNombre = "Dolar";
 
             if (importe > cuentaOrigen.saldo) {
                 MessageBox.Show("El importe a transferir no puede ser mayor al saldo de la cuenta origen");
@@ -148,7 +146,7 @@ namespace Transferencias
                 return;
             }
 
-            transferencia = new TransferenciaModel(cuentaOrigen, cuentaDestino, importe, monedaId, monedaNombre);
+            transferencia = new TransferenciaModel(cuentaOrigen, cuentaDestino, importe, null);
             transferencia = transferenciaDao.createTransferencia(transferencia);
 
             if (transferencia.id != null)

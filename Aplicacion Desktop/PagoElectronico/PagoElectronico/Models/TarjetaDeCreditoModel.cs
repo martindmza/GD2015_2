@@ -2,11 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DAO;
+using System.Data;
 
 namespace Models
 {
     public class TarjetaDeCreditoModel: BasicaModel
+
     {
+        public const String NUMERO = "NUMERO";
+        public const String CODIGO = "CODIGO";
+        public const String EMISION = "EMISION";
+        public const String VENCIMIENTO = "VENCIMIENTO";
+        public const String HABILITADA = "HABILITADA";
+        public const String PROPIETARIO = "PROPIETARIO";
+        public const String EMISOR = "EMISOR";
+        
         public String numero {get;set;}
         public String codigoSeguridad {get;set;}
         public DateTime emision {get;set;}
@@ -15,7 +26,12 @@ namespace Models
 
         public ClienteModel propietario { get; set; }
         public UserModel emisor { get; set; }
+
+
         public TarjetaDeCreditoModel() { }
+
+        public TarjetaDeCreditoModel(DataRow fila) : base(fila) { }
+
 
         public TarjetaDeCreditoModel(String numero, String codigoSeguridad,
                                         DateTime emision, DateTime vencimiento, ClienteModel propietario)
@@ -67,5 +83,18 @@ namespace Models
 
         }
 
+        public override void mapeoFilaAModel(System.Data.DataRow fila)
+        {
+            base.mapeoFilaAModel(fila);
+            this.numero = this.mapearValor(fila[NUMERO]);
+            this.codigoSeguridad = this.mapearValor(fila[CODIGO]);
+            this.emision = this.mapearFecha(fila[EMISION]);
+            this.vencimiento = this.mapearFecha(fila[VENCIMIENTO]);
+            this.habilitada = this.mapearBool(fila[HABILITADA]);
+            this.propietario = new ClienteDao().dameTuModelo(this.mapearValor(fila[PROPIETARIO]));
+            this.emisor = new UserDao().dameTuModelo(this.mapearValor(fila[EMISOR]));
+        }
+
+       
     }
 }

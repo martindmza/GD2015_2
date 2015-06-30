@@ -68,7 +68,7 @@ namespace ABM
                 {
                     row = new String[]  {   r.id.ToString(),
                                             r.importe.ToString(),
-                                            r.monedaNombre.ToString(),
+                                            r.moneda.nombre.ToString(),
                                             r.fecha.ToShortDateString(),
                                             r.chequeId.ToString(),
                                             r.banco.nombre.ToString()
@@ -88,7 +88,7 @@ namespace ABM
                                             t.cuentaOrigen.id.ToString(),
                                             t.cuentaDestino.id.ToString(),
                                             t.importe.ToString(),
-                                            t.monedaNombre.ToString(),
+                                            t.moneda.nombre.ToString(),
                                             t.fecha.ToShortDateString(),
                                             t.costo.ToString()
                                         };

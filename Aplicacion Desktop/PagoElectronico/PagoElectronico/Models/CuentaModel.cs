@@ -78,9 +78,9 @@ namespace Models
             this.tipo = new CuentaTipoDAO().dameTuModelo(this.mapearValor(fila[CUENTATIPO]));
             this.moneda = new MonedaDAO().dameTuModelo(this.mapearValor(fila[MONEDA_ID]));
             this.estado= new EstadoDao().dameTuModelo(fila[ESTADO].ToString());
-            this.fechaCreacion = fila[FECHA_CREACION] != DBNull.Value ? DateTime.Parse(fila[FECHA_CREACION].ToString()) : DateTime.MinValue;
-            this.fechaCierre = fila[FECHA_CIERRE] != DBNull.Value ? DateTime.Parse(fila[FECHA_CIERRE].ToString()) : DateTime.MinValue;
-            this.saldo =  Double.Parse(fila[SALDO].ToString());
+            this.fechaCreacion = this.mapearFecha(fila[FECHA_CREACION]);
+            this.fechaCierre = this.mapearFecha(fila[FECHA_CIERRE]);
+            this.saldo =  this.mapearImporte(fila[SALDO]);
         }
 
         public void setPropietario(ClienteModel cliente)

@@ -1781,6 +1781,34 @@ SELECT	m.Id_Moneda ID,
 END
 GO
 
+-----------------------------------------Listar_Banco----------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Listar_Banco 
+AS
+BEGIN
+SELECT	b.Id_Banco ID,
+		b.Nombre NOMBRE,
+		b.Direccion DIRECCION
+	FROM [REZAGADOS].Banco b 
+END
+GO
+
+-----------------------------------------Buscar_Banco_ID----------------------------------------
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Buscar_Banco_ID 
+@Id NUMERIC(18,0)
+AS
+BEGIN
+SELECT	b.Id_Banco ID,
+		b.Nombre NOMBRE,
+		b.Direccion DIRECCION
+	FROM [REZAGADOS].Banco b 
+	WHERE b.Id_Banco = @Id
+END
+GO
+
 ----------------------------------------------------FACTURACION DE COSTOS------------------------------------------
 --------------------------------------------------------FACTURAR---------------------------------------------------
 

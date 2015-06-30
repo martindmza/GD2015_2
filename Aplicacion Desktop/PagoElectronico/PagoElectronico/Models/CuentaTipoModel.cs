@@ -12,14 +12,14 @@ namespace Models
         public const String VIGENCIA = "VIGENCIA";
 
         public Decimal duracionDias { get; set; }
-        public Decimal costo { get; set; }
+        public Double costo { get; set; }
 
         public CuentaTipoModel() { }
         public CuentaTipoModel(DataRow fila ):base(fila)
         {
         }
 
-        public CuentaTipoModel(Decimal id, String nombre, UInt32 duracionDias, Decimal costo)
+        public CuentaTipoModel(Decimal id, String nombre, UInt32 duracionDias, Double costo)
         {
             this.id = id;
             this.nombre = nombre;
@@ -30,8 +30,8 @@ namespace Models
         public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-            this.costo = (Decimal)fila[COSTO];
-            this.duracionDias = (Decimal)fila[VIGENCIA];
+            this.costo = this.mapearImporte(fila[COSTO]);
+            this.duracionDias = this.mapearNum(fila[VIGENCIA]);
         }
 
     }

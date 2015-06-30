@@ -44,7 +44,22 @@ namespace Models
             }
             return fecha;
         }
+        protected Double mapearImporte(Object columna)
+        {
+            Double importe = new Double();
+            if (columna != DBNull.Value)
+            {
+                importe = Double.Parse(columna.ToString());
+            }
+            return importe;
+        }
 
+        protected bool mapearBool(Object columna)
+        {
+            bool retu ;
+            retu = Boolean.Parse(columna.ToString());
+            return retu;
+        }
 
     }
 }

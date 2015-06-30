@@ -121,12 +121,12 @@ namespace Models
         public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-            this.password = fila[PASSWORD].ToString();
-            this.password_modificada = (Boolean)fila[PASSWORD_MODIFICADA];
-            this.habilitado = (Boolean)fila[HABILITADO];
-            this.intentosFallidos = (Decimal)fila[INTENTOS_FALLIDOS];
-            this.pregunta = fila[PREGUNTA].ToString();
-            this.respuesta = fila[RESPUESTA].ToString();
+            this.password = this.mapearValor(fila[PASSWORD]);
+            this.password_modificada = this.mapearBool(fila[PASSWORD_MODIFICADA]);
+            this.habilitado = this.mapearBool(fila[HABILITADO]);
+            this.intentosFallidos = this.mapearNum(fila[INTENTOS_FALLIDOS]);
+            this.pregunta = this.mapearValor(fila[PREGUNTA]);
+            this.respuesta = this.mapearValor(fila[RESPUESTA]);
         }
     }
 }

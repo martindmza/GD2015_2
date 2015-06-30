@@ -35,12 +35,12 @@ namespace Models
         public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-            this.depositante = new ClienteDao().dameTuModelo(fila[DEPOSITANTE].ToString());
-            this.cuentaDestino = new CuentaDao().dameTuModelo(fila[CUENTA_DESTINO].ToString());
-            this.importe = Double.Parse(fila[CUENTA_DESTINO].ToString());
-            this.monedaId = new MonedaDAO().dameTuModelo(fila[MONEDA].ToString());
-            this.tarjetaDeCredito = null;
-            this.fecha = fila[FECHA] != DBNull.Value ? DateTime.Parse(fila[FECHA].ToString()) : DateTime.MinValue;
+            this.depositante = new ClienteDao().dameTuModelo(this.mapearValor(fila[DEPOSITANTE]));
+            this.cuentaDestino = new CuentaDao().dameTuModelo(this.mapearValor(fila[CUENTA_DESTINO]));
+            this.importe = this.mapearImporte(fila[CUENTA_DESTINO]);
+            this.monedaId = new MonedaDAO().dameTuModelo(this.mapearValor(fila[MONEDA]));
+            this.tarjetaDeCredito = new TarjetaDeCreditoDao().dameTuModelo(this.mapearValor(fila[TARJETA]));
+            this.fecha = this.mapearFecha(fila[FECHA]);
         }
     }
 }

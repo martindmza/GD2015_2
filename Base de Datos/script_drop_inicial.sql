@@ -293,12 +293,15 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE REZAGADOS.[Paises_Mayor_Movimiento];
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Total_Facturado_Cuentas]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.[Total_Facturado_Cuentas];
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Documento_ID]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE REZAGADOS.[Buscar_Documento_ID];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Moneda_ID]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Buscar_Moneda_ID;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Moneda]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.[Listar_Moneda];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Banco_ID]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Buscar_Banco_ID;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Banco]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.[Listar_Banco];
 
---CREATE PROCEDURE [REZAGADOS].Buscar_Documento_ID 
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;
 
