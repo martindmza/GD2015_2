@@ -69,6 +69,8 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id,
@@ -88,6 +90,7 @@
             this.habilitado});
             this.dataGridView1.Location = new System.Drawing.Point(12, 139);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(673, 346);
             this.dataGridView1.TabIndex = 0;
@@ -97,76 +100,91 @@
             // 
             this.id.HeaderText = "Código";
             this.id.Name = "id";
+            this.id.ReadOnly = true;
             // 
             // apellido
             // 
             this.apellido.HeaderText = "Apellido";
             this.apellido.Name = "apellido";
+            this.apellido.ReadOnly = true;
             // 
             // nombre
             // 
             this.nombre.HeaderText = "Nombre";
             this.nombre.Name = "nombre";
+            this.nombre.ReadOnly = true;
             // 
             // documentoTipo
             // 
             this.documentoTipo.HeaderText = "Doc Tipo";
             this.documentoTipo.Name = "documentoTipo";
+            this.documentoTipo.ReadOnly = true;
             // 
             // documentoNumero
             // 
             this.documentoNumero.HeaderText = "Documento";
             this.documentoNumero.Name = "documentoNumero";
+            this.documentoNumero.ReadOnly = true;
             // 
             // email
             // 
             this.email.HeaderText = "E-Mail";
             this.email.Name = "email";
+            this.email.ReadOnly = true;
             // 
             // nacimiento
             // 
             this.nacimiento.HeaderText = "Nacimiento";
             this.nacimiento.Name = "nacimiento";
+            this.nacimiento.ReadOnly = true;
             // 
             // nacionalidadId
             // 
             this.nacionalidadId.HeaderText = "Nacionalidad";
             this.nacionalidadId.Name = "nacionalidadId";
+            this.nacionalidadId.ReadOnly = true;
             // 
             // direccionCalle
             // 
             this.direccionCalle.HeaderText = "Calle";
             this.direccionCalle.Name = "direccionCalle";
+            this.direccionCalle.ReadOnly = true;
             // 
             // direccionNumeroCalle
             // 
             this.direccionNumeroCalle.HeaderText = "N°";
             this.direccionNumeroCalle.Name = "direccionNumeroCalle";
+            this.direccionNumeroCalle.ReadOnly = true;
             // 
             // direccionPiso
             // 
             this.direccionPiso.HeaderText = "Piso";
             this.direccionPiso.Name = "direccionPiso";
+            this.direccionPiso.ReadOnly = true;
             // 
             // direccionDepto
             // 
             this.direccionDepto.HeaderText = "Departamento";
             this.direccionDepto.Name = "direccionDepto";
+            this.direccionDepto.ReadOnly = true;
             // 
             // localidadId
             // 
             this.localidadId.HeaderText = "Localidad";
             this.localidadId.Name = "localidadId";
+            this.localidadId.ReadOnly = true;
             // 
             // paisId
             // 
             this.paisId.HeaderText = "Pais";
             this.paisId.Name = "paisId";
+            this.paisId.ReadOnly = true;
             // 
             // habilitado
             // 
             this.habilitado.HeaderText = "Habilitado";
             this.habilitado.Name = "habilitado";
+            this.habilitado.ReadOnly = true;
             // 
             // groupBox1
             // 
@@ -365,6 +383,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dataGridView1);
+            this.MaximumSize = new System.Drawing.Size(800, 555);
             this.Name = "ClienteAbm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AbmClientes";

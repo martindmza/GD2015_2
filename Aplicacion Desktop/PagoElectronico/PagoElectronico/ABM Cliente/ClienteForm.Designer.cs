@@ -88,6 +88,7 @@
             this.docNumero.Name = "docNumero";
             this.docNumero.Size = new System.Drawing.Size(122, 20);
             this.docNumero.TabIndex = 1;
+            this.docNumero.Text = "34284430";
             this.docNumero.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.docNumero.Leave += new System.EventHandler(this.docNumero_Leave);
             // 
@@ -196,14 +197,15 @@
             this.docTipo.Location = new System.Drawing.Point(140, 54);
             this.docTipo.Name = "docTipo";
             this.docTipo.Size = new System.Drawing.Size(122, 21);
-            this.docTipo.TabIndex = 2;
+            this.docTipo.TabIndex = 0;
             // 
             // apellido
             // 
             this.apellido.Location = new System.Drawing.Point(140, 113);
             this.apellido.Name = "apellido";
             this.apellido.Size = new System.Drawing.Size(122, 20);
-            this.apellido.TabIndex = 1;
+            this.apellido.TabIndex = 2;
+            this.apellido.Text = "Amaya";
             this.apellido.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // nombre
@@ -212,7 +214,8 @@
             this.nombre.Location = new System.Drawing.Point(140, 142);
             this.nombre.Name = "nombre";
             this.nombre.Size = new System.Drawing.Size(122, 20);
-            this.nombre.TabIndex = 1;
+            this.nombre.TabIndex = 3;
+            this.nombre.Text = "Martin";
             this.nombre.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // nacionalidadText
@@ -221,7 +224,7 @@
             this.nacionalidadText.Location = new System.Drawing.Point(140, 229);
             this.nacionalidadText.Name = "nacionalidadText";
             this.nacionalidadText.Size = new System.Drawing.Size(122, 20);
-            this.nacionalidadText.TabIndex = 1;
+            this.nacionalidadText.TabIndex = 6;
             this.nacionalidadText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // domNumero
@@ -230,6 +233,8 @@
             this.domNumero.Name = "domNumero";
             this.domNumero.Size = new System.Drawing.Size(122, 20);
             this.domNumero.TabIndex = 1;
+            this.domNumero.Tag = "";
+            this.domNumero.Text = "123";
             this.domNumero.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.domNumero.Leave += new System.EventHandler(this.domNumero_Leave);
             // 
@@ -252,7 +257,7 @@
             this.groupBox1.Location = new System.Drawing.Point(12, 265);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(528, 128);
-            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Domicilio";
             // 
@@ -270,7 +275,7 @@
             this.button6.Location = new System.Drawing.Point(483, 92);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(24, 20);
-            this.button6.TabIndex = 9;
+            this.button6.TabIndex = 5;
             this.button6.Text = "...";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
@@ -281,7 +286,7 @@
             this.paisText.Location = new System.Drawing.Point(355, 92);
             this.paisText.Name = "paisText";
             this.paisText.Size = new System.Drawing.Size(122, 20);
-            this.paisText.TabIndex = 9;
+            this.paisText.TabIndex = 4;
             this.paisText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // paislabel
@@ -298,7 +303,9 @@
             this.domPiso.Location = new System.Drawing.Point(64, 60);
             this.domPiso.Name = "domPiso";
             this.domPiso.Size = new System.Drawing.Size(122, 20);
-            this.domPiso.TabIndex = 1;
+            this.domPiso.TabIndex = 2;
+            this.domPiso.Tag = "";
+            this.domPiso.Text = "1";
             this.domPiso.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.domPiso.Leave += new System.EventHandler(this.domPiso_Leave);
             // 
@@ -307,7 +314,9 @@
             this.localidadText.Location = new System.Drawing.Point(64, 91);
             this.localidadText.Name = "localidadText";
             this.localidadText.Size = new System.Drawing.Size(122, 20);
-            this.localidadText.TabIndex = 1;
+            this.localidadText.TabIndex = 4;
+            this.localidadText.Tag = "";
+            this.localidadText.Text = "Haedo";
             this.localidadText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // domDepartamento
@@ -316,7 +325,9 @@
             this.domDepartamento.Location = new System.Drawing.Point(355, 60);
             this.domDepartamento.Name = "domDepartamento";
             this.domDepartamento.Size = new System.Drawing.Size(122, 20);
-            this.domDepartamento.TabIndex = 1;
+            this.domDepartamento.TabIndex = 3;
+            this.domDepartamento.Tag = "";
+            this.domDepartamento.Text = "A";
             this.domDepartamento.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // domCalle
@@ -324,7 +335,8 @@
             this.domCalle.Location = new System.Drawing.Point(64, 30);
             this.domCalle.Name = "domCalle";
             this.domCalle.Size = new System.Drawing.Size(122, 20);
-            this.domCalle.TabIndex = 1;
+            this.domCalle.TabIndex = 0;
+            this.domCalle.Text = "asdasd";
             this.domCalle.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // email
@@ -333,7 +345,8 @@
             this.email.Location = new System.Drawing.Point(140, 200);
             this.email.Name = "email";
             this.email.Size = new System.Drawing.Size(122, 20);
-            this.email.TabIndex = 1;
+            this.email.TabIndex = 5;
+            this.email.Text = "m@gmail.com";
             this.email.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // button2
@@ -341,7 +354,7 @@
             this.button2.Location = new System.Drawing.Point(13, 399);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 4;
+            this.button2.TabIndex = 9;
             this.button2.Text = "Limpiar";
             this.button2.UseVisualStyleBackColor = true;
             // 
@@ -350,7 +363,7 @@
             this.button3.Location = new System.Drawing.Point(455, 399);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 4;
+            this.button3.TabIndex = 7;
             this.button3.Text = "Aceptar";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
@@ -378,7 +391,7 @@
             this.button5.Location = new System.Drawing.Point(371, 399);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 6;
+            this.button5.TabIndex = 8;
             this.button5.Text = "Cancelar";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
@@ -389,14 +402,14 @@
             this.nacimiento.Location = new System.Drawing.Point(140, 170);
             this.nacimiento.Name = "nacimiento";
             this.nacimiento.Size = new System.Drawing.Size(122, 20);
-            this.nacimiento.TabIndex = 7;
+            this.nacimiento.TabIndex = 4;
             // 
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(268, 229);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(24, 20);
-            this.button4.TabIndex = 8;
+            this.button4.TabIndex = 6;
             this.button4.Text = "...";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
