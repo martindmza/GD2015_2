@@ -11,7 +11,7 @@ namespace Models
         public const String NOMBRE = "NOMBRE";
         public const String SIN_NOMBRE = "SIN_NOMBRE";
 
-        public String nombre;
+        public String nombre = SIN_NOMBRE;
 
         public BasicaModel()
             : base()

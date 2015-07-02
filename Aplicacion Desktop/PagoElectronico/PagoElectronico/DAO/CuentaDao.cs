@@ -114,7 +114,7 @@ namespace DAO
 
         protected override string getProcedureCrearBasica()
         {
-            return "CrearCuenta";
+            return "Crear_Cuenta";
         }
 
         public override string getProcedureEncontrarPorId()
@@ -129,11 +129,11 @@ namespace DAO
 
         public override SqlCommand addParametrosParaAgregar(SqlCommand command, CuentaModel entity)
         {
-            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
-            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
-            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
-            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
-            command.Parameters.Add("Estado", System.Data.SqlDbType.NVarChar, 255).Value = entity.estado.id;
+            command.Parameters.Add("Pais", System.Data.SqlDbType.Decimal).Value = entity.pais.id;
+            command.Parameters.Add("Moneda", System.Data.SqlDbType.Decimal).Value = entity.moneda.id;
+            command.Parameters.Add("Fecha", System.Data.SqlDbType.DateTime).Value = entity.fechaCreacion;
+            command.Parameters.Add("Tipo", System.Data.SqlDbType.Decimal).Value = entity.tipo.id;
+            command.Parameters.Add("Propietario", System.Data.SqlDbType.Decimal).Value = entity.propietario.id;
             return command;
         }
 

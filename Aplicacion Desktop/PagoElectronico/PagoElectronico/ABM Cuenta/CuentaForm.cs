@@ -149,6 +149,7 @@ namespace ABM
                 estado = cuenta.estado;
                 paisCuenta = cuenta.pais;
                 tipoActivo = cuenta.tipo;
+                monedaModel = cuenta.moneda;
             }
 
 
@@ -223,27 +224,22 @@ namespace ABM
 
             //set Cuenta Tipo
             String[] result2 = tipoCuenta.SelectedItem.ToString().Split(',');
-            String[] tipoCuentaString = result[0].Split('[');
-            UInt32 tipoCuentaId = UInt32.Parse(monedaIdString[1]);
-            for(int i = 0;i<tipos.Count;i++)
-            {
-                if (tipos[i].id == tipoCuentaId) {
-                    tipoActivo = tipos[i];
-                    break;
-                }
-            }
-
+            String[] tipoCuentaString = result2[0].Split('[');
+            
+            tipoActivo = new CuentaTipoDAO().dameTuModelo(tipoCuentaString[1]);
+           
             switch (operacionTipo)
             {
                 case 0:
-                    cuenta = new CuentaModel(0, this.paisCuenta, this.tipoActivo, monedaModel, estado, apertura.Value, this.cliente);
-
+                    cuenta = new CuentaModel(this.paisCuenta, this.tipoActivo, monedaModel, estado, apertura.Value, this.cliente);
+                    cuenta.moneda = new MonedaModel();
+                    cuenta.propietario = cliente;
                     cuenta = cuentaDao.agregarBasica(cuenta);
                     parentCuenta.formResponseAdd(cuenta);
                     MessageBox.Show("Cuenta creada exitosamente");
                     break;
                 case 1:
-                    cuenta = new CuentaModel(cuenta.id, paisCuenta, tipoActivo, monedaModel, estado, apertura.Value, this.cliente);
+                    cuenta = new CuentaModel(paisCuenta, tipoActivo, monedaModel, estado, apertura.Value, this.cliente);
 
                     MessageBox.Show("Cliente modificado exitosamente");
                     cuenta = cuentaDao.updateCuenta(cuenta);
