@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data.SqlClient;
 using System.Data;
+using System.Configuration;
 
 namespace PagoElectronico.Herramientas
 
@@ -28,9 +29,12 @@ namespace PagoElectronico.Herramientas
 
         private SqlConnector()
         {
-            this.Conn = new SqlConnection(Config.Base.ConnectionString);
-                
+            string configvalue1 = ConfigurationSettings.AppSettings["url"];
+            this.Conn = new SqlConnection(configvalue1);
+            this.Conn.ConnectionString = configvalue1;
             this.Conn.Open();
+            Console.WriteLine("ServerVersion: {0}", this.Conn.ServerVersion);
+            Console.WriteLine("State: {0}", this.Conn.State);
         }
 
         public static SqlConnector Instance
