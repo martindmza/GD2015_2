@@ -1304,9 +1304,9 @@ BEGIN
 	c.Id_Moneda MONEDA, c.Id_Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION,
 	cl.Nombre PROPIETARIO_NOMBRE, cl.Apellido PROPIETARIO_APELLIDO
 	FROM  [REZAGADOS].Cuenta c 
-	JOIN Usuario u on c.Id_Usuario = u.Id_Usuario 
-	JOIN Cliente cli on u.Id_Usuario = cli.Id_Usuario
-	WHERE cli.Id_Cliente = @Id_Cliente
+	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
+	JOIN [REZAGADOS].Cliente cl ON u.Id_Usuario = cl.Id_Usuario
+	WHERE cl.Id_Cliente = @Id_Cliente
 END
 GO
 
@@ -1326,7 +1326,10 @@ BEGIN
 	c.Id_Pais PAIS,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
 	c.Direccion_Piso DIRECCION_PISO, c.Direccion_Departamento DIRECCION_DEPTO, 
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
-	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD
+	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD, 
+	cu.Id_Cuenta, 
+	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
+	JOIN [REZAGADOS].Cuenta cu ON u.Id_Usuario = cu.Id_Cuenta
 	FROM  [REZAGADOS].Cliente c 
 	WHERE c.Id_Usuario = @Id_Usuario
 END
@@ -1870,14 +1873,36 @@ USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Buscar_Cliente_Filtros') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Buscar_Cliente_Filtros
 GO
-CREATE PROCEDURE [REZAGADOS].[Buscar_Cliente_Filtros] (@Id_Cliente NUMERIC(18,0)=NULL, @Apellido VARCHAR(MAX)=NULL, @Nombre VARCHAR(MAX)=NULL, @Mail VARCHAR(MAX)=NULL, @Id_Tipo_Documento NUMERIC(18,0)=NULL, @Nro_Documento NUMERIC(18,0)=NULL, @Habilitada BIT=NULL)
+CREATE PROCEDURE [REZAGADOS].[Buscar_Cliente_Filtros] (
+@Id_Cliente NUMERIC(18,0)=NULL,
+@Apellido VARCHAR(MAX)=NULL,
+@Nombre VARCHAR(MAX)=NULL,
+@Email VARCHAR(MAX)=NULL,
+@Id_Tipo_Documento NUMERIC(18,0)=NULL, 
+@Nro_Documento NUMERIC(18,0)=NULL,
+@Habilitada BIT=NULL)
 AS
 BEGIN
 	SET NOCOUNT ON;
 	DECLARE @sqlCommand VARCHAR(MAX)
 	DECLARE @sqlWhere VARCHAR(MAX)
 
-	SET @sqlCommand = '	SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO, c.Direccion_Calle CALLE, c.Direccion_Numero_Calle NUMERO_CALLE, c.Direccion_Departamento DEPARTAMENTO, c.Direccion_Piso PISO, c.Fecha_Nacimiento NACIMIENTO, c.Id_Pais PAIS, c.Habilitada HABILITADO, c.Id_Tipo_Documento TIPO_DOC, c.Id_Usuario USUARIO, c.Localidad LOCALIDAD, c.Mail MAIL, c.Nacionalidad NACIONALIDAD, c.Nro_Documento NRO_DOC
+	SET @sqlCommand = '	SELECT	c.Id_Cliente ID,
+								c.Nombre NOMBRE,
+								c.Apellido APELLIDO,
+								c.Direccion_Calle DIRECCION_CALLE,
+								c.Direccion_Numero_Calle DIRECCION_NRO,
+								c.Direccion_Departamento DIRECCION_DEPTO,
+								c.Direccion_Piso DIRECCION_PISO,
+								c.Fecha_Nacimiento FECHA_NACIMIENTO, 
+								c.Id_Pais PAIS_ID, 
+								c.Habilitada HABILITADA, 
+								c.Id_Tipo_Documento DOCUMENTO_TIPO_COD,
+								c.Id_Usuario USUARIO,
+								c.Localidad LOCALIDAD,
+								c.Mail EMAIL,
+								c.Id_Nacionalidad NACIONALIDAD_ID,
+								c.Nro_Documento NRO_DOCUMENTO
 						FROM [REZAGADOS].Cliente c '
 	SET @sqlWhere = ''
 
@@ -1896,9 +1921,9 @@ BEGIN
 		SET @sqlWhere = @sqlWhere + ' AND Nombre LIKE  ''%'+@Nombre+'%'''
 	END
 
-	IF(@Mail IS NOT NULL)
+	IF(@Email IS NOT NULL)
 	BEGIN
-		SET @sqlWhere = @sqlWhere + ' AND Mail LIKE  ''%'+@Mail+'%'''
+		SET @sqlWhere = @sqlWhere + ' AND Mail LIKE  ''%'+@Email+'%'''
 	END
 
 	IF(@Id_Tipo_Documento IS NOT NULL)
@@ -2054,5 +2079,25 @@ AND TipoCuenta.Id_Tipo_Cuenta=Cuenta.Id_Tipo_Cuenta
 AND Item.Fecha > @FechaInic
 AND Item.Fecha < @FechaFin
 GROUP BY Categoria
+END
+GO
+
+----------------------------------------------BUSCAR TARJETAS USUARIO ID---------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id] (@Id_Usuario NUMERIC(18,0))
+AS
+BEGIN
+	SET NOCOUNT ON
+	
+	SELECT [Id_Tarjeta] ID
+		  ,[Id_Usuario] ID_USUARIO
+		  ,[Numero]		NUMERO
+		  ,[Codigo_Seguridad] CODIGO
+		  ,[Fecha_Emision] EMISION
+		  ,[Vencimiento] VENCIMIENTO
+	  FROM [GD1C2015].[REZAGADOS].[Tarjeta]
+	  WHERE Id_Usuario = @Id_Usuario
 END
 GO

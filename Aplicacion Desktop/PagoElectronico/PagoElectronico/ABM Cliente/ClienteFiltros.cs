@@ -12,11 +12,10 @@ namespace ABM
         public Decimal documentoTipo { get; set; }
         public Decimal documentoNumero { get; set; }
         public String email { get; set; }
-        public Boolean habilitado { get; set; }
 
         
         public String ToString() { 
-            return " { " + nombre + " ; " + apellido + " ; " + documentoTipo + " ; " + documentoNumero + " ; " + email + " ; " + habilitado + " } ";
+            return " { " + nombre + " ; " + apellido + " ; " + documentoTipo + " ; " + documentoNumero + " ; " + email + " } ";
         }
     }
 

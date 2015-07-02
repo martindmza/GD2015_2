@@ -58,6 +58,7 @@ namespace ABM
 
                 dataGridViewRoles.Rows.Add(row);
             }
+            dataGridViewRoles.PerformLayout();
         }
         //-----------------------------------------------------------------------------------------------------------------
 

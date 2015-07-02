@@ -12,7 +12,7 @@ namespace Models
         public const String APELLIDO = "APELLIDO";
         public const String DOCUMENTO_TIPO_COD = "DOCUMENTO_TIPO_COD";
         public const String NRO_DOCUMENTO = "NRO_DOCUMENTO";
-        public const String NACIMIENTO = "FECHA_NACIMIENTO";
+        public const String FECHA_NACIMIENTO = "FECHA_NACIMIENTO";
         public const String EMAIL = "EMAIL";
         public const String NACIONALIDAD = "NACIONALIDAD";
         public const String DIRECCION_CALLE = "DIRECCION_CALLE";
@@ -125,7 +125,7 @@ namespace Models
         {
             base.mapeoFilaAModel(fila);
             this.apellido = fila[APELLIDO].ToString();
-            this.nacimiento = fila[NACIMIENTO] != DBNull.Value ? DateTime.Parse(fila[NACIMIENTO].ToString()) : DateTime.MinValue;
+            this.nacimiento = fila[FECHA_NACIMIENTO] != DBNull.Value ? DateTime.Parse(fila[FECHA_NACIMIENTO].ToString()) : DateTime.MinValue;
             this.email = fila[EMAIL].ToString();
             this.nacionalidad = new PaisDAO().dameTuModelo(fila[NACIONALIDAD_ID].ToString());
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();

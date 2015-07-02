@@ -37,15 +37,11 @@ namespace DAO
             }
             if (filtros.documentoTipo != 0)
             {
-                command.Parameters.Add("@DocumentoTipo", System.Data.SqlDbType.Decimal).Value = filtros.documentoTipo;
+                command.Parameters.Add("@Id_Tipo_Documento", System.Data.SqlDbType.Decimal).Value = filtros.documentoTipo;
             }
             if (filtros.documentoNumero != 0)
             {
-                command.Parameters.Add("@DocumentoNumero", System.Data.SqlDbType.Decimal, 255).Value = filtros.documentoNumero;
-            }
-            if (filtros.habilitado != null)
-            {
-                command.Parameters.Add("@Habilitado", System.Data.SqlDbType.Bit).Value = filtros.habilitado;
+                command.Parameters.Add("@Nro_Documento", System.Data.SqlDbType.Decimal, 255).Value = filtros.documentoNumero;
             }
 
             return operacionSelect(command);

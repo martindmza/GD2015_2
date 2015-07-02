@@ -45,7 +45,6 @@
             this.paisId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.habilitado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.checBox1 = new System.Windows.Forms.CheckBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -188,7 +187,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.checBox1);
             this.groupBox1.Controls.Add(this.textBox4);
             this.groupBox1.Controls.Add(this.comboBox1);
             this.groupBox1.Controls.Add(this.label5);
@@ -205,16 +203,6 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filtros de Búsqueda";
-            // 
-            // checBox1
-            // 
-            this.checBox1.AutoSize = true;
-            this.checBox1.Location = new System.Drawing.Point(496, 57);
-            this.checBox1.Name = "checBox1";
-            this.checBox1.Size = new System.Drawing.Size(78, 17);
-            this.checBox1.TabIndex = 5;
-            this.checBox1.Text = "Habilitados";
-            this.checBox1.UseVisualStyleBackColor = true;
             // 
             // textBox4
             // 
@@ -412,7 +400,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.CheckBox checBox1;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
         private System.Windows.Forms.DataGridViewTextBoxColumn apellido;

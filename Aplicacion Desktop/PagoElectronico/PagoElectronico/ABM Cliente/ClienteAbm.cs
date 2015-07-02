@@ -136,6 +136,7 @@ namespace ABM
                                         };
                 dataGridView1.Rows.Add(row);
             }
+            dataGridView1.PerformLayout();
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -183,7 +184,6 @@ namespace ABM
             textBox2.Text = "";
             textBox3.Text = "";
             textBox4.Text = "";
-            checBox1.Checked = false;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -218,10 +218,7 @@ namespace ABM
             {
                 filtros.documentoNumero = UInt64.Parse(textBox4.Text);
             }
-            if (checBox1.Checked)
-            {
-                filtros.habilitado = true;
-            }
+
             clientes = clienteDao.getClientsByFilters(filtros);
             fillClientsTable();
         }

@@ -12,12 +12,8 @@ namespace DAO
         public List<TarjetaDeCreditoModel> getTarjetasByCliente(ClienteModel cliente) {
 
             
-            List<TarjetaDeCreditoModel> tarjetas = new List<TarjetaDeCreditoModel>();
-            tarjetas.Add(new TarjetaDeCreditoModel(1,"1234567812344450","123",DateTime.Today,new DateTime(2020,1,1),cliente,UsuarioSingleton.getInstance().getUsuario()));
-            tarjetas.Add(new TarjetaDeCreditoModel(2, "1111567812344450", "124", DateTime.Today, new DateTime(2025, 1, 1), cliente, UsuarioSingleton.getInstance().getUsuario()));
-            tarjetas.Add(new TarjetaDeCreditoModel(3, "1234333812344450", "323", DateTime.Today, new DateTime(2040, 1, 1), cliente, UsuarioSingleton.getInstance().getUsuario()));
-
-            return tarjetas;
+           
+            return null;
         }
 
         public List<TarjetaDeCreditoModel> getTarjetasByClienteAndNumero(ClienteModel cliente, String numero)
