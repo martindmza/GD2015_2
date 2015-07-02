@@ -22,6 +22,7 @@ namespace Models
         public const String LOCALIDAD = "LOCALIDAD";
         public const String PAIS_ID = "PAIS_ID";
         public const String NACIONALIDAD_ID = "NACIONALIDAD_ID";
+        public const String HABILITADA = "HABILITADA";
 
         /********************/
         public String apellido { get; set; }
@@ -47,7 +48,7 @@ namespace Models
         public ClienteModel(DataRow fila)
             : base(fila)
         {
-            this.cuentas = this.getListaDeCuentas();
+            //this.cuentas = this.getListaDeCuentas();
         }
 
 
@@ -136,6 +137,7 @@ namespace Models
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
             this.nroDocumento = (Decimal)fila[NRO_DOCUMENTO];
             this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO_TIPO_COD].ToString());
+            this.habilitado = (Boolean) fila[HABILITADA];
 
         }
     }

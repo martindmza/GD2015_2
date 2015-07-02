@@ -1260,10 +1260,12 @@ CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta]
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT c.Id_Cuenta ID, c.Id_Usuario PROPIETARIO, c.Id_Pais PAIS,c.Id_Tipo_Cuenta TIPO_CUENTA,
+	SELECT c.Id_Cuenta ID, c.Id_Usuario PROPIETARIO_ID, c.Id_Pais PAIS,c.Id_Tipo_Cuenta TIPO_CUENTA,
 	c.Id_Moneda MONEDA, c.Id_Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION,
-	c.Saldo SALDO
+	cl.Nombre PROPIETARIO_NOMBRE, cl.Apellido PROPIETARIO_APELLIDO
 	FROM  [REZAGADOS].Cuenta c 
+	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
+	JOIN [REZAGADOS].Cliente cl ON u.Id_Usuario = cl.Id_Usuario
 END
 GO
 
@@ -1277,10 +1279,12 @@ CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta_Usuario]
 AS
 BEGIN
 	SET NOCOUNT ON;
-	SELECT c.Id_Cuenta ID, c.Id_Usuario PROPIETARIO, c.Id_Pais PAIS,c.Id_Tipo_Cuenta TIPO_CUENTA,
+	SELECT c.Id_Cuenta ID, c.Id_Usuario PROPIETARIO_ID, c.Id_Pais PAIS,c.Id_Tipo_Cuenta TIPO_CUENTA,
 	c.Id_Moneda MONEDA, c.Id_Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION,
-	c.Saldo SALDO
+	cl.Nombre PROPIETARIO_NOMBRE, cl.Apellido PROPIETARIO_APELLIDO
 	FROM  [REZAGADOS].Cuenta c 
+	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
+	JOIN [REZAGADOS].Cliente cl ON u.Id_Usuario = cl.Id_Usuario
 	WHERE c.Id_Usuario = @Id_Usuario
 END
 GO
@@ -1296,10 +1300,12 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT c.Id_Cuenta ID, c.Id_Usuario PROPIETARIO, c.Id_Pais PAIS,c.Id_Tipo_Cuenta TIPO_CUENTA,
+	SELECT c.Id_Cuenta ID, c.Id_Usuario PROPIETARIO_ID, c.Id_Pais PAIS,c.Id_Tipo_Cuenta TIPO_CUENTA,
 	c.Id_Moneda MONEDA, c.Id_Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION,
-	c.Saldo SALDO
-	FROM  [REZAGADOS].Cuenta c INNER JOIN Usuario u on c.Id_Usuario = u.Id_Usuario INNER JOIN Cliente cli on u.Id_Usuario = cli.Id_Usuario
+	cl.Nombre PROPIETARIO_NOMBRE, cl.Apellido PROPIETARIO_APELLIDO
+	FROM  [REZAGADOS].Cuenta c 
+	JOIN Usuario u on c.Id_Usuario = u.Id_Usuario 
+	JOIN Cliente cli on u.Id_Usuario = cli.Id_Usuario
 	WHERE cli.Id_Cliente = @Id_Cliente
 END
 GO
@@ -1860,13 +1866,11 @@ AS
 GO
 
 --------------------------------------------------BUSCAR CLIENTES FILTROS-------------------------------------------
-
 USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Buscar_Cliente_Filtros') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Buscar_Cliente_Filtros
-
 GO
-CREATE PROCEDURE [REZAGADOS].[Buscar_Cliente_Filtros] (@Nombre VARCHAR(MAX)=NULL, @Id_Cliente NUMERIC(18,0)=NULL)
+CREATE PROCEDURE [REZAGADOS].[Buscar_Cliente_Filtros] (@Id_Cliente NUMERIC(18,0)=NULL, @Apellido VARCHAR(MAX)=NULL, @Nombre VARCHAR(MAX)=NULL, @Mail VARCHAR(MAX)=NULL, @Id_Tipo_Documento NUMERIC(18,0)=NULL, @Nro_Documento NUMERIC(18,0)=NULL, @Habilitada BIT=NULL)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -1876,20 +1880,45 @@ BEGIN
 	SET @sqlCommand = '	SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO, c.Direccion_Calle CALLE, c.Direccion_Numero_Calle NUMERO_CALLE, c.Direccion_Departamento DEPARTAMENTO, c.Direccion_Piso PISO, c.Fecha_Nacimiento NACIMIENTO, c.Id_Pais PAIS, c.Habilitada HABILITADO, c.Id_Tipo_Documento TIPO_DOC, c.Id_Usuario USUARIO, c.Localidad LOCALIDAD, c.Mail MAIL, c.Nacionalidad NACIONALIDAD, c.Nro_Documento NRO_DOC
 						FROM [REZAGADOS].Cliente c '
 	SET @sqlWhere = ''
-	
+
 	IF(@Id_Cliente IS NOT NULL)
 	BEGIN
 		SET @sqlWhere = @sqlWhere + ' AND Id_Cliente = ' + CAST(@Id_Cliente AS VARCHAR(MAX))
 	END
 	
+	IF(@Apellido IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Apellido LIKE  ''%'+@Apellido+'%'''
+	END
+
 	IF(@Nombre IS NOT NULL)
 	BEGIN
 		SET @sqlWhere = @sqlWhere + ' AND Nombre LIKE  ''%'+@Nombre+'%'''
 	END
+
+	IF(@Mail IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Mail LIKE  ''%'+@Mail+'%'''
+	END
+
+	IF(@Id_Tipo_Documento IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Id_Tipo_Documento = ' + CAST(@Id_Tipo_Documento AS VARCHAR(MAX))
+	END
+	
+	IF(@Nro_Documento IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Nro_Documento = ' + CAST(@Nro_Documento AS VARCHAR(MAX))
+	END
+
+	IF(@Habilitada IS NOT NULL)
+	BEGIN
+		SET @sqlWhere = @sqlWhere + ' AND Habilitada = ' + CAST(@Habilitada AS VARCHAR(MAX))
+	END
 	
 	IF (@sqlWhere <> '')
 	BEGIN
-		SET @sqlWhere = ' WHERE ' + SUBSTRING (@sqlWhere, 5, Len(@sqlWhere)  )
+		SET @sqlWhere = ' WHERE ' + SUBSTRING (@sqlWhere, 5, Len(@sqlWhere) )
 		SET @sqlCommand = @sqlCommand + @sqlWhere
 	END
 	EXEC(@sqlCommand)

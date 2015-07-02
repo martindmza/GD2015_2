@@ -16,7 +16,6 @@ namespace DAO
             foreach (DataRow cuentaBase in dataCuentas.Rows)
             {
                 CuentaModel cuentaModel = new CuentaModel(cuentaBase);
-                cuentaModel.setPropietario(cliente);
                 cuentas.Add(cuentaModel);
             }
             return cuentas;
@@ -30,6 +29,19 @@ namespace DAO
                 return new List<CuentaModel>();
             }
             return this.getCuentasByCliente(cliente);
+        }
+
+        public List<CuentaModel> getCuentas()
+        {
+            List<CuentaModel> cuentas = new List<CuentaModel>();
+            DataTable dataCuentas = this.getCuentasDeBase();
+            foreach (DataRow cuentaBase in dataCuentas.Rows)
+            {
+                CuentaModel cuentaModel = new CuentaModel(cuentaBase);
+                cuentas.Add(cuentaModel);
+            }
+            return cuentas;
+
         }
 
         private DataTable getCuentasDeBase()

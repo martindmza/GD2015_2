@@ -98,7 +98,7 @@ namespace ABM
             this.cuentaDao = new CuentaDao();
             this.extraDao = new ExtraDao();
             this.cuentas = new List<CuentaModel>();
-            //this.cuentas = cuentaDao.getCuentasByCliente(Logins.Login.userLogued.cliente);
+            this.cuentas = cuentaDao.getCuentas();
             
             fillTable();
             this.nombreLabel.Text = "";
@@ -144,13 +144,14 @@ namespace ABM
             foreach (CuentaModel cuenta in cuentas)
             {
                 row = new String[] {    cuenta.id.ToString(),
-                                        cuenta.pais.nombre,
-                                        cuenta.moneda.nombre,
-                                        cuenta.tipo.nombre,
+                                       (cuenta.pais != null)? cuenta.pais.nombre : "",
+                                       (cuenta.moneda != null)? cuenta.moneda.nombre : "",
+                                       (cuenta.tipo.nombre != null)? cuenta.tipo.nombre : "",
+                                       (cuenta.propietario != null)? cuenta.propietario.apellido + ", " +
+                                                                    cuenta.propietario.nombre : "",
                                         cuenta.fechaCreacion.ToString(),
                                         cuenta.fechaCierre.ToString(),
-                                        cuenta.estado.nombre,
-                                        cuenta.saldo.ToString()
+                                       (cuenta.estado != null)? cuenta.estado.nombre : ""
                                         };
                 dataGridView1.Rows.Add(row);
             }
@@ -241,7 +242,13 @@ namespace ABM
         //Buscar cuenta por cliente
         private void button5_Click(object sender, EventArgs e)
         {
-            cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
+            if (clienteSeleccionado == null)
+            {
+                cuentas = cuentaDao.getCuentas();
+            }
+            else {
+                cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
+            }
             fillTable();
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -339,6 +346,15 @@ namespace ABM
             this.Close();
             this.Dispose();
             GC.Collect();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonLimpiar_Click(object sender, EventArgs e)
+        {
+            clienteSeleccionado = null;
+            clienteText.Text = "";
+            nombreLabel.Text = "";
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

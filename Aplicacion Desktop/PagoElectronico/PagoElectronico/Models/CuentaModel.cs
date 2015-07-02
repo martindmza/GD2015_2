@@ -12,13 +12,13 @@ namespace Models
         public const String PAIS = "PAIS";
         public const String CUENTATIPO = "TIPO_CUENTA";
         public const String MONEDA_ID = "MONEDA";
-        public const String MONEDA_NOMBRE = "MONEDA";
         public const String ESTADO = "ESTADO";
         public const String FECHA_CREACION = "FECHA_CREACION";
         public const String FECHA_CIERRE = "FECHA_CIERRE";
-        public const String PROPIETARIO = "PROPIETARIO";
-        public const String SALDO = "SALDO";
-        public const String HABILITADO = "HABILITADA";
+        public const String PROPIETARIO_ID = "PROPIETARIO_ID";
+        public const String PROPIETARIO_APELLIDO = "PROPIETARIO_APELLIDO";
+        public const String PROPIETARIO_NOMBRE = "PROPIETARIO_NOMBRE";
+
 
         public PaisModel pais { get; set; }
         public CuentaTipoModel tipo { get; set; }
@@ -80,12 +80,9 @@ namespace Models
             this.estado= new EstadoDao().dameTuModelo(fila[ESTADO].ToString());
             this.fechaCreacion = this.mapearFecha(fila[FECHA_CREACION]);
             this.fechaCierre = this.mapearFecha(fila[FECHA_CIERRE]);
-            this.saldo =  this.mapearImporte(fila[SALDO]);
-        }
-
-        public void setPropietario(ClienteModel cliente)
-        {
-            this.propietario = cliente;
+            this.propietario = new ClienteModel((Decimal) fila[PROPIETARIO_ID],
+                                                fila[PROPIETARIO_APELLIDO].ToString(),
+                                                fila[PROPIETARIO_NOMBRE].ToString());
         }
     }
 }
