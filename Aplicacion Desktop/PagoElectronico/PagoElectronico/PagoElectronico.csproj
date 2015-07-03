@@ -295,6 +295,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -316,6 +317,7 @@
     <Compile Include="Retiros\RetirosAbm.Designer.cs">
       <DependentUpon>RetirosAbm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Tarjetas\TarjetasAbm.cs">
       <SubType>Form</SubType>
     </Compile>
