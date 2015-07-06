@@ -300,7 +300,7 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Banco_ID]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Buscar_Banco_ID;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Banco]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE REZAGADOS.[Listar_Banco];
+	DROP PROCEDURE REZAGADOS.Buscar_Tarjeta_Usuario_Id;
 
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;

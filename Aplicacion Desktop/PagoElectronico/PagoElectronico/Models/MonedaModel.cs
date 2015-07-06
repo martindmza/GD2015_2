@@ -8,7 +8,12 @@ namespace Models
 {
     public class MonedaModel: BasicaModel 
     {
-        public MonedaModel() { }
+
+        public MonedaModel() {
+            this.id = 1;
+            this.nombre = "Dolares";
+        }
+        
         public MonedaModel(DataRow fila)
             : base(fila)
         {

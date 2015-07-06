@@ -82,23 +82,21 @@ namespace DAO
         }
 
         public TEntity agregarBasica(TEntity entity){
-            try
-            {
-                DataTable dt = new DataTable();
+               DataTable dt = new DataTable();
                 SqlCommand command = InitializeConnection(this.getProcedureCrearBasica());
                 if (!entity.nombre.Equals(BasicaModel.SIN_NOMBRE))
                 {
                     command.Parameters.Add("Nombre", System.Data.SqlDbType.NVarChar, 50).Value = entity.nombre;
                 }
                 command = addParametrosParaAgregar(command,entity);
-                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Int);
+                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
                 var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
                 pOut.Direction = ParameterDirection.Output;
                 pOut2.Direction = ParameterDirection.Output;
                 //
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 da.Fill(dt);
-                Int32 value = Convert.IsDBNull(pOut.Value) ? 0 : (Int32)(pOut.Value);
+                Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (decimal)(pOut.Value);
                 string value2 = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
                 if (value != -1)
                 {
@@ -109,11 +107,6 @@ namespace DAO
                     MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 }
                 return entity;
-            }
-            catch (Exception excepcion)
-            {
-                throw excepcion;
-            }
         }
 
         public abstract SqlCommand addParametrosParaAgregar(SqlCommand command, TEntity entity);

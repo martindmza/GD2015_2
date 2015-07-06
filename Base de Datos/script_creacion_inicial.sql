@@ -853,38 +853,42 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Crear_Cuenta(@Id_Usuario NUMERIC(18,0),
+CREATE PROCEDURE [REZAGADOS].[Crear_Cuenta](
 										@Pais VARCHAR(255),
 										@Moneda VARCHAR(255),
 										@Fecha DATETIME,
 										@Tipo VARCHAR(255),
+										@Propietario NUMERIC(18,0),
 										@RespuestaMensaje VARCHAR(255) OUTPUT,
 										@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 IF (@Tipo = 'Gratuito')
 	BEGIN
-		INSERT INTO REZAGADOS.Cuenta(Id_Usuario, Id_Pais, Id_Tipo_Cuenta, Id_Moneda, Id_Estado, Fecha_Creacion)
-		VALUES (	@Id_Usuario,
-					(SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais),
-					(SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo),
-					(SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda),
+		INSERT INTO REZAGADOS.Cuenta(Id_Cuenta, Id_Pais, Id_Tipo_Cuenta, Id_Usuario ,Id_Moneda, Id_Estado, Fecha_Creacion)
+		VALUES ( (SELECT MAX(c1.Id_Cuenta)+1 FROM REZAGADOS.Cuenta c1 ),	
+					@Pais,
+					@Tipo,
+					@Propietario,
+					@Moneda,
 					(SELECT e.Id_Estado FROM REZAGADOS.Estado_Cuenta e	WHERE e.Nombre LIKE 'Habilitada'),
 					@Fecha)
 	SET @Respuesta = 1
 	SET @RespuestaMensaje = 'Creación exitosa'
 	END
 ELSE
-INSERT INTO REZAGADOS.Cuenta(Id_Usuario, Id_Pais, Id_Tipo_Cuenta, Id_Moneda, Id_Estado, Fecha_Creacion)
-VALUES (@Id_Usuario, (SELECT Id_Pais FROM REZAGADOS.Pais WHERE Id_Pais=@Pais), (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Tipo), (SELECT Id_Moneda FROM REZAGADOS.Moneda WHERE Descripcion=@Moneda), 
+INSERT INTO REZAGADOS.Cuenta(Id_Cuenta, Id_Pais, Id_Tipo_Cuenta, Id_Usuario,Id_Moneda, Id_Estado, Fecha_Creacion)
+VALUES ((SELECT MAX(c1.Id_Cuenta)+1 FROM REZAGADOS.Cuenta c1 ),
+@Pais, 
+@Tipo, 
+@Propietario,
+@Moneda, 
 (SELECT e.Id_Estado 
 	 FROM REZAGADOS.Estado_Cuenta e 
 	 WHERE e.Nombre LIKE 'Pendiente de activación'), @Fecha)
 SET @RespuestaMensaje = 'Creación exitosa'
 SET @Respuesta = (SELECT @@IDENTITY)
 END
-GO
-
 ----------------------------------------MODIFICAR COSTO CUENTA------------------------------------------------
 
 USE [GD1C2015]
@@ -1307,7 +1311,6 @@ BEGIN
 	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
 	JOIN [REZAGADOS].Cliente cl ON u.Id_Usuario = cl.Id_Usuario
 	WHERE cl.Id_Cliente = @Id_Cliente
-END
 GO
 
 -----------------------------------------LISTAR CLIENTE ID USUARIO-------------------------------------
