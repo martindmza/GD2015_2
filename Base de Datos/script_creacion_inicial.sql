@@ -889,6 +889,8 @@ VALUES ((SELECT MAX(c1.Id_Cuenta)+1 FROM REZAGADOS.Cuenta c1 ),
 SET @RespuestaMensaje = 'Creación exitosa'
 SET @Respuesta = (SELECT @@IDENTITY)
 END
+GO
+
 ----------------------------------------MODIFICAR COSTO CUENTA------------------------------------------------
 
 USE [GD1C2015]
