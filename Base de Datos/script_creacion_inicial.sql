@@ -1706,7 +1706,7 @@ SELECT	f.Id_Funcionalidad ID,
 END
 GO
 
------------------------------------------LISTAR CUENTA TIPO----------------------------------------
+-----------------------------------------LISTAR CUENTA TIPO----------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1742,7 +1742,7 @@ SELECT	ct.Id_Tipo_Cuenta ID,
 END
 GO
 
------------------------------------------LISTAR DOCUMENTO----------------------------------------
+-----------------------------------------LISTAR DOCUMENTO------------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1755,7 +1755,7 @@ SELECT	td.Id_Tipo_Documento ID,
 END
 GO
 
------------------------------------------BUSCAR DOCUMENTO ID----------------------------------------
+-----------------------------------------BUSCAR DOCUMENTO ID---------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1770,7 +1770,7 @@ SELECT	td.Id_Tipo_Documento ID,
 END
 GO
 
------------------------------------------Listar_Moneda----------------------------------------
+-----------------------------------------LISTAR MONEDA---------------------------------------------------------
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Listar_Moneda 
@@ -1782,7 +1782,7 @@ SELECT	m.Id_Moneda ID,
 END
 GO
 
------------------------------------------Buscar_Moneda_ID----------------------------------------
+-----------------------------------------BUSCAR MONEDA ID------------------------------------------------------
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Buscar_Moneda_ID 
@@ -1796,7 +1796,7 @@ SELECT	m.Id_Moneda ID,
 END
 GO
 
------------------------------------------Listar_Banco----------------------------------------
+-----------------------------------------LISTAR BANCO----------------------------------------------------------
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Listar_Banco 
@@ -1809,7 +1809,7 @@ SELECT	b.Id_Banco ID,
 END
 GO
 
------------------------------------------Buscar_Banco_ID----------------------------------------
+-----------------------------------------BUSCAR BANCO ID-------------------------------------------------------
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Buscar_Banco_ID 
@@ -2106,3 +2106,27 @@ BEGIN
 	  WHERE Id_Usuario = @Id_Usuario
 END
 GO
+
+---------------------------------------------------------------------------------------------------------------
+----------------------------------------------TRIGGERS---------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+
+---------------------------------------INTENTOS FALLIDOS-------------------------------------------------------
+
+USE [GD1C2015]
+IF OBJECT_ID ('[REZAGADOS].[Trig_intentos_fallidos]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_intentos_fallidos]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_intentos_fallidos]
+ON [REZAGADOS].[Usuario]
+AFTER UPDATE
+AS
+BEGIN
+IF (SELECT Cantidad_Intentos_Fallidos FROM [REZAGADOS].[Usuario]) >= 3
+UPDATE [REZAGADOS].[Usuario] SET [Usuario].[Habilitada] = 0
+END
+GO
+
+
+-- Historial usuario ??
+-- Guardar historial de tipo cuenta??
