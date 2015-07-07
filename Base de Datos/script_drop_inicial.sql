@@ -178,6 +178,8 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP TABLE REZAGADOS.Item;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[HistorialUsuario]') AND type in (N'U'))
 	DROP TABLE REZAGADOS.HistorialUsuario;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Emisor]') AND type in (N'U'))
+	DROP TABLE REZAGADOS.Emisor;
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Crear_Cliente]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Crear_Cliente;

@@ -147,12 +147,18 @@ CREATE TABLE REZAGADOS.Tarjeta (
 Id_Tarjeta numeric (18,0) IDENTITY (1,1) NOT NULL,
 Id_Usuario numeric(18,0) NOT NULL,
 Numero varchar(255) NOT NULL,
-Tipo varchar(255) NOT NULL, 
+Id_Emisor NUMERIC (18,0) NOT NULL,
 Codigo_Seguridad varchar(255) NOT NULL,
 Fecha_Emision datetime,
 Vencimiento datetime,
 Habilitada bit DEFAULT 1,);
 ALTER TABLE REZAGADOS.Tarjeta ADD CONSTRAINT PK_Id_Tarjeta PRIMARY KEY (Id_Tarjeta);
+
+CREATE TABLE REZAGADOS.Emisor(
+Id_Emisor NUMERIC(18,0) IDENTITY(1,1) NOT NULL,
+Nombre varchar(255) UNIQUE
+);
+ALTER TABLE REZAGADOS.Emisor ADD CONSTRAINT PK_Id_Emisor PRIMARY KEY (Id_Emisor);
 
 CREATE TABLE REZAGADOS.Transferencia ( 
 Id_Transferencia numeric (18,0) IDENTITY (1,1) NOT NULL,
@@ -283,6 +289,9 @@ FOREIGN KEY (Id_Moneda) REFERENCES REZAGADOS.Moneda (Id_Moneda)
 ;
 ALTER TABLE REZAGADOS.Tarjeta ADD CONSTRAINT FK_Tarjeta_to_Usuario
 FOREIGN KEY (Id_Usuario) REFERENCES REZAGADOS.Usuario (Id_Usuario)
+;
+ALTER TABLE REZAGADOS.Tarjeta ADD CONSTRAINT FK_Tarjeta_to_Emisor
+FOREIGN KEY (Id_Emisor) REFERENCES REZAGADOS.Emisor (Id_Emisor)
 ;
 ALTER TABLE REZAGADOS.Transferencia ADD CONSTRAINT FK_Transferencia_to_Cuenta_Emi
 FOREIGN KEY (Id_Cuenta_Emi) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
@@ -462,13 +471,26 @@ FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE u.Nombre = g.Cli_Mail AND g.Cuenta_Dest_Fecha_Creacion IS NOT NULL
 GROUP BY g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
 
+-----------------------------------------Emisor---------------------------------------------------
+
+INSERT INTO REZAGADOS.Emisor (Nombre) 
+SELECT DISTINCT Tarjeta_Emisor_Descripcion
+FROM  GD1C2015.gd_esquema.Maestra
+WHERE Tarjeta_Emisor_Descripcion IS NOT NULL
+
 -----------------------------------------TARJETA--------------------------------------------------
 
-INSERT INTO REZAGADOS.Tarjeta (Id_Usuario, Numero, Tipo, Codigo_Seguridad, Fecha_Emision, Vencimiento)
-SELECT u.Id_Usuario, Tarjeta_Numero, Tarjeta_Emisor_Descripcion, Tarjeta_Codigo_Seg, Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento
-FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
-WHERE Tarjeta_Numero IS NOT NULL  AND u.Nombre = g.Cli_Mail
-GROUP BY u.Id_Usuario, Tarjeta_Numero, Tarjeta_Emisor_Descripcion, Tarjeta_Codigo_Seg, Tarjeta_Fecha_Emision, Tarjeta_Fecha_Vencimiento
+INSERT INTO REZAGADOS.Tarjeta ( Numero,Id_Usuario,Id_Emisor,Codigo_Seguridad, Fecha_Emision, Vencimiento)
+SELECT  DISTINCT g.Tarjeta_Numero, 
+		u.Id_Usuario,
+		(	SELECT Id_Emisor FROM REZAGADOS.Emisor 
+			WHERE  Nombre = g.Tarjeta_Emisor_Descripcion)AS 'Id_Emisor',
+		g.Tarjeta_Codigo_Seg,
+		g.Tarjeta_Fecha_Emision,
+		g.Tarjeta_Fecha_Vencimiento
+FROM	gd_esquema.Maestra g 
+JOIN	REZAGADOS.Usuario u ON g.Cli_Mail = u.Nombre
+WHERE	g.Tarjeta_Numero IS NOT NULL
 
 --------------------------------------------TIPO ITEM-----------------------------------------------
 
@@ -972,7 +994,6 @@ USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(	@Usuario NUMERIC(18,0),
 											@Nro_Tarjeta NUMERIC(18,0),
-											@Tipo VARCHAR (255),
 											@Fecha DATETIME,
 											@Fecha_Venc DATETIME,
 											@Codigo VARCHAR(255),
@@ -986,8 +1007,8 @@ SET @RespuestaMensaje = 'Ya existe la tarjeta'
 SET @Respuesta = -1
 END
 ELSE
-INSERT INTO REZAGADOS.Tarjeta (Id_Usuario, Numero, Tipo, Codigo_Seguridad, Fecha_Emision, Vencimiento)
-VALUES (@Usuario, @Nro_Tarjeta, @Tipo, @Codigo, @Fecha, @Fecha_Venc)
+INSERT INTO REZAGADOS.Tarjeta (Id_Usuario, Numero, Codigo_Seguridad, Fecha_Emision, Vencimiento)
+VALUES (@Usuario, @Nro_Tarjeta, @Codigo, @Fecha, @Fecha_Venc)
 SET @Respuesta = (SELECT @@IDENTITY)
 SET @RespuestaMensaje = 'Exito'
 END
@@ -2102,14 +2123,19 @@ AS
 BEGIN
 	SET NOCOUNT ON
 
-	SELECT [Id_Tarjeta] ID
-		  ,[Id_Usuario] ID_USUARIO
-		  ,[Numero]		NUMERO
-		  ,[Codigo_Seguridad] CODIGO
-		  ,[Fecha_Emision] EMISION
-		  ,[Vencimiento] VENCIMIENTO
-	  FROM [GD1C2015].[REZAGADOS].[Tarjeta]
+	SELECT	t.Id_Tarjeta		ID,
+			t.Id_Usuario		ID_USUARIO,
+			t.Numero			NUMERO,
+			t.Id_Emisor			EMISOR_ID,
+			e.Nombre			EMISOR_NOMBRE,
+			t.Codigo_Seguridad	CODIGO,
+			t.Fecha_Emision		EMISION,
+			t.Vencimiento		VENCIMIENTO,
+			t.Habilitada		HABILITADA
+	  FROM [GD1C2015].[REZAGADOS].[Tarjeta] t
+	  JOIN REZAGADOS.Emisor e ON t.Id_Emisor = e.ID_Emisor
 	  WHERE Id_Usuario = @Id_Usuario
+	  AND t.Habilitada = 1
 END
 GO
 
