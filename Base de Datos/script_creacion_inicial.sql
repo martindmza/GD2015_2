@@ -1301,18 +1301,26 @@ USE [GD1C2015]
 GO
 
 CREATE PROCEDURE [REZAGADOS].[Listar_Cuenta_Cliente]
-@Id_Cliente int
+@Id_Cliente NUMERIC(18,0)
 AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT c.Id_Cuenta ID, c.Id_Usuario PROPIETARIO_ID, c.Id_Pais PAIS,c.Id_Tipo_Cuenta TIPO_CUENTA,
-	c.Id_Moneda MONEDA, c.Id_Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION,
-	cl.Nombre PROPIETARIO_NOMBRE, cl.Apellido PROPIETARIO_APELLIDO
+	SELECT	c.Id_Cuenta ID,
+			c.Id_Usuario PROPIETARIO_ID,
+			c.Id_Pais PAIS,
+			c.Id_Tipo_Cuenta TIPO_CUENTA,
+			c.Id_Moneda MONEDA,
+			c.Id_Estado ESTADO,
+			c.Fecha_Cierre FECHA_CIERRE, 
+			c.Fecha_Creacion FECHA_CREACION,
+			cl.Nombre PROPIETARIO_NOMBRE,
+			cl.Apellido PROPIETARIO_APELLIDO
 	FROM  [REZAGADOS].Cuenta c 
 	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
 	JOIN [REZAGADOS].Cliente cl ON u.Id_Usuario = cl.Id_Usuario
 	WHERE cl.Id_Cliente = @Id_Cliente
+END
 GO
 
 -----------------------------------------LISTAR CLIENTE ID USUARIO-------------------------------------
@@ -1321,7 +1329,7 @@ USE [GD1C2015]
 GO
 
 CREATE PROCEDURE [REZAGADOS].[Listar_Cliente_ID_Usuario]
-@Id_Usuario int
+@Id_Usuario NUMERIC(18,0)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -1331,11 +1339,9 @@ BEGIN
 	c.Id_Pais PAIS,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
 	c.Direccion_Piso DIRECCION_PISO, c.Direccion_Departamento DIRECCION_DEPTO, 
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
-	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD, 
-	cu.Id_Cuenta, 
-	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
-	JOIN [REZAGADOS].Cuenta cu ON u.Id_Usuario = cu.Id_Cuenta
+	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD
 	FROM  [REZAGADOS].Cliente c 
+	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
 	WHERE c.Id_Usuario = @Id_Usuario
 END
 GO
@@ -2095,7 +2101,7 @@ CREATE PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id] (@Id_Usuario NUMERIC(18
 AS
 BEGIN
 	SET NOCOUNT ON
-	
+
 	SELECT [Id_Tarjeta] ID
 		  ,[Id_Usuario] ID_USUARIO
 		  ,[Numero]		NUMERO
@@ -2106,3 +2112,5 @@ BEGIN
 	  WHERE Id_Usuario = @Id_Usuario
 END
 GO
+
+EXEC [REZAGADOS].[Buscar_Tarjeta_Usuario_Id] 1
