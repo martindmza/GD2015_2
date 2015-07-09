@@ -309,8 +309,8 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;
 	
-IF OBJECT_ID ('[REZAGADOS].[Trig_intentos_fallidos]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_intentos_fallidos]
+IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Accesos]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
 
 USE [GD1C2015]
 GO

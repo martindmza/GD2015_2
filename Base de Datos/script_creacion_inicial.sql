@@ -125,14 +125,12 @@ Id_Moneda numeric (18,0) IDENTITY(1,1) NOT NULL,
 Descripcion  varchar(255),);
 ALTER TABLE REZAGADOS.Moneda ADD CONSTRAINT PK_Id_Moneda PRIMARY KEY (Id_Moneda);
 
-/*
 CREATE TABLE REZAGADOS.HistorialCuenta(
 Id_Historial_Cuenta numeric (18,0) IDENTITY(1,1) NOT NULL,
 Id_Cuenta numeric (18,0),
 Fecha datetime,
 Estado varchar(255),);
 ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT PK_Id_Historial_Cuenta PRIMARY KEY (Id_Historial_Cuenta);
-*/
 
 CREATE TABLE REZAGADOS.Deposito (
 Id_Deposito numeric (18,0) IDENTITY (1,1) NOT NULL,
@@ -272,11 +270,9 @@ FOREIGN KEY (Id_Pais) REFERENCES REZAGADOS.Pais (Id_Pais)
 ALTER TABLE REZAGADOS.Cuenta ADD CONSTRAINT FK_Cuenta_to_Moneda
 FOREIGN KEY (Id_Moneda) REFERENCES REZAGADOS.Moneda (Id_Moneda)
 ;
-/*
 ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT FK_Historial_Cuenta_to_Cuenta
 FOREIGN KEY (Id_Cuenta) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
 ;
-*/
 ALTER TABLE REZAGADOS.Deposito ADD CONSTRAINT FK_Deposito_to_Cuenta
 FOREIGN KEY (Id_Cuenta) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
 ;
@@ -473,7 +469,7 @@ FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE u.Nombre = g.Cli_Mail AND g.Cuenta_Dest_Fecha_Creacion IS NOT NULL
 GROUP BY g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
 
------------------------------------------Emisor---------------------------------------------------
+-----------------------------------------EMISOR---------------------------------------------------
 
 INSERT INTO REZAGADOS.Emisor (Nombre) 
 SELECT DISTINCT Tarjeta_Emisor_Descripcion
@@ -2200,19 +2196,19 @@ GO
 ----------------------------------------------TRIGGERS---------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
 
----------------------------------------INTENTOS FALLIDOS-------------------------------------------------------
-/*
+---------------------------------------HISTORIAL ACCESOS-------------------------------------------------------
+
 USE [GD1C2015]
-IF OBJECT_ID ('[REZAGADOS].[Trig_intentos_fallidos]') IS NOT NULL
+IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Accesos]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
 GO
 CREATE TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
-ON [REZAGADOS].[Usuario]
+ON [REZAGADOS].[Cuenta]
 AFTER UPDATE
 AS
+IF UPDATE(Id_Estado)
 BEGIN
-IF (SELECT Cantidad_Intentos_Fallidos FROM [REZAGADOS].[Usuario]) >= 3
-UPDATE [REZAGADOS].[Usuario] SET [Usuario].[Habilitada] = 0
+INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) VALUES ((SELECT Id_Cuenta FROM Cuenta), GETDATE(), (SELECT Id_Estado FROM Cuenta))
 END
 GO
-*/
+
