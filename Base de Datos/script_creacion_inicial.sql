@@ -1378,11 +1378,11 @@ BEGIN
 	SET NOCOUNT ON;
 
 	SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO,
-	c.Id_Usuario USUARIO, c.Id_Tipo_Documento DOCUMENTO_TIPO_COD, c.Nro_Documento NRO_DOCUMENTO,
-	c.Id_Pais PAIS_ID,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
+	c.Id_Usuario USUARIO, c.Id_Tipo_Documento DOCUMENTO, c.Nro_Documento NRO_DOCUMENTO,
+	c.Id_Pais PAIS,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
 	c.Direccion_Piso DIRECCION_PISO, c.Direccion_Departamento DIRECCION_DEPTO, 
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
-	c.Habilitada HABILITADA, c.Id_Nacionalidad NACIONALIDAD_ID
+	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD
 	FROM  [REZAGADOS].Cliente c 
 END
 GO
@@ -1919,23 +1919,23 @@ BEGIN
 	DECLARE @sqlCommand VARCHAR(MAX)
 	DECLARE @sqlWhere VARCHAR(MAX)
 
-	SET @sqlCommand = '	SELECT	c.Id_Cliente ID,
-								c.Nombre NOMBRE,
-								c.Apellido APELLIDO,
-								c.Direccion_Calle DIRECCION_CALLE,
-								c.Direccion_Numero_Calle DIRECCION_NRO,
-								c.Direccion_Departamento DIRECCION_DEPTO,
-								c.Direccion_Piso DIRECCION_PISO,
-								c.Fecha_Nacimiento FECHA_NACIMIENTO, 
-								c.Id_Pais PAIS_ID, 
-								c.Habilitada HABILITADA, 
-								c.Id_Tipo_Documento DOCUMENTO_TIPO_COD,
-								c.Id_Usuario USUARIO,
-								c.Localidad LOCALIDAD,
-								c.Mail EMAIL,
-								c.Id_Nacionalidad NACIONALIDAD_ID,
-								c.Nro_Documento NRO_DOCUMENTO
-						FROM [REZAGADOS].Cliente c '
+	SET @sqlCommand = '		SELECT c.Id_Cliente ID, 
+							c.Nombre NOMBRE, 
+							c.Apellido APELLIDO,
+							c.Id_Usuario USUARIO, 
+							c.Id_Tipo_Documento DOCUMENTO, 
+							c.Nro_Documento NRO_DOCUMENTO,
+							c.Id_Pais PAIS,	
+							c.Direccion_Calle DIRECCION_CALLE, 
+							c.Direccion_Numero_Calle DIRECCION_NRO,
+							c.Direccion_Piso DIRECCION_PISO, 
+							c.Direccion_Departamento DIRECCION_DEPTO, 
+							c.Fecha_Nacimiento FECHA_NACIMIENTO, 
+							c.Mail EMAIL, 
+							c.Localidad LOCALIDAD,
+							c.Habilitada HABILITADA,
+							c.Id_Nacionalidad NACIONALIDAD
+							FROM [REZAGADOS].Cliente c '
 	SET @sqlWhere = ''
 
 	IF(@Id_Cliente IS NOT NULL)
