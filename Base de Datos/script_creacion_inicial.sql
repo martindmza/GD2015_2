@@ -55,8 +55,7 @@ Id_Historial_Usuario numeric (18,0) IDENTITY(1,1) NOT NULL,
 Id_Usuario numeric (18,0),
 Usuario varchar(255),
 Cantidad_Intentos_Fallidos numeric(18,0) DEFAULT 0,
-Fecha datetime,
-Contrasenia varchar(255),);
+Fecha datetime,);
 ALTER TABLE REZAGADOS.HistorialUsuario ADD CONSTRAINT PK_Id_Historial_Usuario PRIMARY KEY (Id_Historial_Usuario);
 
 CREATE TABLE REZAGADOS.UsuarioXRol (
@@ -749,7 +748,8 @@ AS
 BEGIN                  
 	DECLARE @Existe_Usuario INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario);                                     
 	IF (@Existe_Usuario = 1)
-	BEGIN             
+	BEGIN
+		INSERT INTO HistorialUsuario (Id_Usuario, Fecha) VALUES (@Usuario, GETDATE())           
 		DECLARE @Habilitado INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario AND Habilitada = 1);
 		IF(@Habilitado = 1)
 		BEGIN                            
@@ -1039,8 +1039,23 @@ BEGIN
 DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
 DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cliente)
+
+IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
+		BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Cliente Inhabilitado'
+		END
+ELSE
+BEGIN
+IF ((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) = 'Inhabilitado')
+		BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Cuenta Inhabilitada'
+		END
+ELSE
+BEGIN
 	IF (@Fecha > (SELECT Vencimiento FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
-	BEGIN
+		BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Tarjeta Vencida'
 		END
@@ -1057,6 +1072,8 @@ DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cli
 			SET @Respuesta = @@IDENTITY
 			SET @RespuestaMensaje = 'Deposito realizado'
 			END
+END
+END
 END
 GO
 
@@ -1075,16 +1092,24 @@ CREATE PROCEDURE REZAGADOS.RetiroEfectivo(	@Usuario VARCHAR(255),
 											@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
+DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
+IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
+		BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Cliente Inhabilitado'
+		END
+ELSE
+BEGIN
 	IF ((@Tipo_Documento <> (SELECT Id_Tipo_Documento FROM Cliente WHERE Id_Usuario = @Usuario)) OR (@Nro_Documento <> (SELECT Nro_Documento FROM Cliente WHERE Id_Usuario = @Usuario)))
 	BEGIN
 		SET @Respuesta = -1
 	    SET @RespuestaMensaje = 'Documento ingresado diferente al documento del usuario logueado'
 	END
 	ELSE
-		IF ((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) = 'Inhabilitado')
+		IF ((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) <> 'Habilitada')
 		BEGIN
 			SET @Respuesta = -1
-			SET @RespuestaMensaje = 'Cuenta inhabilitada'
+			SET @RespuestaMensaje = 'Cuenta no habilitada'
 		END
 		ELSE
 			IF ((SELECT Saldo from Cuenta WHERE @Cuenta=Id_Cuenta)<=0)
@@ -1115,6 +1140,7 @@ BEGIN
 							SET @RespuestaMensaje = 'Retiro realizado y Cheque generado'
 						END
 END
+END
 GO
 
 ----------------------------------------------TRANSFERENCIA ENTRE CUENTAS-------------------------------------------------------
@@ -1131,6 +1157,14 @@ CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Usuario VARCHAR(255),
 														@Respuesta NUMERIC(18,0) OUTPUT,
 														@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
+BEGIN
+DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
+IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
+		BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Cliente Inhabilitado'
+		END
+ELSE
 BEGIN
 	IF (@Cuenta_Origen NOT IN (SELECT Id_Cuenta from Cuenta WHERE @Usuario=Id_Usuario))
 	BEGIN
@@ -1174,6 +1208,7 @@ BEGIN
 								SET @Respuesta = 1						
 								SET @RespuestaMensaje = 'Transferencia realizada con costo'
 							END
+END
 END
 GO
 
@@ -1904,6 +1939,7 @@ AS
 GO
 
 --------------------------------------------------BUSCAR CLIENTES FILTROS-------------------------------------------
+
 USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Buscar_Cliente_Filtros') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Buscar_Cliente_Filtros
@@ -2162,7 +2198,3 @@ UPDATE [REZAGADOS].[Usuario] SET [Usuario].[Habilitada] = 0
 END
 GO
 */
-
--- Historial usuario ??
--- Guardar historial de tipo cuenta??
-
