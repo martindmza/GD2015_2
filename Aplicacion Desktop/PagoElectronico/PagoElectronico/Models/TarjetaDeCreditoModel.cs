@@ -16,7 +16,8 @@ namespace Models
         public const String VENCIMIENTO = "VENCIMIENTO";
         public const String HABILITADA = "HABILITADA";
         public const String PROPIETARIO = "PROPIETARIO";
-        public const String EMISOR = "EMISOR";
+        public const String EMISOR_ID = "EMISOR_ID";
+        public const String EMISOR_NOMBRE = "EMISOR_NOMBRE";
         
         public String numero {get;set;}
         public String codigoSeguridad {get;set;}
@@ -25,7 +26,7 @@ namespace Models
         public Boolean habilitada = true;
 
         public ClienteModel propietario { get; set; }
-        public UserModel emisor { get; set; }
+        public EmisorModel emisor { get; set; }
 
 
         public TarjetaDeCreditoModel() { }
@@ -57,7 +58,7 @@ namespace Models
 
         public TarjetaDeCreditoModel(UInt32 id, String numero, String codigoSeguridad,
                                         DateTime emision, DateTime vencimiento, ClienteModel propietario,
-                                        UserModel emisor)
+                                        EmisorModel emisor)
         {
             this.id = id;
             this.numero = numero;
@@ -91,10 +92,7 @@ namespace Models
             this.emision = this.mapearFecha(fila[EMISION]);
             this.vencimiento = this.mapearFecha(fila[VENCIMIENTO]);
             this.habilitada = this.mapearBool(fila[HABILITADA]);
-            this.propietario = new ClienteDao().dameTuModelo(this.mapearValor(fila[PROPIETARIO]));
-            this.emisor = new UserDao().dameTuModelo(this.mapearValor(fila[EMISOR]));
+            this.emisor = new EmisorModel((Decimal)fila[EMISOR_ID],fila[EMISOR_NOMBRE].ToString());
         }
-
-       
     }
 }

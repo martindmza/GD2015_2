@@ -4,27 +4,28 @@ using System.Linq;
 using System.Text;
 using Models;
 using Logins;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace DAO
 {
     public class TarjetaDeCreditoDao: BasicaDAO<TarjetaDeCreditoModel>
     {
-        public List<TarjetaDeCreditoModel> getTarjetasByCliente(ClienteModel cliente) {
+        public List<TarjetaDeCreditoModel> getTarjetasByUsuario(UserModel usuario) {
 
-            
-           
-            return null;
+            SqlCommand command = InitializeConnection("Buscar_Tarjeta_Usuario_Id");
+            command.Parameters.Add("@Id_Usuario", System.Data.SqlDbType.Decimal).Value = usuario.id;
+
+            return operacionSelect(command);
+
         }
 
         public List<TarjetaDeCreditoModel> getTarjetasByClienteAndNumero(ClienteModel cliente, String numero)
         {
 
-            List<TarjetaDeCreditoModel> tarjetas = new List<TarjetaDeCreditoModel>();
-            tarjetas.Add(new TarjetaDeCreditoModel(1, "1234567812344450", "123", DateTime.Today, new DateTime(2020, 1, 1), cliente, UsuarioSingleton.getInstance().getUsuario()));
-            tarjetas.Add(new TarjetaDeCreditoModel(2, "1111567812344450", "124", DateTime.Today, new DateTime(2025, 1, 1), cliente, UsuarioSingleton.getInstance().getUsuario()));
-            //tarjetas.Add(new TarjetaDeCreditoModel(3, "1234333812344450", "323", DateTime.Today, new DateTime(2040, 1, 1), cliente, Login.Login.userLogued));
-
-            return tarjetas;
+           
+            
+            return null;
         }
 
         public TarjetaDeCreditoModel crearTarjeta(TarjetaDeCreditoModel tarjeta)
@@ -81,5 +82,20 @@ namespace DAO
         {
             throw new NotImplementedException();
         }
+
+        private List<TarjetaDeCreditoModel> operacionSelect(SqlCommand command)
+        {
+            List<TarjetaDeCreditoModel> result = new List<TarjetaDeCreditoModel>();
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(dt);
+            foreach (DataRow row in dt.Rows)
+            {
+                TarjetaDeCreditoModel model = new TarjetaDeCreditoModel(row);
+                result.Add(model);
+            }
+            return result;
+        }
+
     }
 }

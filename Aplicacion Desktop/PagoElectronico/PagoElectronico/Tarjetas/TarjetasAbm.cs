@@ -23,15 +23,15 @@ namespace Tarjetas
         private Int32 tarjetaActivoIndex;
         private TarjetaDeCreditoModel tarjetaActiva;
 
-        private ClienteModel cliente;
+        private UserModel usuario;
 
         public TarjetasAbm()
         {
             InitializeComponent();
 
             dao = new TarjetaDeCreditoDao();
-            cliente = UsuarioSingleton.getInstance().getUsuario().cliente;
-            tarjetas = dao.getTarjetasByCliente(cliente);
+            usuario = UsuarioSingleton.getInstance().getUsuario();
+            tarjetas = dao.getTarjetasByUsuario(usuario);
             fillData();
 
             buttonQuitar.Enabled = false;
@@ -50,9 +50,9 @@ namespace Tarjetas
             {
                 row = new String[] {    tarjeta.numero.ToString(),
                                         tarjeta.codigoSeguridad.ToString(),
+                                        (tarjeta.emisor != null)? tarjeta.emisor.nombre : "",
                                         tarjeta.emision.ToShortDateString(),
-                                        tarjeta.vencimiento.ToShortDateString(),
-                                        tarjeta.habilitada.ToString()
+                                        tarjeta.vencimiento.ToShortDateString()
                                         };
                 dataGridView1.Rows.Add(row);
             }
@@ -156,7 +156,7 @@ namespace Tarjetas
             catch (NullReferenceException eru) { }
             catch (Exception erg) { }
 
-            tarjetas = dao.getTarjetasByClienteAndNumero(cliente,numeroText.Text);
+            //tarjetas = dao.getTarjetasByClienteAndNumero(cliente,numeroText.Text);
             fillData();
         }
         //-----------------------------------------------------------------------------------------------------------------

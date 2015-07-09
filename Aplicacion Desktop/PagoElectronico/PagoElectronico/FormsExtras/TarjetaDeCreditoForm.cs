@@ -27,7 +27,7 @@ namespace FormsExtras
             InitializeComponent();
 
             dao = new TarjetaDeCreditoDao();
-            tarjetas = dao.getTarjetasByCliente(cliente);
+            tarjetas = null;// dao.getTarjetasByUsuario();
             this.parentDepositos = parentDepositos;
             this.cliente = cliente;
 
