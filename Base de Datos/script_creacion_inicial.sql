@@ -49,9 +49,12 @@ Respuesta varchar(255),
 Habilitada bit DEFAULT 1,);
 ALTER TABLE REZAGADOS.Usuario ADD CONSTRAINT PK_Id_Usuario PRIMARY KEY (Id_Usuario);
 
+
 CREATE TABLE REZAGADOS.HistorialUsuario(
 Id_Historial_Usuario numeric (18,0) IDENTITY(1,1) NOT NULL,
 Id_Usuario numeric (18,0),
+Usuario varchar(255),
+Cantidad_Intentos_Fallidos numeric(18,0) DEFAULT 0,
 Fecha datetime,
 Contrasenia varchar(255),);
 ALTER TABLE REZAGADOS.HistorialUsuario ADD CONSTRAINT PK_Id_Historial_Usuario PRIMARY KEY (Id_Historial_Usuario);
@@ -2144,12 +2147,12 @@ GO
 ---------------------------------------------------------------------------------------------------------------
 
 ---------------------------------------INTENTOS FALLIDOS-------------------------------------------------------
-
+/*
 USE [GD1C2015]
 IF OBJECT_ID ('[REZAGADOS].[Trig_intentos_fallidos]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_intentos_fallidos]
+    DROP TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
 GO
-CREATE TRIGGER [REZAGADOS].[Trig_intentos_fallidos]
+CREATE TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
 ON [REZAGADOS].[Usuario]
 AFTER UPDATE
 AS
@@ -2158,7 +2161,7 @@ IF (SELECT Cantidad_Intentos_Fallidos FROM [REZAGADOS].[Usuario]) >= 3
 UPDATE [REZAGADOS].[Usuario] SET [Usuario].[Habilitada] = 0
 END
 GO
-
+*/
 
 -- Historial usuario ??
 -- Guardar historial de tipo cuenta??
