@@ -12,9 +12,18 @@ namespace DAO
     public class TarjetaDeCreditoDao: BasicaDAO<TarjetaDeCreditoModel>
     {
         public List<TarjetaDeCreditoModel> getTarjetasByUsuario(UserModel usuario) {
-
             SqlCommand command = InitializeConnection("Buscar_Tarjeta_Usuario_Id");
             command.Parameters.Add("@Id_Usuario", System.Data.SqlDbType.Decimal).Value = usuario.id;
+
+            return operacionSelect(command);
+
+        }
+
+        public List<TarjetaDeCreditoModel> getTarjetasByUsuarioAndNumero(UserModel usuario,String numero)
+        {
+            SqlCommand command = InitializeConnection("Buscar_Tarjeta_Usuario_Id");
+            command.Parameters.Add("@Id_Usuario", System.Data.SqlDbType.Decimal).Value = usuario.id;
+            command.Parameters.Add("@Numero", System.Data.SqlDbType.Decimal).Value = numero;
 
             return operacionSelect(command);
 

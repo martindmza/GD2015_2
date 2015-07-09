@@ -61,12 +61,6 @@ namespace ABM
                     this.button3.Text = "Dar de Baja";
                     disableInputs();
                     break;
-                default:
-                    this.Text = "Dar de Alta Cliente";
-                    this.button2.Visible = false;
-                    this.button3.Text = "Dar de Baja";
-                    disableInputs();
-                    break;
             }
 
             checkBox1.Enabled = false;
@@ -119,6 +113,7 @@ namespace ABM
             else {
 
                 id.Text = cliente.id.ToString();
+                localidadText.Text = cliente.localidad;
 
                 for (int i = 0;i<docTipo.Items.Count;i++)
                 {
@@ -232,7 +227,7 @@ namespace ABM
                     cliente = new ClienteModel(apellido.Text,nombre.Text,documentoToSend,Decimal.Parse(docNumero.Text),
                                                 nacimiento.Value,email.Text,nacionalidad,domCalle.Text,
                                                Decimal.Parse(domNumero.Text),Decimal.Parse(domPiso.Text),
-                                               domDepartamento.Text,null,pais);
+                                               domDepartamento.Text,localidadText.Text,pais);
                     try
                     {
                         Respuesta respuesta = clienteDao.addNewCliente(cliente);
@@ -241,6 +236,7 @@ namespace ABM
                         {
                             cliente.id = respuesta.codigo;
                             parent.formResponseAdd(cliente);
+                            parent.Enabled = true;
                             this.Close();
                             this.Dispose();
                             GC.Collect();
@@ -248,15 +244,16 @@ namespace ABM
                     }
                     catch (Exception er)
                     {
-                        MessageBox.Show(EXCEPTION_MESSAGE);
+                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
                     }
                     break;
+                //modificar Cliente
                 case 1:
                     cliente = new ClienteModel(cliente.id,apellido.Text, nombre.Text, documentoToSend, 
                                                 Decimal.Parse(docNumero.Text),
                                                 nacimiento.Value, email.Text, nacionalidad, domCalle.Text,
                                                 Decimal.Parse(domNumero.Text), Decimal.Parse(domPiso.Text),
-                                                domDepartamento.Text, null, pais);
+                                                domDepartamento.Text, localidadText.Text, pais);
 
                     try
                     {
@@ -265,6 +262,7 @@ namespace ABM
                         if (respuesta.codigo > 0)
                         {
                             parent.formResponseUpdate(cliente);
+                            parent.Enabled = true;
                             this.Close();
                             this.Dispose();
                             GC.Collect();
@@ -272,7 +270,7 @@ namespace ABM
                     }
                     catch (Exception er)
                     {
-                        MessageBox.Show(EXCEPTION_MESSAGE);
+                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
                     }
                     break;
                 case 2:
@@ -283,7 +281,8 @@ namespace ABM
                         if (respuesta.codigo > 0)
                         {
                             cliente.habilitado = false;
-                            parent.formResponseDisable(cliente);
+                            parent.formResponseDisable();
+                            parent.Enabled = true;
                             this.Close();
                             this.Dispose();
                             GC.Collect();
@@ -291,33 +290,10 @@ namespace ABM
                     }
                     catch (Exception er)
                     {
-                        MessageBox.Show(EXCEPTION_MESSAGE);
-                    }
-                    break;
-                default:
-                    try
-                    {
-                        Respuesta respuesta = clienteDao.habilitarCliente(cliente);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
-                        {
-                            cliente.habilitado = true;
-                            parent.formResponseEnable(cliente);
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
-                        }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(EXCEPTION_MESSAGE);
+                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
                     }
                     break;
             }
-            parent.Enabled = true;
-            this.Close();
-            this.Dispose();
-            GC.Collect();
         }
         //-----------------------------------------------------------------------------------------------------------------
 

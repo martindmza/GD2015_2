@@ -86,7 +86,7 @@ Localidad varchar(255),
 Id_Nacionalidad numeric(18,0),
 Habilitada bit DEFAULT 1,);
 ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT PK_Id_Cliente PRIMARY KEY (Id_Cliente);
-ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT UQ_Nro_Documento UNIQUE (Nro_Documento);
+ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT UQ_Nro_Documento_Tipo UNIQUE (Nro_Documento,Id_Tipo_Documento);
 ALTER TABLE REZAGADOS.Cliente ADD CONSTRAINT UQ_Mail UNIQUE (Mail);
 				
 CREATE TABLE REZAGADOS.TipoDocumento (
@@ -146,7 +146,7 @@ ALTER TABLE REZAGADOS.Deposito ADD CONSTRAINT PK_Id_Deposito PRIMARY KEY (Id_Dep
 CREATE TABLE REZAGADOS.Tarjeta (
 Id_Tarjeta numeric (18,0) IDENTITY (1,1) NOT NULL,
 Id_Usuario numeric(18,0) NOT NULL,
-Numero varchar(255) NOT NULL,
+Numero varchar(20) NOT NULL,
 Id_Emisor NUMERIC (18,0) NOT NULL,
 Codigo_Seguridad varchar(255) NOT NULL,
 Fecha_Emision datetime,
@@ -562,6 +562,8 @@ GO
 
 ------------------------------------------CREAR CLIENTE------------------------------------------------
 
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Crear_Cliente]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Crear_Cliente;
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Crear_Cliente(
@@ -581,33 +583,37 @@ CREATE PROCEDURE REZAGADOS.Crear_Cliente(
 					@RespuestaMensaje VARCHAR(255) OUTPUT,
 					@Respuesta NUMERIC(18,0) OUTPUT)
 AS 
-BEGIN TRY
-	BEGIN TRANSACTION
+BEGIN
+	IF (EXISTS(SELECT 1 FROM REZAGADOS.Cliente  WHERE Id_Tipo_Documento = @Id_Tipo_Documento 
+												AND Nro_Documento = @Nro_Documento) )
 		BEGIN
-		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
-			BEGIN
-			SET @RespuestaMensaje = 'El e-mail ya existe.'
-			SET @Respuesta = -1
-			END
-		ELSE
-		BEGIN
-			INSERT INTO REZAGADOS.Usuario (Nombre) VALUES (@Mail)
-			DECLARE @Id_Usuario NUMERIC(18,0) = @@IDENTITY
-			
-			INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Id_Nacionalidad)
-			VALUES (@Id_Usuario, @Nombre, @Apellido, @Id_Tipo_Documento, @Nro_Documento, @Id_Pais, @Direccion_Calle, @Direccion_Numero_Calle, @Direccion_Piso, @Direccion_Departamento, @Fecha_Nacimiento, @Mail, @Localidad, @Id_Nacionalidad) 		
-			SET @Respuesta = @@IDENTITY
-			INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
-			COMMIT TRANSACTION
-			SET @RespuestaMensaje = 'Los datos se guardaron exitosamente!'
-		END
+		SET @RespuestaMensaje = 'Ya Existe un Cliente con ese tipo y número de Documento'
+		SET @Respuesta = -1
 	END
-END TRY
-BEGIN CATCH
-	SET @Respuesta = -1
-	SET @RespuestaMensaje = ERROR_MESSAGE ( ) 
-	ROLLBACK TRANSACTION
-END CATCH
+	ELSE IF (EXISTS(SELECT 1 FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
+		BEGIN
+		SET @RespuestaMensaje = 'El e-mail ya existe.'
+		SET @Respuesta = -1
+	END
+	ELSE
+		BEGIN TRY
+			BEGIN TRANSACTION
+				INSERT INTO REZAGADOS.Usuario (Nombre) VALUES (@Mail)
+				DECLARE @Id_Usuario NUMERIC(18,0) = @@IDENTITY
+				
+				INSERT INTO REZAGADOS.Cliente (Id_Usuario, Nombre, Apellido, Id_Tipo_Documento, Nro_Documento, Id_Pais, Direccion_Calle, Direccion_Numero_Calle, Direccion_Piso, Direccion_Departamento, Fecha_Nacimiento, Mail, Localidad, Id_Nacionalidad)
+				VALUES (@Id_Usuario, @Nombre, @Apellido, @Id_Tipo_Documento, @Nro_Documento, @Id_Pais, @Direccion_Calle, @Direccion_Numero_Calle, @Direccion_Piso, @Direccion_Departamento, @Fecha_Nacimiento, @Mail, @Localidad, @Id_Nacionalidad) 		
+				SET @Respuesta = @@IDENTITY
+				INSERT INTO REZAGADOS.UsuarioXRol(Id_Usuario, Id_Rol) VALUES (@Id_Usuario, 2)
+			COMMIT TRANSACTION
+			SET @RespuestaMensaje = 'Los datos se guardaron exitosamente'
+		END TRY
+		BEGIN CATCH
+			ROLLBACK TRANSACTION
+			SET @Respuesta = -1
+			SET @RespuestaMensaje = ERROR_MESSAGE()
+		END CATCH
+	END
 GO
 
 -----------------------------------------MODIFICAR CLIENTE------------------------------------------------
@@ -1364,6 +1370,7 @@ BEGIN
 	FROM  [REZAGADOS].Cliente c 
 	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
 	WHERE c.Id_Usuario = @Id_Usuario
+	AND c.Habilitada = 1
 END
 GO
 
@@ -1384,6 +1391,7 @@ BEGIN
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
 	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD
 	FROM  [REZAGADOS].Cliente c 
+	WHERE c.Habilitada = 1
 END
 GO
 
@@ -1405,7 +1413,8 @@ BEGIN
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
 	c.Habilitada HABILITADA
 	FROM  [REZAGADOS].Cliente c 
-	WHERE c.Id_Cliente = @Id;
+	WHERE c.Id_Cliente = @Id
+	AND	  c.Habilitada = 1
 END
 GO
 
@@ -2118,24 +2127,33 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id] (@Id_Usuario NUMERIC(18,0))
+CREATE PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id] (@Id_Usuario NUMERIC(18,0),@Numero VARCHAR(20)=NULL )
 AS
 BEGIN
 	SET NOCOUNT ON
+	
+	DECLARE @SqlQuery VARCHAR(MAX)
 
-	SELECT	t.Id_Tarjeta		ID,
-			t.Id_Usuario		ID_USUARIO,
-			t.Numero			NUMERO,
-			t.Id_Emisor			EMISOR_ID,
-			e.Nombre			EMISOR_NOMBRE,
-			t.Codigo_Seguridad	CODIGO,
-			t.Fecha_Emision		EMISION,
-			t.Vencimiento		VENCIMIENTO,
-			t.Habilitada		HABILITADA
-	  FROM [GD1C2015].[REZAGADOS].[Tarjeta] t
-	  JOIN REZAGADOS.Emisor e ON t.Id_Emisor = e.ID_Emisor
-	  WHERE Id_Usuario = @Id_Usuario
-	  AND t.Habilitada = 1
+	SET @SqlQuery =	'SELECT	t.Id_Tarjeta		ID,
+							t.Id_Usuario		ID_USUARIO,
+							t.Numero			NUMERO,
+							t.Id_Emisor			EMISOR_ID,
+							e.Nombre			EMISOR_NOMBRE,
+							t.Codigo_Seguridad	CODIGO,
+							t.Fecha_Emision		EMISION,
+							t.Vencimiento		VENCIMIENTO,
+							t.Habilitada		HABILITADA
+					   FROM [GD1C2015].[REZAGADOS].[Tarjeta] t
+					   JOIN REZAGADOS.Emisor e ON t.Id_Emisor = e.ID_Emisor
+					  WHERE Id_Usuario = ' + CAST(@Id_Usuario AS VARCHAR(MAX)) +
+					    'AND t.Habilitada = 1 '
+
+	IF(@Numero IS NOT NULL)
+	BEGIN
+		SET @SqlQuery = @SqlQuery + ' AND t.Numero LIKE  ''%'+@Numero+'%'''
+	END
+	EXEC(@SqlQuery)
+
 END
 GO
 

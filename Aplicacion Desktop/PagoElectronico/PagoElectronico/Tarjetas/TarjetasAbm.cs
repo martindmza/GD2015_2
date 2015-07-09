@@ -152,11 +152,19 @@ namespace Tarjetas
                 {
                     MessageBox.Show("Ingrese solo números");
                 }
+                else {
+                    String numero = numeroText.Text;
+                    if (numero.Trim().Length == 0)
+                    {
+                        tarjetas = dao.getTarjetasByUsuario(usuario);
+                    }
+                    else {
+                        tarjetas = dao.getTarjetasByUsuarioAndNumero(usuario, numero);
+                    }
+                }
             }
             catch (NullReferenceException eru) { }
             catch (Exception erg) { }
-
-            //tarjetas = dao.getTarjetasByClienteAndNumero(cliente,numeroText.Text);
             fillData();
         }
         //-----------------------------------------------------------------------------------------------------------------

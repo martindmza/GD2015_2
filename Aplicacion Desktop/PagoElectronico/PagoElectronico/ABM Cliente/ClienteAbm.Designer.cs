@@ -43,7 +43,6 @@
             this.direccionDepto = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.localidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.paisId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.habilitado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
@@ -85,8 +84,7 @@
             this.direccionPiso,
             this.direccionDepto,
             this.localidadId,
-            this.paisId,
-            this.habilitado});
+            this.paisId});
             this.dataGridView1.Location = new System.Drawing.Point(12, 139);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -178,12 +176,6 @@
             this.paisId.HeaderText = "Pais";
             this.paisId.Name = "paisId";
             this.paisId.ReadOnly = true;
-            // 
-            // habilitado
-            // 
-            this.habilitado.HeaderText = "Habilitado";
-            this.habilitado.Name = "habilitado";
-            this.habilitado.ReadOnly = true;
             // 
             // groupBox1
             // 
@@ -318,7 +310,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(491, 491);
+            this.button4.Location = new System.Drawing.Point(391, 491);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(94, 23);
             this.button4.TabIndex = 6;
@@ -348,7 +340,7 @@
             // 
             // buttonCancelar
             // 
-            this.buttonCancelar.Location = new System.Drawing.Point(391, 491);
+            this.buttonCancelar.Location = new System.Drawing.Point(12, 491);
             this.buttonCancelar.Name = "buttonCancelar";
             this.buttonCancelar.Size = new System.Drawing.Size(94, 23);
             this.buttonCancelar.TabIndex = 5;
@@ -401,6 +393,8 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button elegir;
+        private System.Windows.Forms.Button buttonCancelar;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
         private System.Windows.Forms.DataGridViewTextBoxColumn apellido;
         private System.Windows.Forms.DataGridViewTextBoxColumn nombre;
@@ -415,9 +409,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn direccionDepto;
         private System.Windows.Forms.DataGridViewTextBoxColumn localidadId;
         private System.Windows.Forms.DataGridViewTextBoxColumn paisId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn habilitado;
-        private System.Windows.Forms.Button elegir;
-        private System.Windows.Forms.Button buttonCancelar;
 
     }
 }
