@@ -10,7 +10,7 @@ namespace Models
     public class ClienteModel: BasicaModel
     {
         public const String APELLIDO = "APELLIDO";
-        public const String DOCUMENTO_TIPO_COD = "DOCUMENTO_TIPO_COD";
+        public const String DOCUMENTO = "DOCUMENTO";
         public const String NRO_DOCUMENTO = "NRO_DOCUMENTO";
         public const String FECHA_NACIMIENTO = "FECHA_NACIMIENTO";
         public const String EMAIL = "EMAIL";
@@ -20,7 +20,7 @@ namespace Models
         public const String DIRECCION_DEPTO = "DIRECCION_DEPTO";
         public const String DIRECCION_PISO = "DIRECCION_PISO";
         public const String LOCALIDAD = "LOCALIDAD";
-        public const String PAIS_ID = "PAIS_ID";
+        public const String PAIS = "PAIS";
         public const String NACIONALIDAD_ID = "NACIONALIDAD_ID";
         public const String HABILITADA = "HABILITADA";
 
@@ -127,16 +127,16 @@ namespace Models
             this.apellido = fila[APELLIDO].ToString();
             this.nacimiento = fila[FECHA_NACIMIENTO] != DBNull.Value ? DateTime.Parse(fila[FECHA_NACIMIENTO].ToString()) : DateTime.MinValue;
             this.email = fila[EMAIL].ToString();
-            this.nacionalidad = new PaisDAO().dameTuModelo(fila[NACIONALIDAD_ID].ToString());
+            this.nacionalidad = new PaisDAO().dameTuModelo(fila[NACIONALIDAD].ToString());
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
             this.direccionNumeroCalle = (Decimal)fila[DIRECCION_NRO_CALLE];
             this.direccionPiso = (Decimal)fila[DIRECCION_PISO];
             this.direccionDepto = fila[DIRECCION_DEPTO].ToString();
             this.localidad = fila[LOCALIDAD].ToString();
-            this.pais = new PaisDAO().dameTuModelo(fila[PAIS_ID].ToString());
+            this.pais = new PaisDAO().dameTuModelo(fila[PAIS].ToString());
             this.direccionCalle = fila[DIRECCION_CALLE].ToString();
             this.nroDocumento = (Decimal)fila[NRO_DOCUMENTO];
-            this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO_TIPO_COD].ToString());
+            this.tipoDocumento = new TipoDocumentoDAO().dameTuModelo(fila[DOCUMENTO].ToString());
             this.habilitado = (Boolean) fila[HABILITADA];
 
         }
