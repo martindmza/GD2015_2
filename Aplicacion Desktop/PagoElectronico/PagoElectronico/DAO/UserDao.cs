@@ -40,7 +40,7 @@ namespace DAO
                 return new UserDao().dameTuModelo(value.ToString());
             }
             else {
-                MessageBox.Show(value.ToString(), "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBox.Show(mensaje, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 return null;
             }
             
