@@ -1046,6 +1046,7 @@ CREATE PROCEDURE REZAGADOS.Depositar(
 @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
+--EXEC REZAGADOS.Cuenta_Vencida(@Cuenta);
 DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
 DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cliente)
@@ -2222,64 +2223,53 @@ ON [REZAGADOS].[Cuenta]
 AFTER UPDATE
 AS
 IF UPDATE(Id_Estado)
-BEGIN
-INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) VALUES ((SELECT Id_Cuenta FROM Cuenta), GETDATE(), (SELECT Id_Estado FROM Cuenta))
-END
+BEGIN TRANSACTION
+	DECLARE C CURSOR
+	FOR SELECT Id_Cuenta, Id_Estado FROM INSERTED
+	DECLARE @Cuenta NUMERIC(18,0)
+	DECLARE @Estado NUMERIC(18,0)
+		OPEN C
+		FETCH C INTO @Cuenta, @Estado
+		WHILE @@FETCH_STATUS = 0
+			BEGIN
+				INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) VALUES (@Cuenta, GETDATE(), @Estado)
+			END
+	CLOSE C
+	DEALLOCATE C
+	COMMIT
 GO
 
 ----------------------------------------5 TRANSACCIONES---------------------------------------------------------
 
 IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones]
-    
+
 USE [GD1C2015]
 GO
 CREATE TRIGGER [REZAGADOS].[Trig_5_Transacciones]
 ON [REZAGADOS].[Item]
-AFTER INSERT
+AFTER UPDATE, INSERT
 AS
-BEGIN
-IF (SELECT COUNT(*) FROM REZAGADOS.Item JOIN Inserted ON Inserted.Id_Cuenta = Item.Id_Cuenta WHERE Item.Id_Factura IS NULL GROUP BY Item.Id_Cuenta) >= 5
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada')
-END
-GO
-
-----------------------------------------5 TRANSACCIONES2---------------------------------------------------------
-
-IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones2]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
-    
-USE [GD1C2015]
-GO
-CREATE TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
-ON [REZAGADOS].[Item]
-AFTER UPDATE
-AS
-BEGIN
-IF (SELECT COUNT(*) FROM REZAGADOS.Item JOIN Updated ON Updated.id_Cuenta = Item.Id_Cuenta WHERE Item.Id_Factura IS NULL GROUP BY Id_Cuenta) < 5
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
-END
-GO
-
-----------------------------------------5 TRANSACCIONES2---------------------------------------------------------
-
-IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones2]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
-    
-USE [GD1C2015]
-GO
-CREATE TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
-ON [REZAGADOS].[Item]
-AFTER UPDATE
-AS
-BEGIN
-IF (SELECT COUNT(*) FROM REZAGADOS.Item JOIN Updated ON Updated.id_Cuenta = Item.Id_Cuenta WHERE Item.Id_Factura IS NULL GROUP BY Id_Cuenta) < 5
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
-END
+BEGIN TRANSACTION
+	DECLARE C CURSOR
+	FOR SELECT Id_Cuenta FROM INSERTED
+	DECLARE @Cuenta NUMERIC(18,0)
+		OPEN C
+		FETCH C INTO @Cuenta
+		WHILE @@FETCH_STATUS = 0
+			BEGIN
+				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta GROUP BY Item.Id_Cuenta) < 5
+				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
+				ELSE
+				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada')
+			END
+	CLOSE C
+	DEALLOCATE C
+	COMMIT
 GO
 
 ----------------------------------------TIPO CUENTA TRANSACCION---------------------------------------------------------
-/*
+
 IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
     
@@ -2287,30 +2277,22 @@ USE [GD1C2015]
 GO
 CREATE TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
 ON [REZAGADOS].[Cuenta]
-AFTER UPDATE
+AFTER INSERT, UPDATE
 AS
-BEGIN
-IF UPDATE(Id_Tipo_Cuenta)
-IF (SELECT Categoria FROM REZAGADOS.TipoCuenta, Cuenta WHERE Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta ) <> 'Gratuita'
-INSERT INTO Item (Id_Cuenta, Id_Tipo_Cuenta, Importe, Fecha) VALUES (Updated.Id_Cuenta, Updated.Id_Tipo_Cuenta, (SELECT Costo FROM TipoCuenta WHERE TipoCuenta.Id_Tipo_Cuenta = Updated.Id_Tipo_Cuenta), GETDATE())
-END
+BEGIN TRANSACTION
+	DECLARE C CURSOR
+	FOR SELECT Id_Cuenta, Id_Tipo_Cuenta FROM INSERTED
+	DECLARE @Cuenta NUMERIC(18,0)
+	DECLARE @Tipo NUMERIC(18,0)
+		OPEN C
+		FETCH C INTO @Cuenta, @Tipo
+		WHILE @@FETCH_STATUS = 0
+			BEGIN
+				IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta ) <> 'Gratuita'
+				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
+				VALUES (@Cuenta, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Cambio de cuenta.'), (SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta), GETDATE())
+			END
+  CLOSE C
+  DEALLOCATE C
+ COMMIT
 GO
-
-----------------------------------------TIPO CUENTA TRANSACCION2---------------------------------------------------------
-
-IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]
-    
-USE [GD1C2015]
-GO
-CREATE TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]
-ON [REZAGADOS].[Cuenta]
-AFTER INSERT
-AS
-BEGIN
-DECLARE @Cuenta NUMERIC(18,0) SET @Cuenta = (SELECT Id_Cuenta FROM Inserted)
-DECLARE @Tipo NUMERIC(18,0) SET @Tipo = (SELECT Id_Tipo_Cuenta FROM Inserted)
-IF (SELECT Categoria FROM REZAGADOS.TipoCuenta, Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta AND Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta ) <> ('Gratuita')
-INSERT INTO Item (Id_Cuenta, Id_Tipo_Cuenta, Importe, Fecha) VALUES (@Cuenta, @Tipo, (SELECT Costo FROM TipoCuenta, Cuenta WHERE TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta AND Cuenta.Id_Cuenta=@Cuenta), GETDATE())
-GO
-*/
