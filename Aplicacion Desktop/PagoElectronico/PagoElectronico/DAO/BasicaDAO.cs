@@ -88,6 +88,7 @@ namespace DAO
                 {
                     command.Parameters.Add("Nombre", System.Data.SqlDbType.NVarChar, 50).Value = entity.nombre;
                 }
+                command.Parameters.Add("Id", System.Data.SqlDbType.Decimal).Value = entity.id;
                 command = addParametrosParaModificar(command,entity);
                 var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
                 var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);

@@ -2212,18 +2212,19 @@ GO
 
 ---------------------------------------HISTORIAL ACCESOS-------------------------------------------------------
 
-IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Accesos]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
+IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Cuentas]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Historial_Cuentas]
     
 USE [GD1C2015]
 GO
-CREATE TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
+CREATE TRIGGER [REZAGADOS].[Trig_Historial_Cuentas]
 ON [REZAGADOS].[Cuenta]
 AFTER UPDATE
 AS
 IF UPDATE(Id_Estado)
 BEGIN
-INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) VALUES ((SELECT Id_Cuenta FROM Cuenta), GETDATE(), (SELECT Id_Estado FROM Cuenta))
+INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) 
+VALUES ((SELECT Id_Cuenta FROM Cuenta), GETDATE(), (SELECT Id_Estado FROM Cuenta))
 END
 GO
 
