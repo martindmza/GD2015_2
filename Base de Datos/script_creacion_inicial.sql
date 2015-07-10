@@ -125,14 +125,12 @@ Id_Moneda numeric (18,0) IDENTITY(1,1) NOT NULL,
 Descripcion  varchar(255),);
 ALTER TABLE REZAGADOS.Moneda ADD CONSTRAINT PK_Id_Moneda PRIMARY KEY (Id_Moneda);
 
-/*
 CREATE TABLE REZAGADOS.HistorialCuenta(
 Id_Historial_Cuenta numeric (18,0) IDENTITY(1,1) NOT NULL,
 Id_Cuenta numeric (18,0),
 Fecha datetime,
 Estado varchar(255),);
 ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT PK_Id_Historial_Cuenta PRIMARY KEY (Id_Historial_Cuenta);
-*/
 
 CREATE TABLE REZAGADOS.Deposito (
 Id_Deposito numeric (18,0) IDENTITY (1,1) NOT NULL,
@@ -272,11 +270,9 @@ FOREIGN KEY (Id_Pais) REFERENCES REZAGADOS.Pais (Id_Pais)
 ALTER TABLE REZAGADOS.Cuenta ADD CONSTRAINT FK_Cuenta_to_Moneda
 FOREIGN KEY (Id_Moneda) REFERENCES REZAGADOS.Moneda (Id_Moneda)
 ;
-/*
 ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT FK_Historial_Cuenta_to_Cuenta
 FOREIGN KEY (Id_Cuenta) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
 ;
-*/
 ALTER TABLE REZAGADOS.Deposito ADD CONSTRAINT FK_Deposito_to_Cuenta
 FOREIGN KEY (Id_Cuenta) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
 ;
@@ -473,7 +469,7 @@ FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE u.Nombre = g.Cli_Mail AND g.Cuenta_Dest_Fecha_Creacion IS NOT NULL
 GROUP BY g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
 
------------------------------------------Emisor---------------------------------------------------
+-----------------------------------------EMISOR---------------------------------------------------
 
 INSERT INTO REZAGADOS.Emisor (Nombre) 
 SELECT DISTINCT Tarjeta_Emisor_Descripcion
@@ -1034,12 +1030,20 @@ BEGIN
 END
 GO
 
----------------------------------------DEPOSITAR---------------------------------------------------------------
+--------------------------------------------CUENTA VENCIDA----------------------------------------------------------------------
 
 USE [GD1C2015]
-IF OBJECT_ID ('REZAGADOS.Depositar') IS NOT NULL
-    DROP PROCEDURE REZAGADOS.Depositar
 GO
+CREATE PROCEDURE REZAGADOS.Cuenta_Vencida (@Cuenta NUMERIC(18,0), @Respuesta NUMERIC(18,0) OUTPUT)
+AS
+BEGIN
+IF ((SELECT Fecha_Creacion FROM Cuenta WHERE Id_Cuenta=@Cuenta) + (SELECT Dias_Vigencia FROM TipoCuenta, Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta)) > GETDATE()
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+SET @Respuesta = 1
+END
+GO
+
+---------------------------------------DEPOSITAR---------------------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1053,7 +1057,8 @@ CREATE PROCEDURE REZAGADOS.Depositar(
 @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
-DECLARE @Id_Cliente NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
+--EXEC REZAGADOS.Cuenta_Vencida(@Cuenta);
+DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
 DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cliente)
 
@@ -1109,6 +1114,7 @@ CREATE PROCEDURE REZAGADOS.RetiroEfectivo(	@Usuario VARCHAR(255),
 											@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
+--EXEC REZAGADOS.Cuenta_Vencida(@Cuenta);
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
 		BEGIN
@@ -1175,6 +1181,7 @@ CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Usuario VARCHAR(255),
 														@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
+--EXEC REZAGADOS.Cuenta_Vencida(@Cuenta_Origen);
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
 		BEGIN
@@ -1856,6 +1863,7 @@ END
 GO
 
 -----------------------------------------LISTAR MONEDA---------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Listar_Moneda 
@@ -1868,6 +1876,7 @@ END
 GO
 
 -----------------------------------------BUSCAR MONEDA ID------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Buscar_Moneda_ID 
@@ -1882,6 +1891,7 @@ END
 GO
 
 -----------------------------------------LISTAR BANCO----------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Listar_Banco 
@@ -1895,6 +1905,7 @@ END
 GO
 
 -----------------------------------------BUSCAR BANCO ID-------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Buscar_Banco_ID 
@@ -1957,6 +1968,34 @@ AS
 	SET @RespuestaMensaje = 'Modifición exitosa'
 	SET @Respuesta = 1
 GO
+---------------------------------------------------MODIFICAR CUENTA----------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Modificar_Cuenta] (
+								@Id NUMERIC(18, 0),
+								@Tipo NUMERIC(18, 0),
+								@Estado NUMERIC(18, 0),
+								@RespuestaMensaje VARCHAR(255) OUTPUT,
+								@Respuesta NUMERIC(18,0) OUTPUT)
+AS
+BEGIN
+BEGIN TRY
+	BEGIN TRANSACTION
+		UPDATE	REZAGADOS.Cuenta
+		SET	Id_Tipo_Cuenta = @Tipo,
+				Id_Estado = @Estado
+		WHERE Id_Cuenta = @Id
+		SET @RespuestaMensaje = 'La cuenta ha sido modificado!'
+		SET @Respuesta = 1
+	COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+	SET @Respuesta = -1
+	SET @RespuestaMensaje = 'La Cuenta no se pudo modificar'
+	ROLLBACK TRANSACTION
+END CATCH
+END
 
 --------------------------------------------------BUSCAR CLIENTES FILTROS-------------------------------------------
 
@@ -2241,19 +2280,89 @@ GO
 ----------------------------------------------TRIGGERS---------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
 
----------------------------------------INTENTOS FALLIDOS-------------------------------------------------------
-/*
+---------------------------------------HISTORIAL ACCESOS-------------------------------------------------------
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Cuentas]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Historial_Cuentas]
+    
 USE [GD1C2015]
-IF OBJECT_ID ('[REZAGADOS].[Trig_intentos_fallidos]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
 GO
-CREATE TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
-ON [REZAGADOS].[Usuario]
+CREATE TRIGGER [REZAGADOS].[Trig_Historial_Cuentas]
+ON [REZAGADOS].[Cuenta]
 AFTER UPDATE
 AS
-BEGIN
-IF (SELECT Cantidad_Intentos_Fallidos FROM [REZAGADOS].[Usuario]) >= 3
-UPDATE [REZAGADOS].[Usuario] SET [Usuario].[Habilitada] = 0
-END
+IF UPDATE(Id_Estado)
+BEGIN TRANSACTION
+	DECLARE C CURSOR
+	FOR SELECT Id_Cuenta, Id_Estado FROM INSERTED
+	DECLARE @Cuenta NUMERIC(18,0)
+	DECLARE @Estado NUMERIC(18,0)
+		OPEN C
+		FETCH C INTO @Cuenta, @Estado
+		WHILE @@FETCH_STATUS = 0
+			BEGIN
+				INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) VALUES (@Cuenta, GETDATE(), @Estado)
+			END
+	CLOSE C
+	DEALLOCATE C
+	COMMIT
+
 GO
-*/
+
+----------------------------------------5 TRANSACCIONES---------------------------------------------------------
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones]
+
+USE [GD1C2015]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_5_Transacciones]
+ON [REZAGADOS].[Item]
+AFTER UPDATE, INSERT
+AS
+BEGIN TRANSACTION
+	DECLARE C CURSOR
+	FOR SELECT Id_Cuenta FROM INSERTED
+	DECLARE @Cuenta NUMERIC(18,0)
+		OPEN C
+		FETCH C INTO @Cuenta
+		WHILE @@FETCH_STATUS = 0
+			BEGIN
+				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta GROUP BY Item.Id_Cuenta) < 5
+				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
+				ELSE
+				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada')
+			END
+	CLOSE C
+	DEALLOCATE C
+	COMMIT
+GO
+
+----------------------------------------TIPO CUENTA TRANSACCION---------------------------------------------------------
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
+    
+USE [GD1C2015]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
+ON [REZAGADOS].[Cuenta]
+AFTER INSERT, UPDATE
+AS
+BEGIN TRANSACTION
+	DECLARE C CURSOR
+	FOR SELECT Id_Cuenta, Id_Tipo_Cuenta FROM INSERTED
+	DECLARE @Cuenta NUMERIC(18,0)
+	DECLARE @Tipo NUMERIC(18,0)
+		OPEN C
+		FETCH C INTO @Cuenta, @Tipo
+		WHILE @@FETCH_STATUS = 0
+			BEGIN
+				IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta ) <> 'Gratuita'
+				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
+				VALUES (@Cuenta, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Cambio de cuenta.'), (SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta), GETDATE())
+			END
+  CLOSE C
+  DEALLOCATE C
+ COMMIT
+GO

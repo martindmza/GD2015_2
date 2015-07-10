@@ -97,8 +97,7 @@ namespace DAO
 
         public CuentaModel updateCuenta(CuentaModel cuenta)
         {
-            //retorna un clienteModel por si al hacer update, algun trigger o SP hace algo sobre el cliente
-            return cuenta;
+            return this.modificarBasica(cuenta);
         }
 
         public CuentaModel unsubscribeCuenta(CuentaModel cuenta)
@@ -139,12 +138,14 @@ namespace DAO
 
         public override SqlCommand addParametrosParaModificar(SqlCommand command, CuentaModel entity)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add("Estado", System.Data.SqlDbType.Decimal).Value = entity.estado.id;
+            command.Parameters.Add("Tipo", System.Data.SqlDbType.Decimal).Value = entity.tipo.id;
+            return command;
         }
 
         protected override string getProcedureModificarBasica()
         {
-            throw new NotImplementedException();
+            return "Modificar_Cuenta";
         }
     }
 }

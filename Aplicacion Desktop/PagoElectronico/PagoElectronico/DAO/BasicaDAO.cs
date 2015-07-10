@@ -81,14 +81,15 @@ namespace DAO
             return null;
         }
 
-        public TEntity agregarBasica(TEntity entity){
+        public TEntity modificarBasica(TEntity entity){
                DataTable dt = new DataTable();
-                SqlCommand command = InitializeConnection(this.getProcedureCrearBasica());
+                SqlCommand command = InitializeConnection(this.getProcedureModificarBasica());
                 if (!entity.nombre.Equals(BasicaModel.SIN_NOMBRE))
                 {
                     command.Parameters.Add("Nombre", System.Data.SqlDbType.NVarChar, 50).Value = entity.nombre;
                 }
-                command = addParametrosParaAgregar(command,entity);
+                command.Parameters.Add("Id", System.Data.SqlDbType.Decimal).Value = entity.id;
+                command = addParametrosParaModificar(command,entity);
                 var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
                 var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
                 pOut.Direction = ParameterDirection.Output;
@@ -107,6 +108,35 @@ namespace DAO
                     MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 }
                 return entity;
+        }
+
+        public TEntity agregarBasica(TEntity entity)
+        {
+            DataTable dt = new DataTable();
+            SqlCommand command = InitializeConnection(this.getProcedureCrearBasica());
+            if (!entity.nombre.Equals(BasicaModel.SIN_NOMBRE))
+            {
+                command.Parameters.Add("Nombre", System.Data.SqlDbType.NVarChar, 50).Value = entity.nombre;
+            }
+            command = addParametrosParaAgregar(command, entity);
+            var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
+            var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
+            pOut.Direction = ParameterDirection.Output;
+            pOut2.Direction = ParameterDirection.Output;
+            //
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(dt);
+            Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (decimal)(pOut.Value);
+            string value2 = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+            if (value != -1)
+            {
+                entity.id = value;
+            }
+            else
+            {
+                MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            return entity;
         }
 
         public abstract SqlCommand addParametrosParaAgregar(SqlCommand command, TEntity entity);
