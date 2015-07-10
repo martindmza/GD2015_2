@@ -1019,12 +1019,20 @@ SET @RespuestaMensaje = 'Exito'
 END
 GO
 
----------------------------------------DEPOSITAR---------------------------------------------------------------
+--------------------------------------------CUENTA VENCIDA----------------------------------------------------------------------
 
 USE [GD1C2015]
-IF OBJECT_ID ('REZAGADOS.Depositar') IS NOT NULL
-    DROP PROCEDURE REZAGADOS.Depositar
 GO
+CREATE PROCEDURE REZAGADOS.Cuenta_Vencida (@Cuenta NUMERIC(18,0), @Respuesta NUMERIC(18,0) OUTPUT)
+AS
+BEGIN
+IF ((SELECT Fecha_Creacion FROM Cuenta WHERE Id_Cuenta=@Cuenta) + (SELECT Dias_Vigencia FROM TipoCuenta, Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta)) > GETDATE()
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+SET @Respuesta = 1
+END
+GO
+
+---------------------------------------DEPOSITAR---------------------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1094,6 +1102,7 @@ CREATE PROCEDURE REZAGADOS.RetiroEfectivo(	@Usuario VARCHAR(255),
 											@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
+--EXEC REZAGADOS.Cuenta_Vencida(@Cuenta);
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
 		BEGIN
@@ -1160,6 +1169,7 @@ CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Usuario VARCHAR(255),
 														@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
+--EXEC REZAGADOS.Cuenta_Vencida(@Cuenta_Origen);
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
 		BEGIN
@@ -1841,6 +1851,7 @@ END
 GO
 
 -----------------------------------------LISTAR MONEDA---------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Listar_Moneda 
@@ -1853,6 +1864,7 @@ END
 GO
 
 -----------------------------------------BUSCAR MONEDA ID------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Buscar_Moneda_ID 
@@ -1867,6 +1879,7 @@ END
 GO
 
 -----------------------------------------LISTAR BANCO----------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Listar_Banco 
@@ -1880,6 +1893,7 @@ END
 GO
 
 -----------------------------------------BUSCAR BANCO ID-------------------------------------------------------
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].Buscar_Banco_ID 
@@ -2300,16 +2314,3 @@ IF (SELECT Categoria FROM REZAGADOS.TipoCuenta, Cuenta WHERE Cuenta.Id_Cuenta=@C
 INSERT INTO Item (Id_Cuenta, Id_Tipo_Cuenta, Importe, Fecha) VALUES (@Cuenta, @Tipo, (SELECT Costo FROM TipoCuenta, Cuenta WHERE TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta AND Cuenta.Id_Cuenta=@Cuenta), GETDATE())
 GO
 */
---------------------------------------------SP CUENTA VENCIDA----------------------------------------------------------------------
-
-IF OBJECT_ID ('[REZAGADOS].[Cuenta_Vencida]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Cuenta_Vencida]
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE [REZAGADOS].[Cuenta_Vencida] (@Cuenta NUMERIC(18,0))
-AS
-BEGIN
-IF ((SELECT Fecha_Creacion FROM Cuenta WHERE Id_Cuenta=@Cuenta) + (SELECT Dias_Vigencia FROM TipoCuenta, Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta)) > GETDATE()
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
-END
