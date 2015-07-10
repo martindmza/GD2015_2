@@ -217,6 +217,8 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE REZAGADOS.Alta_Cuenta;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Crear_Cuenta]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Crear_Cuenta;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Cuenta]') AND type in (N'P', N'PC'))	
+	DROP PROCEDURE REZAGADOS.Modificar_Cuenta;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Costo_Cuenta]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Modificar_Costo_Cuenta;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Alta_Tarjeta]') AND type in (N'P', N'PC'))
