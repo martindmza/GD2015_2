@@ -111,6 +111,7 @@
     <Compile Include="DAO\CuentaTipoDAO.cs" />
     <Compile Include="DAO\DepositoDao.cs" />
     <Compile Include="DAO\DocumentoDAO.cs" />
+    <Compile Include="DAO\EmisorDao.cs" />
     <Compile Include="DAO\EstadoDao.cs" />
     <Compile Include="DAO\ExtraDao.cs" />
     <Compile Include="DAO\FacturaDao.cs" />
@@ -143,11 +144,11 @@
     <Compile Include="Facturacion\FacturaForm.Designer.cs">
       <DependentUpon>FacturaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormsExtras\LocalidadesForm.cs">
+    <Compile Include="FormsExtras\EmisoresForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormsExtras\LocalidadesForm.Designer.cs">
-      <DependentUpon>LocalidadesForm.cs</DependentUpon>
+    <Compile Include="FormsExtras\EmisoresForm.Designer.cs">
+      <DependentUpon>EmisoresForm.cs</DependentUpon>
     </Compile>
     <Compile Include="FormsExtras\PaisesForm.cs">
       <SubType>Form</SubType>
@@ -257,8 +258,8 @@
     <EmbeddedResource Include="Facturacion\FacturaForm.resx">
       <DependentUpon>FacturaForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormsExtras\LocalidadesForm.resx">
-      <DependentUpon>LocalidadesForm.cs</DependentUpon>
+    <EmbeddedResource Include="FormsExtras\EmisoresForm.resx">
+      <DependentUpon>EmisoresForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormsExtras\PaisesForm.resx">
       <DependentUpon>PaisesForm.cs</DependentUpon>

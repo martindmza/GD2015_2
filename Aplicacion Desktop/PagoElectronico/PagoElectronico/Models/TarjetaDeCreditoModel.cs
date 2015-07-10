@@ -15,7 +15,6 @@ namespace Models
         public const String EMISION = "EMISION";
         public const String VENCIMIENTO = "VENCIMIENTO";
         public const String HABILITADA = "HABILITADA";
-        public const String PROPIETARIO = "PROPIETARIO";
         public const String EMISOR_ID = "EMISOR_ID";
         public const String EMISOR_NOMBRE = "EMISOR_NOMBRE";
         
@@ -24,7 +23,6 @@ namespace Models
         public DateTime emision {get;set;}
         public DateTime vencimiento { get; set; }
         public Boolean habilitada = true;
-
         public ClienteModel propietario { get; set; }
         public EmisorModel emisor { get; set; }
 
@@ -35,29 +33,27 @@ namespace Models
 
 
         public TarjetaDeCreditoModel(String numero, String codigoSeguridad,
-                                        DateTime emision, DateTime vencimiento, ClienteModel propietario)
+                                        DateTime emision, DateTime vencimiento)
         {
             this.id = id;
             this.numero = numero;
             this.codigoSeguridad = codigoSeguridad;
             this.emision = emision;
             this.vencimiento = vencimiento;
-            this.propietario = propietario;
         }
 
         public TarjetaDeCreditoModel(Decimal id,String numero, String codigoSeguridad,
-                                        DateTime emision, DateTime vencimiento, ClienteModel propietario) 
+                                        DateTime emision, DateTime vencimiento) 
         {
             this.id = id;
             this.numero = numero;
             this.codigoSeguridad = codigoSeguridad;
             this.emision = emision;
             this.vencimiento = vencimiento;
-            this.propietario = propietario;
         }
 
         public TarjetaDeCreditoModel(UInt32 id, String numero, String codigoSeguridad,
-                                        DateTime emision, DateTime vencimiento, ClienteModel propietario,
+                                        DateTime emision, DateTime vencimiento,
                                         EmisorModel emisor)
         {
             this.id = id;
@@ -65,24 +61,9 @@ namespace Models
             this.codigoSeguridad = codigoSeguridad;
             this.emision = emision;
             this.vencimiento = vencimiento;
-            this.propietario = propietario;
             this.emisor = emisor;
         }
 
-
-        public String ToString() {
-
-            try
-            {
-                return "{ " + id.ToString() + "," + numero + "," + codigoSeguridad.ToString() + "," +
-                        emision.ToShortDateString() + "," + vencimiento.ToShortDateString() + "," +
-                        propietario.ToString() + "," + emisor.nombre + " }";
-            }
-            catch (Exception err) {
-                return "Complete todos lo parametros";
-            }
-
-        }
 
         public override void mapeoFilaAModel(System.Data.DataRow fila)
         {

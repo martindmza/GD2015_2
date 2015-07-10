@@ -36,13 +36,12 @@
             this.buttonAceptar = new System.Windows.Forms.Button();
             this.buttonCancelar = new System.Windows.Forms.Button();
             this.numeroText = new System.Windows.Forms.TextBox();
-            this.clienteText = new System.Windows.Forms.TextBox();
+            this.emisorText = new System.Windows.Forms.TextBox();
             this.trigger1 = new System.Windows.Forms.Button();
             this.emisionText = new System.Windows.Forms.DateTimePicker();
             this.vencimientoText = new System.Windows.Forms.DateTimePicker();
             this.codigoSeguridadText = new System.Windows.Forms.TextBox();
-            this.clienteNameLabel = new System.Windows.Forms.Label();
-            this.checkBoxHabilitada = new System.Windows.Forms.CheckBox();
+            this.emisorNameLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -114,19 +113,20 @@
             // 
             this.numeroText.Location = new System.Drawing.Point(135, 14);
             this.numeroText.Name = "numeroText";
-            this.numeroText.Size = new System.Drawing.Size(109, 20);
+            this.numeroText.Size = new System.Drawing.Size(149, 20);
             this.numeroText.TabIndex = 2;
             this.numeroText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.numeroText.Leave += new System.EventHandler(this.numeroText_Leave);
             // 
-            // clienteText
+            // emisorText
             // 
-            this.clienteText.Enabled = false;
-            this.clienteText.Location = new System.Drawing.Point(135, 47);
-            this.clienteText.Name = "clienteText";
-            this.clienteText.Size = new System.Drawing.Size(79, 20);
-            this.clienteText.TabIndex = 2;
-            this.clienteText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
+            this.emisorText.AcceptsReturn = true;
+            this.emisorText.Enabled = false;
+            this.emisorText.Location = new System.Drawing.Point(135, 47);
+            this.emisorText.Name = "emisorText";
+            this.emisorText.Size = new System.Drawing.Size(79, 20);
+            this.emisorText.TabIndex = 2;
+            this.emisorText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // trigger1
             // 
@@ -166,25 +166,14 @@
             this.codigoSeguridadText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.codigoSeguridadText.Leave += new System.EventHandler(this.validarNumeroSeguridad);
             // 
-            // clienteNameLabel
+            // emisorNameLabel
             // 
-            this.clienteNameLabel.AutoSize = true;
-            this.clienteNameLabel.Location = new System.Drawing.Point(250, 50);
-            this.clienteNameLabel.Name = "clienteNameLabel";
-            this.clienteNameLabel.Size = new System.Drawing.Size(91, 13);
-            this.clienteNameLabel.TabIndex = 5;
-            this.clienteNameLabel.Text = "$$$$$$$$$$$$$$";
-            // 
-            // checkBoxHabilitada
-            // 
-            this.checkBoxHabilitada.AutoSize = true;
-            this.checkBoxHabilitada.Enabled = false;
-            this.checkBoxHabilitada.Location = new System.Drawing.Point(365, 13);
-            this.checkBoxHabilitada.Name = "checkBoxHabilitada";
-            this.checkBoxHabilitada.Size = new System.Drawing.Size(73, 17);
-            this.checkBoxHabilitada.TabIndex = 6;
-            this.checkBoxHabilitada.Text = "Habilitada";
-            this.checkBoxHabilitada.UseVisualStyleBackColor = true;
+            this.emisorNameLabel.AutoSize = true;
+            this.emisorNameLabel.Location = new System.Drawing.Point(250, 50);
+            this.emisorNameLabel.Name = "emisorNameLabel";
+            this.emisorNameLabel.Size = new System.Drawing.Size(91, 13);
+            this.emisorNameLabel.TabIndex = 5;
+            this.emisorNameLabel.Text = "$$$$$$$$$$$$$$";
             // 
             // TarjetasForm
             // 
@@ -192,12 +181,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 221);
             this.ControlBox = false;
-            this.Controls.Add(this.checkBoxHabilitada);
-            this.Controls.Add(this.clienteNameLabel);
+            this.Controls.Add(this.emisorNameLabel);
             this.Controls.Add(this.vencimientoText);
             this.Controls.Add(this.emisionText);
             this.Controls.Add(this.trigger1);
-            this.Controls.Add(this.clienteText);
+            this.Controls.Add(this.emisorText);
             this.Controls.Add(this.codigoSeguridadText);
             this.Controls.Add(this.numeroText);
             this.Controls.Add(this.buttonCancelar);
@@ -226,12 +214,11 @@
         private System.Windows.Forms.Button buttonAceptar;
         private System.Windows.Forms.Button buttonCancelar;
         private System.Windows.Forms.TextBox numeroText;
-        private System.Windows.Forms.TextBox clienteText;
+        private System.Windows.Forms.TextBox emisorText;
         private System.Windows.Forms.Button trigger1;
         private System.Windows.Forms.DateTimePicker emisionText;
         private System.Windows.Forms.DateTimePicker vencimientoText;
         private System.Windows.Forms.TextBox codigoSeguridadText;
-        private System.Windows.Forms.Label clienteNameLabel;
-        private System.Windows.Forms.CheckBox checkBoxHabilitada;
+        private System.Windows.Forms.Label emisorNameLabel;
     }
 }

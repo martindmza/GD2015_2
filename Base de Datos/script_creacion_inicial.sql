@@ -145,7 +145,7 @@ ALTER TABLE REZAGADOS.Deposito ADD CONSTRAINT PK_Id_Deposito PRIMARY KEY (Id_Dep
 
 CREATE TABLE REZAGADOS.Tarjeta (
 Id_Tarjeta numeric (18,0) IDENTITY (1,1) NOT NULL,
-Id_Usuario numeric(18,0) NOT NULL,
+Id_Cliente numeric(18,0) NOT NULL,
 Numero varchar(20) NOT NULL,
 Id_Emisor NUMERIC (18,0) NOT NULL,
 Codigo_Seguridad varchar(255) NOT NULL,
@@ -285,8 +285,8 @@ FOREIGN KEY (Id_Tarjeta) REFERENCES REZAGADOS.Tarjeta (Id_Tarjeta)
 ALTER TABLE REZAGADOS.Deposito ADD CONSTRAINT FK_Deposito_to_Moneda
 FOREIGN KEY (Id_Moneda) REFERENCES REZAGADOS.Moneda (Id_Moneda)
 ;
-ALTER TABLE REZAGADOS.Tarjeta ADD CONSTRAINT FK_Tarjeta_to_Usuario
-FOREIGN KEY (Id_Usuario) REFERENCES REZAGADOS.Usuario (Id_Usuario)
+ALTER TABLE REZAGADOS.Tarjeta ADD CONSTRAINT FK_Tarjeta_to_Cliente
+FOREIGN KEY (Id_Cliente) REFERENCES REZAGADOS.Cliente (Id_Cliente)
 ;
 ALTER TABLE REZAGADOS.Tarjeta ADD CONSTRAINT FK_Tarjeta_to_Emisor
 FOREIGN KEY (Id_Emisor) REFERENCES REZAGADOS.Emisor (Id_Emisor)
@@ -478,16 +478,16 @@ WHERE Tarjeta_Emisor_Descripcion IS NOT NULL
 
 -----------------------------------------TARJETA--------------------------------------------------
 
-INSERT INTO REZAGADOS.Tarjeta ( Numero,Id_Usuario,Id_Emisor,Codigo_Seguridad, Fecha_Emision, Vencimiento)
+INSERT INTO REZAGADOS.Tarjeta ( Numero,Id_Cliente,Id_Emisor,Codigo_Seguridad, Fecha_Emision, Vencimiento)
 SELECT  DISTINCT g.Tarjeta_Numero, 
-		u.Id_Usuario,
+		c.Id_Cliente,
 		(	SELECT Id_Emisor FROM REZAGADOS.Emisor 
 			WHERE  Nombre = g.Tarjeta_Emisor_Descripcion)AS 'Id_Emisor',
 		g.Tarjeta_Codigo_Seg,
 		g.Tarjeta_Fecha_Emision,
 		g.Tarjeta_Fecha_Vencimiento
 FROM	gd_esquema.Maestra g 
-JOIN	REZAGADOS.Usuario u ON g.Cli_Mail = u.Nombre
+JOIN	REZAGADOS.Cliente c ON g.Cli_Mail = c.Mail
 WHERE	g.Tarjeta_Numero IS NOT NULL
 
 --------------------------------------------TIPO ITEM-----------------------------------------------
@@ -738,7 +738,6 @@ AS
 GO
 
 -----------------------------------------LOGIN------------------------------------------------
-
 USE [GD1C2015]
 GO
 
@@ -751,7 +750,8 @@ BEGIN
 	DECLARE @Existe_Usuario INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario);                                     
 	IF (@Existe_Usuario = 1)
 	BEGIN
-		INSERT INTO HistorialUsuario (Id_Usuario, Fecha) VALUES (@Usuario, GETDATE())           
+		DECLARE @Id_Usuario NUMERIC (18,0) = (SELECT Id_Usuario FROM REZAGADOS.Usuario WHERE Nombre = @Usuario);
+		INSERT INTO HistorialUsuario (Id_Usuario, Fecha) VALUES (@Id_Usuario, GETDATE())           
 		DECLARE @Habilitado INT = (SELECT COUNT(*) FROM REZAGADOS.Usuario WHERE Nombre = @Usuario AND Habilitada = 1);
 		IF(@Habilitado = 1)
 		BEGIN                            
@@ -997,7 +997,7 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(	@Usuario NUMERIC(18,0),
+CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(	@Id_Cliente NUMERIC(18,0),
 											@Nro_Tarjeta NUMERIC(18,0),
 											@Fecha DATETIME,
 											@Fecha_Venc DATETIME,
@@ -1006,16 +1006,27 @@ CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(	@Usuario NUMERIC(18,0),
 											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
-IF EXISTS (SELECT Id_Tarjeta FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta)
-BEGIN
-SET @RespuestaMensaje = 'Ya existe la tarjeta'
-SET @Respuesta = -1
-END
-ELSE
-INSERT INTO REZAGADOS.Tarjeta (Id_Usuario, Numero, Codigo_Seguridad, Fecha_Emision, Vencimiento)
-VALUES (@Usuario, @Nro_Tarjeta, @Codigo, @Fecha, @Fecha_Venc)
-SET @Respuesta = (SELECT @@IDENTITY)
-SET @RespuestaMensaje = 'Exito'
+
+	IF EXISTS (SELECT Id_Tarjeta FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta)
+	BEGIN
+		SET @RespuestaMensaje = 'Ya existe la tarjeta'
+		SET @Respuesta = -1
+	END
+	ELSE
+		BEGIN TRY
+			BEGIN TRANSACTION
+				INSERT INTO REZAGADOS.Tarjeta (Id_Cliente, Numero, Codigo_Seguridad, Fecha_Emision, Vencimiento)
+				VALUES (@Id_Cliente, @Nro_Tarjeta, @Codigo, @Fecha, @Fecha_Venc)
+				SET @Respuesta = (SELECT @@IDENTITY)
+				SET @RespuestaMensaje = 'Se ingresó Exitosamente'
+			COMMIT
+		END TRY
+		BEGIN CATCH
+			SET @Respuesta = 1
+			SET @RespuestaMensaje = ERROR_MESSAGE()
+			ROLLBACK TRANSACTION
+		END CATCH
+	END
 END
 GO
 
@@ -1079,7 +1090,7 @@ BEGIN
 		ELSE
 			BEGIN
 			INSERT INTO REZAGADOS.Deposito (Id_Cuenta, Id_Tarjeta, Id_Pais, Id_Moneda, Fecha, Importe)
-			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Usuario=@Usuario), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
+			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Cliente=@Id_Cliente), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
 			SET @Respuesta = @@IDENTITY
 			SET @RespuestaMensaje = 'Deposito realizado'
 			END
@@ -2201,11 +2212,11 @@ GROUP BY Categoria
 END
 GO
 
-----------------------------------------------BUSCAR TARJETAS USUARIO ID---------------------------------------------------
+----------------------------------------------BUSCAR TARJETAS CLIENTE ID---------------------------------------------------
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id] (@Id_Usuario NUMERIC(18,0),@Numero VARCHAR(20)=NULL )
+CREATE PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Cliente_Id] (@Id_Cliente NUMERIC(18,0),@Numero VARCHAR(20)=NULL )
 AS
 BEGIN
 	SET NOCOUNT ON
@@ -2213,7 +2224,7 @@ BEGIN
 	DECLARE @SqlQuery VARCHAR(MAX)
 
 	SET @SqlQuery =	'SELECT	t.Id_Tarjeta		ID,
-							t.Id_Usuario		ID_USUARIO,
+							t.Id_Cliente		ID_CLIENTE,
 							t.Numero			NUMERO,
 							t.Id_Emisor			EMISOR_ID,
 							e.Nombre			EMISOR_NOMBRE,
@@ -2223,7 +2234,7 @@ BEGIN
 							t.Habilitada		HABILITADA
 					   FROM [GD1C2015].[REZAGADOS].[Tarjeta] t
 					   JOIN REZAGADOS.Emisor e ON t.Id_Emisor = e.ID_Emisor
-					  WHERE Id_Usuario = ' + CAST(@Id_Usuario AS VARCHAR(MAX)) +
+					  WHERE Id_Cliente = ' + CAST(@Id_Cliente AS VARCHAR(MAX)) +
 					    'AND t.Habilitada = 1 '
 
 	IF(@Numero IS NOT NULL)
@@ -2234,6 +2245,36 @@ BEGIN
 
 END
 GO
+
+----------------------------------------------Listar Emisores--------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Listar_Emisores]
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT Id_Emisor ID, Nombre NOMBRE
+	FROM [REZAGADOS].Emisor
+END
+GO
+
+----------------------------------------------BUSCAR EMISOR ID-------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Buscar_Emisor_Id] (@Id_Emisor NUMERIC(18,0))
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	SELECT Id_Emisor ID, Nombre NOMBRE
+	FROM [REZAGADOS].Emisor
+	WHERE Id_Emisor = @Id_Emisor
+END
+GO
+
 
 ---------------------------------------------------------------------------------------------------------------
 ----------------------------------------------TRIGGERS---------------------------------------------------------

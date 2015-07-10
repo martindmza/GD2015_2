@@ -69,7 +69,7 @@
             this.label16 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.buttonTarjetas = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -131,11 +131,11 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(54, 231);
+            this.label6.Location = new System.Drawing.Point(64, 231);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(69, 13);
+            this.label6.Size = new System.Drawing.Size(72, 13);
             this.label6.TabIndex = 0;
-            this.label6.Text = "Nacionalidad";
+            this.label6.Text = "Nacionalidad:";
             // 
             // label7
             // 
@@ -149,7 +149,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(304, 33);
+            this.label8.Location = new System.Drawing.Point(238, 33);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(47, 13);
             this.label8.TabIndex = 0;
@@ -167,7 +167,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(274, 63);
+            this.label10.Location = new System.Drawing.Point(208, 63);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(77, 13);
             this.label10.TabIndex = 0;
@@ -229,7 +229,7 @@
             // 
             // domNumero
             // 
-            this.domNumero.Location = new System.Drawing.Point(355, 30);
+            this.domNumero.Location = new System.Drawing.Point(289, 30);
             this.domNumero.Name = "domNumero";
             this.domNumero.Size = new System.Drawing.Size(122, 20);
             this.domNumero.TabIndex = 1;
@@ -254,9 +254,9 @@
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Location = new System.Drawing.Point(12, 265);
+            this.groupBox1.Location = new System.Drawing.Point(9, 265);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(528, 128);
+            this.groupBox1.Size = new System.Drawing.Size(462, 128);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Domicilio";
@@ -264,7 +264,7 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(507, 91);
+            this.label21.Location = new System.Drawing.Point(441, 91);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(11, 13);
             this.label21.TabIndex = 9;
@@ -272,7 +272,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(483, 92);
+            this.button6.Location = new System.Drawing.Point(417, 92);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(24, 20);
             this.button6.TabIndex = 5;
@@ -283,7 +283,7 @@
             // paisText
             // 
             this.paisText.Enabled = false;
-            this.paisText.Location = new System.Drawing.Point(355, 92);
+            this.paisText.Location = new System.Drawing.Point(289, 92);
             this.paisText.Name = "paisText";
             this.paisText.Size = new System.Drawing.Size(122, 20);
             this.paisText.TabIndex = 4;
@@ -292,7 +292,7 @@
             // paislabel
             // 
             this.paislabel.AutoSize = true;
-            this.paislabel.Location = new System.Drawing.Point(319, 94);
+            this.paislabel.Location = new System.Drawing.Point(253, 94);
             this.paislabel.Name = "paislabel";
             this.paislabel.Size = new System.Drawing.Size(32, 13);
             this.paislabel.TabIndex = 3;
@@ -322,7 +322,7 @@
             // domDepartamento
             // 
             this.domDepartamento.AcceptsReturn = true;
-            this.domDepartamento.Location = new System.Drawing.Point(355, 60);
+            this.domDepartamento.Location = new System.Drawing.Point(289, 60);
             this.domDepartamento.Name = "domDepartamento";
             this.domDepartamento.Size = new System.Drawing.Size(122, 20);
             this.domDepartamento.TabIndex = 3;
@@ -351,7 +351,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(13, 399);
+            this.button2.Location = new System.Drawing.Point(9, 409);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 9;
@@ -360,7 +360,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(455, 399);
+            this.button3.Location = new System.Drawing.Point(396, 409);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 7;
@@ -388,7 +388,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(371, 399);
+            this.button5.Location = new System.Drawing.Point(312, 409);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 8;
@@ -468,22 +468,23 @@
             this.label19.TabIndex = 9;
             this.label19.Text = "*";
             // 
-            // checkBox1
+            // buttonTarjetas
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(457, 23);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(73, 17);
-            this.checkBox1.TabIndex = 5;
-            this.checkBox1.Text = "Habilitado";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.buttonTarjetas.Location = new System.Drawing.Point(339, 227);
+            this.buttonTarjetas.Name = "buttonTarjetas";
+            this.buttonTarjetas.Size = new System.Drawing.Size(132, 23);
+            this.buttonTarjetas.TabIndex = 10;
+            this.buttonTarjetas.Text = "Tarjetas de Crédito";
+            this.buttonTarjetas.UseVisualStyleBackColor = true;
+            this.buttonTarjetas.Click += new System.EventHandler(this.buttonTarjetas_Click);
             // 
             // ClienteForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(552, 431);
+            this.ClientSize = new System.Drawing.Size(486, 442);
             this.ControlBox = false;
+            this.Controls.Add(this.buttonTarjetas);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.label16);
@@ -493,7 +494,6 @@
             this.Controls.Add(this.button4);
             this.Controls.Add(this.nacimiento);
             this.Controls.Add(this.button5);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.groupBox1);
@@ -566,6 +566,6 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button buttonTarjetas;
     }
 }

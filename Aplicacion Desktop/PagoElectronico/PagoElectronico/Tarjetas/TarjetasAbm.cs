@@ -19,19 +19,26 @@ namespace Tarjetas
         private const int DESHABILITAR = 2;
 
         private TarjetaDeCreditoDao dao;
-        private List<TarjetaDeCreditoModel> tarjetas;
+        private List<TarjetaDeCreditoModel> tarjetas = new List<TarjetaDeCreditoModel>();
         private Int32 tarjetaActivoIndex;
         private TarjetaDeCreditoModel tarjetaActiva;
 
-        private UserModel usuario;
+        private ClienteModel cliente;
 
         public TarjetasAbm()
         {
             InitializeComponent();
 
             dao = new TarjetaDeCreditoDao();
-            usuario = UsuarioSingleton.getInstance().getUsuario();
-            tarjetas = dao.getTarjetasByUsuario(usuario);
+            UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
+            cliente = new ClienteDao().getClienteByUser(usuario);
+            if (cliente != null)
+            {
+                tarjetas = dao.getTarjetasByCliente(cliente);
+            }
+            else {
+                buttonBuscar.Enabled = false;
+            }
             fillData();
 
             buttonQuitar.Enabled = false;
@@ -156,10 +163,10 @@ namespace Tarjetas
                     String numero = numeroText.Text;
                     if (numero.Trim().Length == 0)
                     {
-                        tarjetas = dao.getTarjetasByUsuario(usuario);
+                        tarjetas = dao.getTarjetasByCliente(cliente);
                     }
                     else {
-                        tarjetas = dao.getTarjetasByUsuarioAndNumero(usuario, numero);
+                        tarjetas = dao.getTarjetasByClienteAndNumero(cliente, numero);
                     }
                 }
             }

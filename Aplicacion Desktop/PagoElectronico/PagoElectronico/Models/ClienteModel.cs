@@ -40,6 +40,7 @@ namespace Models
         public Decimal nroDocumento { get; set; }
         public TipoDocumentoModel tipoDocumento { get; set; }
         public List<CuentaModel> cuentas = new List<CuentaModel>();
+        public List<TarjetaDeCreditoModel> tarjetas = new List<TarjetaDeCreditoModel>();
         public UserModel usuario;
 
         public ClienteModel()

@@ -22,8 +22,8 @@ namespace Logins
 
         public Login() {
             InitializeComponent();
-            this.usuario.Text = "admin";
-            this.password.Text = "w32e";
+            this.usuario.Text = "vitoldo_guerrero@gmail.com";
+            this.password.Text = "rezagados";
         }
         
         //---------------------------------------------------------------------------------------------------------------------

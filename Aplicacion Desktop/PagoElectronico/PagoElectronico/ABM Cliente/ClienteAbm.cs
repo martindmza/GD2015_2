@@ -28,7 +28,6 @@ namespace ABM
 
         private CuentaAbm parentCuenta;
         private CuentaForm parentCuentaForm;
-        private TarjetasForm parentTarjetaForm;
 
         private List<ClienteModel> clientes;
 
@@ -44,13 +43,6 @@ namespace ABM
             init(operacionTipo);
             this.parentCuentaForm = parentCuentaForm;
             parentCuentaForm.Enabled = false;
-        }
-
-        public ClienteAbm(int operacionTipo, TarjetasForm parentTarjetaForm)
-        {
-            init(operacionTipo);
-            this.parentTarjetaForm = parentTarjetaForm;
-            parentTarjetaForm.Enabled = false;
         }
 
         public ClienteAbm(int operacionTipo)
@@ -303,11 +295,6 @@ namespace ABM
                 parentCuentaForm.Enabled = true;
             }
 
-            if (parentTarjetaForm != null) {
-                parentTarjetaForm.formResponseCliente(clienteActivo);
-                parentTarjetaForm.Enabled = true;
-            }
-
             this.Close();
             this.Dispose();
             GC.Collect();
@@ -324,10 +311,6 @@ namespace ABM
             if (parentCuentaForm != null)
             {
                 parentCuentaForm.Enabled = true;
-            }
-            if (parentTarjetaForm != null)
-            {
-                parentTarjetaForm.Enabled = true;
             }
 
             this.Close();
