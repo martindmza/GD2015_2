@@ -2198,9 +2198,10 @@ GO
 
 ---------------------------------------HISTORIAL ACCESOS-------------------------------------------------------
 
-USE [GD1C2015]
 IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Accesos]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
+    
+USE [GD1C2015]
 GO
 CREATE TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
 ON [REZAGADOS].[Cuenta]
@@ -2212,3 +2213,103 @@ INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) VALUES ((SELECT Id_Cuenta
 END
 GO
 
+----------------------------------------5 TRANSACCIONES---------------------------------------------------------
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones]
+    
+USE [GD1C2015]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_5_Transacciones]
+ON [REZAGADOS].[Item]
+AFTER INSERT
+AS
+BEGIN
+IF (SELECT COUNT(*) FROM REZAGADOS.Item JOIN Inserted ON Inserted.Id_Cuenta = Item.Id_Cuenta WHERE Item.Id_Factura IS NULL GROUP BY Item.Id_Cuenta) >= 5
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada')
+END
+GO
+
+----------------------------------------5 TRANSACCIONES2---------------------------------------------------------
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones2]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
+    
+USE [GD1C2015]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
+ON [REZAGADOS].[Item]
+AFTER UPDATE
+AS
+BEGIN
+IF (SELECT COUNT(*) FROM REZAGADOS.Item JOIN Updated ON Updated.id_Cuenta = Item.Id_Cuenta WHERE Item.Id_Factura IS NULL GROUP BY Id_Cuenta) < 5
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
+END
+GO
+
+----------------------------------------5 TRANSACCIONES2---------------------------------------------------------
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones2]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
+    
+USE [GD1C2015]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
+ON [REZAGADOS].[Item]
+AFTER UPDATE
+AS
+BEGIN
+IF (SELECT COUNT(*) FROM REZAGADOS.Item JOIN Updated ON Updated.id_Cuenta = Item.Id_Cuenta WHERE Item.Id_Factura IS NULL GROUP BY Id_Cuenta) < 5
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
+END
+GO
+
+----------------------------------------TIPO CUENTA TRANSACCION---------------------------------------------------------
+/*
+IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
+    
+USE [GD1C2015]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
+ON [REZAGADOS].[Cuenta]
+AFTER UPDATE
+AS
+BEGIN
+IF UPDATE(Id_Tipo_Cuenta)
+IF (SELECT Categoria FROM REZAGADOS.TipoCuenta, Cuenta WHERE Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta ) <> 'Gratuita'
+INSERT INTO Item (Id_Cuenta, Id_Tipo_Cuenta, Importe, Fecha) VALUES (Updated.Id_Cuenta, Updated.Id_Tipo_Cuenta, (SELECT Costo FROM TipoCuenta WHERE TipoCuenta.Id_Tipo_Cuenta = Updated.Id_Tipo_Cuenta), GETDATE())
+END
+GO
+
+----------------------------------------TIPO CUENTA TRANSACCION2---------------------------------------------------------
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]
+    
+USE [GD1C2015]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]
+ON [REZAGADOS].[Cuenta]
+AFTER INSERT
+AS
+BEGIN
+DECLARE @Cuenta NUMERIC(18,0) SET @Cuenta = (SELECT Id_Cuenta FROM Inserted)
+DECLARE @Tipo NUMERIC(18,0) SET @Tipo = (SELECT Id_Tipo_Cuenta FROM Inserted)
+IF (SELECT Categoria FROM REZAGADOS.TipoCuenta, Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta AND Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta ) <> ('Gratuita')
+INSERT INTO Item (Id_Cuenta, Id_Tipo_Cuenta, Importe, Fecha) VALUES (@Cuenta, @Tipo, (SELECT Costo FROM TipoCuenta, Cuenta WHERE TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta AND Cuenta.Id_Cuenta=@Cuenta), GETDATE())
+GO
+*/
+--------------------------------------------SP CUENTA VENCIDA----------------------------------------------------------------------
+
+IF OBJECT_ID ('[REZAGADOS].[Cuenta_Vencida]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Cuenta_Vencida]
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].[Cuenta_Vencida] (@Cuenta NUMERIC(18,0))
+AS
+BEGIN
+IF ((SELECT Fecha_Creacion FROM Cuenta WHERE Id_Cuenta=@Cuenta) + (SELECT Dias_Vigencia FROM TipoCuenta, Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta)) > GETDATE()
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+END

@@ -312,6 +312,21 @@ IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Accesos]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Historial_Accesos]
 
+IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones]
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones2]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
+    
+IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
+   
+IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]
+    
+IF OBJECT_ID ('[REZAGADOS].[Cuenta_Vencida]') IS NOT NULL
+    DROP Procedure [REZAGADOS].[Cuenta_Vencida]
+
 USE [GD1C2015]
 GO
 IF  EXISTS (SELECT * FROM sys.schemas WHERE name = N'REZAGADOS')
