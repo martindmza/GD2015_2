@@ -11,19 +11,9 @@ namespace DAO
 {
     public class TarjetaDeCreditoDao: BasicaDAO<TarjetaDeCreditoModel>
     {
-        public List<TarjetaDeCreditoModel> getTarjetasByUsuario(UserModel usuario) {
-            SqlCommand command = InitializeConnection("Buscar_Tarjeta_Usuario_Id");
-            command.Parameters.Add("@Id_Usuario", System.Data.SqlDbType.Decimal).Value = usuario.id;
-
-            return operacionSelect(command);
-
-        }
-
-        public List<TarjetaDeCreditoModel> getTarjetasByUsuarioAndNumero(UserModel usuario,String numero)
-        {
-            SqlCommand command = InitializeConnection("Buscar_Tarjeta_Usuario_Id");
-            command.Parameters.Add("@Id_Usuario", System.Data.SqlDbType.Decimal).Value = usuario.id;
-            command.Parameters.Add("@Numero", System.Data.SqlDbType.Decimal).Value = numero;
+        public List<TarjetaDeCreditoModel> getTarjetasByCliente(ClienteModel cliente) {
+            SqlCommand command = InitializeConnection("Buscar_Tarjeta_Cliente_Id");
+            command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = cliente.id;
 
             return operacionSelect(command);
 
@@ -31,17 +21,27 @@ namespace DAO
 
         public List<TarjetaDeCreditoModel> getTarjetasByClienteAndNumero(ClienteModel cliente, String numero)
         {
+            SqlCommand command = InitializeConnection("Buscar_Tarjeta_Cliente_Id");
+            command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = cliente.id;
+            command.Parameters.Add("@Numero", System.Data.SqlDbType.Decimal).Value = numero;
 
-           
-            
-            return null;
+            return operacionSelect(command);
+
         }
 
-        public TarjetaDeCreditoModel crearTarjeta(TarjetaDeCreditoModel tarjeta)
+        public Respuesta crearTarjeta(TarjetaDeCreditoModel tarjeta)
         {
-
-            tarjeta.id = 99;
-            return tarjeta;
+            try
+            {
+                SqlCommand command = InitializeConnection("Crear_Tarjeta");
+                command = llenarParametros(tarjeta, command);
+                return operacionDml(command);
+            }
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                throw excepcion;
+            }
         }
 
         public TarjetaDeCreditoModel modificarTarjeta(TarjetaDeCreditoModel tarjeta)
@@ -92,6 +92,36 @@ namespace DAO
             throw new NotImplementedException();
         }
 
+        private SqlCommand llenarParametros(TarjetaDeCreditoModel tarjeta, SqlCommand command)
+        {
+            if (tarjeta.id != 0)
+            {
+                command.Parameters.Add("@Id_Tarjeta", System.Data.SqlDbType.Decimal).Value = tarjeta.id;
+            }
+            if (tarjeta.propietario != null)
+            {
+                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = tarjeta.propietario.id;
+            }
+            if (tarjeta.numero != null && tarjeta.numero.Trim().Length != 0)
+            {
+                command.Parameters.Add("@Nro_Tarjeta", System.Data.SqlDbType.NVarChar, 255).Value = tarjeta.numero;
+            }
+            if (tarjeta.emision != null)
+            {
+                command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = tarjeta.emision;
+            }
+            if (tarjeta.vencimiento != null)
+            {
+                command.Parameters.Add("@Fecha_Venc", System.Data.SqlDbType.DateTime).Value = tarjeta.vencimiento;
+            }
+            if (tarjeta.codigoSeguridad != null && tarjeta.codigoSeguridad.Trim().Length != 0)
+            {
+                command.Parameters.Add("@Codigo", System.Data.SqlDbType.NVarChar, 255).Value = tarjeta.codigoSeguridad;
+            }
+
+            return command;
+        }
+
         private List<TarjetaDeCreditoModel> operacionSelect(SqlCommand command)
         {
             List<TarjetaDeCreditoModel> result = new List<TarjetaDeCreditoModel>();
@@ -104,6 +134,31 @@ namespace DAO
                 result.Add(model);
             }
             return result;
+        }
+
+        public Respuesta operacionDml(SqlCommand command)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                //
+                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
+                var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
+                pOut.Direction = ParameterDirection.Output;
+                pOut2.Direction = ParameterDirection.Output;
+                //
+
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+                Decimal value = Convert.IsDBNull(pOut.Value) ? -1 : (Decimal)(pOut.Value);
+                String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+
+                return new Respuesta(value, mensaje);
+            }
+            catch (Exception excepcion)
+            {
+                throw excepcion;
+            }
         }
 
     }

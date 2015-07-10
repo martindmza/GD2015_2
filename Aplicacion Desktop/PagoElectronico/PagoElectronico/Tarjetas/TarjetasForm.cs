@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using DAO;
 using Models;
 using ABM;
+using FormsExtras;
 
 namespace Tarjetas
 {
@@ -23,13 +24,21 @@ namespace Tarjetas
         private TarjetaDeCreditoDao tarjetasDao;
 
         private TarjetaDeCreditoModel tarjeta;
-        private ClienteModel cliente;
+        private EmisorModel emisor;
 
         private const int OPEN_CLIENTE_ABM_TO_SELECT = 1;
+        private const String EXCEPTION_MESSAGE = "La operacion no se pudo completar";
 
         public TarjetasForm(UInt32 operacionTipo,TarjetasAbm parent,TarjetaDeCreditoModel tarjeta)
         {
+            this.parent = parent;
+            init(operacionTipo,tarjeta);
+        }
+
+        private void init(UInt32 operacionTipo,TarjetaDeCreditoModel tarjeta)
+        {
             InitializeComponent();
+
             if (tarjeta != null)
             {
                 this.tarjeta = tarjeta;
@@ -37,7 +46,6 @@ namespace Tarjetas
 
             this.operacionTipo = operacionTipo;
             this.tarjetasDao = new TarjetaDeCreditoDao();
-            this.parent = parent;
 
             fillData();
 
@@ -74,11 +82,10 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        public void formResponseCliente(ClienteModel clienteSeleccionado)
-        {
-            this.clienteText.Text = clienteSeleccionado.id.ToString();
-            clienteNameLabel.Text = clienteSeleccionado.apellido + ", " + clienteSeleccionado.nombre;
-            this.cliente = clienteSeleccionado;
+        public void formResponseEmisor(EmisorModel emisor) {
+            this.emisorText.Text = emisor.id.ToString();
+            emisorNameLabel.Text = emisor.nombre;
+            this.emisor = emisor;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -92,8 +99,7 @@ namespace Tarjetas
                 emisionText.Value = DateTime.Today;
                 vencimientoText.Value = DateTime.Today;
                 codigoSeguridadText.Text = "";
-                clienteNameLabel.Text = "";
-                checkBoxHabilitada.Checked = true;
+                emisorNameLabel.Text = "";
             }
             else
             {
@@ -101,10 +107,6 @@ namespace Tarjetas
                 emisionText.Value = tarjeta.emision;
                 vencimientoText.Value = tarjeta.vencimiento;
                 codigoSeguridadText.Text = tarjeta.codigoSeguridad.ToString();
-                clienteText.Text = tarjeta.propietario.id.ToString();
-                clienteNameLabel.Text = tarjeta.propietario.apellido + ", " + tarjeta.propietario.nombre;
-                checkBoxHabilitada.Checked = tarjeta.habilitada;
-                cliente = tarjeta.propietario;
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -114,7 +116,7 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
         private void requireds_TextChanged(object sender, EventArgs e)
         {
-            if (numeroText.Text.Length != 0     && clienteText.Text.Length != 0     &&
+            if (numeroText.Text.Length != 0     && emisorText.Text.Length != 0     &&
                 emisionText.Text.Length != 0    && vencimientoText.Text.Length != 0 &&
                 codigoSeguridadText.Text.Length !=0)
             {
@@ -171,31 +173,48 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        //Buscar Cliente
+        //Buscar Emisor
         private void trigger1_Click(object sender, EventArgs e)
         {
-            Form clienteAbm = new ClienteAbm(OPEN_CLIENTE_ABM_TO_SELECT, this);
-            clienteAbm.MdiParent = this.MdiParent;
-            clienteAbm.Show();
+            Form form = new EmisoresForm(this);
+            form.MdiParent = this.MdiParent;
+            form.Show();
         }
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonAceptar_Click(object sender, EventArgs e)
         {
+            Respuesta respuesta;
             switch (operacionTipo)
             {
                 case 0:
                     tarjeta = new TarjetaDeCreditoModel(numeroText.Text, codigoSeguridadText.Text, emisionText.Value,
-                                                            vencimientoText.Value, cliente);
+                                                            vencimientoText.Value);
 
-                    tarjeta = tarjetasDao.crearTarjeta(tarjeta);
-                    parent.formResponseAdd(tarjeta);
-                    MessageBox.Show("Cuenta creada exitosamente");
+                    
+                    try
+                    {
+                        respuesta = tarjetasDao.crearTarjeta(tarjeta);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            tarjeta.id = respuesta.codigo;
+                            parent.formResponseAdd(tarjeta);
+                            parent.Enabled = true;
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
+                    }
                     break;
                 case 1:
                     tarjeta = new TarjetaDeCreditoModel(tarjeta.id,numeroText.Text, codigoSeguridadText.Text, 
-                                                           emisionText.Value, vencimientoText.Value, cliente);
+                                                           emisionText.Value, vencimientoText.Value);
                     MessageBox.Show("Cliente modificado exitosamente");
                     tarjeta = tarjetasDao.modificarTarjeta(tarjeta);
                     parent.formResponseUpdate(tarjeta);

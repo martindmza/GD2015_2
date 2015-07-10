@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Models;
 using DAO;
 using FormsExtras;
+using Tarjetas;
 
 namespace ABM
 {
@@ -17,12 +18,12 @@ namespace ABM
         private ClienteModel cliente;
         private int operacionTipo;
         private ClienteDao clienteDao;
+        private TarjetaDeCreditoDao tarjDao;
         private ClienteAbm parent;
         private ExtraDao extraDao;
 
         private PaisModel pais;
         private PaisModel nacionalidad;
-        private LocalidadModel localidad;
         private TipoDocumentoModel tipoDocumento;
 
         private const int SELECCIONAR_PAIS = 0;
@@ -40,6 +41,7 @@ namespace ABM
             this.operacionTipo = operacionTipo;
             this.clienteDao = clienteDao;
             this.extraDao = extraDao;
+            this.tarjDao = new TarjetaDeCreditoDao();
             this.parent = parent;
 
             fillDocTypes();
@@ -62,8 +64,6 @@ namespace ABM
                     disableInputs();
                     break;
             }
-
-            checkBox1.Enabled = false;
             id.Enabled = false;
             parent.Enabled = false;
         }
@@ -100,6 +100,8 @@ namespace ABM
         }
         //-----------------------------------------------------------------------------------------------------------------
 
+       
+
         //-----------------------------------------------------------------------------------------------------------------
         private void fillData() {
 
@@ -107,8 +109,6 @@ namespace ABM
             {
                 nacimiento.Value = new DateTime(1990, 1, 1);
                 docTipo.SelectedItem = docTipo.Items[0];
-                checkBox1.Checked = true;
-
             }
             else {
 
@@ -132,7 +132,6 @@ namespace ABM
                 nombre.Text = cliente.nombre;
                 nacimiento.Value = cliente.nacimiento;
                 email.Text = cliente.email;
-                checkBox1.Checked = cliente.habilitado;
                 
                 if (cliente.direccionCalle != null && cliente.direccionCalle.Length != 0) {
                     domCalle.Text = cliente.direccionCalle;
@@ -157,12 +156,12 @@ namespace ABM
                 nacionalidad = cliente.pais;
                 pais = cliente.pais;
                 tipoDocumento = cliente.tipoDocumento;
-                
-            }
-            
 
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
+
+       
 
         //-----------------------------------------------------------------------------------------------------------------
         public void setPaisSeleccionado(PaisModel paisSeleccionado) {
@@ -179,13 +178,6 @@ namespace ABM
         }
         //-----------------------------------------------------------------------------------------------------------------
 
-        //-----------------------------------------------------------------------------------------------------------------
-        public void setLocalidadSeleccionado(LocalidadModel localidad)
-        {
-            this.localidadText.Text = localidad.nombre;
-            this.localidad = localidad;
-        }
-        //-----------------------------------------------------------------------------------------------------------------
 
         //EVENT HANDLER***
         //cambian los campos de texto
@@ -392,5 +384,14 @@ namespace ABM
             clienteForm.Show();
         }
         //-----------------------------------------------------------------------------------------------------------------        
+
+       
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonTarjetas_Click(object sender, EventArgs e)
+        {
+
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
     }
 }

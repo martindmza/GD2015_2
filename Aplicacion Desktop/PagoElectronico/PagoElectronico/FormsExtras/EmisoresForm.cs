@@ -9,87 +9,93 @@ using System.Windows.Forms;
 using DAO;
 using Models;
 using ABM;
+using Tarjetas;
 
 namespace FormsExtras
 {
-    public partial class LocalidadesForm : Form
+    public partial class EmisoresForm : Form
     {
-        private ExtraDao extraDao;
-        private List<LocalidadModel> localidades;
-        private Int32 localidadActivoIndex;
-        private LocalidadModel localidadActivo;
-        private ClienteForm parentForm;
+        private EmisorDao emisorDao;
+        private List<EmisorModel> emisores;
+        private Int32 activoIndex;
+        private EmisorModel objectActivo;
+        private TarjetasForm parent;
 
-        public LocalidadesForm(ClienteForm parentForm)
+        public EmisoresForm(TarjetasForm parent)
         {
+            this.parent = parent;
+            parent.Enabled = false;
+
             InitializeComponent();
+            emisorDao = new EmisorDao();
+            emisores = emisorDao.getListado();
 
-            localidades = new LocalidadDAO().getListado();
             fillData();
-
-            this.parentForm = parentForm;
-
-            button1.Enabled = false;
-            parentForm.Enabled = false;
         }
-
 
 
         //-----------------------------------------------------------------------------------------------------------------
         private void fillData()
         {
+
             dataGridView1.Rows.Clear();
 
             string[] row;
-            foreach (LocalidadModel localidad in localidades)
+
+            foreach (EmisorModel e in emisores)
             {
-                row = new String[] {    localidad.id.ToString(),
-                                        localidad.nombre.ToString()
+                row = new String[] {    e.id.ToString(),
+                                        e.nombre.ToString()
                                         };
                 dataGridView1.Rows.Add(row);
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
+
         //Event Handler***
         //-----------------------------------------------------------------------------------------------------------------
         //accept button click
         private void button1_Click(object sender, EventArgs e)
         {
-            parentForm.setLocalidadSeleccionado(localidadActivo);
-            parentForm.Enabled = true;
-            this.Close();
-            this.Dispose();
-            GC.Collect();
+            if (objectActivo != null){
+                parent.formResponseEmisor(objectActivo);
+                parent.Enabled = true;
+                this.Close();
+                this.Dispose();
+                GC.Collect();
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        //Cancel Button click
+        //Cancel Button Click
         private void button2_Click(object sender, EventArgs e)
         {
-            parentForm.Enabled = true;
+            parent.Enabled = true;
             this.Close();
             this.Dispose();
             GC.Collect();
         }
         //-----------------------------------------------------------------------------------------------------------------
 
+
+        //selccion de un pais
         //-----------------------------------------------------------------------------------------------------------------
         private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             try
             {
                 int filaActiva = this.dataGridView1.CurrentCell.RowIndex;
-                String idPaisActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
+                String idActivo = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
 
                 int count = 0;
-                foreach (LocalidadModel localidad in localidades)
+                foreach (EmisorModel em in emisores)
                 {
-                    if (idPaisActivo.Equals(localidad.id.ToString()))
+                    if (idActivo.Equals(em.id.ToString()))
                     {
-                        localidadActivo = localidad;
-                        localidadActivoIndex = count;
+                        objectActivo = em;
+                        activoIndex = count;
                         break;
                     }
                     count++;
@@ -102,6 +108,7 @@ namespace FormsExtras
                 button1.Enabled = false;
             }
         }
-        //-----------------------------------------------------------------------------------------------------------------
+
+       
     }
 }
