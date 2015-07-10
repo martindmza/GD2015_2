@@ -303,6 +303,8 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE REZAGADOS.Buscar_Banco_ID;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Banco]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Listar_Banco;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Cuenta_Vencida]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Cuenta_Vencida;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Tarjeta_Usuario_Id]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Buscar_Tarjeta_Usuario_Id;
 
@@ -314,18 +316,9 @@ IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Cuentas]') IS NOT NULL
 
 IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones]
-
-IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones2]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones2]
     
 IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
-   
-IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion2]
-    
-IF OBJECT_ID ('[REZAGADOS].[Cuenta_Vencida]') IS NOT NULL
-    DROP Procedure [REZAGADOS].[Cuenta_Vencida]
 
 USE [GD1C2015]
 GO
