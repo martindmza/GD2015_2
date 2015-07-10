@@ -335,6 +335,9 @@ IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
 IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
 
+IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
+
 USE [GD1C2015]
 GO
 IF  EXISTS (SELECT * FROM sys.schemas WHERE name = N'REZAGADOS')
