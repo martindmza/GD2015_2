@@ -63,6 +63,10 @@ namespace ABM
                     break;
                 case 1:
                     aceptar.Enabled = true;
+                    button1.Visible = false;
+                    button2.Visible = false;
+                    apertura.Enabled = false;
+                    moneda.Enabled = false;
                     this.Text = "Modificar Cuenta";
                     break;
                 case 2:
@@ -231,7 +235,13 @@ namespace ABM
             switch (operacionTipo)
             {
                 case 0:
-                    cuenta = new CuentaModel(this.paisCuenta, this.tipoActivo, monedaModel, estado, apertura.Value, this.cliente);
+                    cuenta = new CuentaModel();
+                    cuenta.pais = this.paisCuenta;
+                    cuenta.tipo = this.tipoActivo;
+                    cuenta.moneda = this.monedaModel;
+                    cuenta.estado = this.estado;
+                    cuenta.fechaCreacion = apertura.Value;
+                    cuenta.propietario = this.cliente;
                     cuenta.moneda = new MonedaModel();
                     cuenta.propietario = cliente;
                     cuenta = cuentaDao.agregarBasica(cuenta);
@@ -239,11 +249,11 @@ namespace ABM
                     MessageBox.Show("Cuenta creada exitosamente");
                     break;
                 case 1:
-                    cuenta = new CuentaModel(paisCuenta, tipoActivo, monedaModel, estado, apertura.Value, this.cliente);
-
-                    MessageBox.Show("Cliente modificado exitosamente");
-                    cuenta = cuentaDao.updateCuenta(cuenta);
+                    this.cuenta.tipo = this.tipoActivo;
+                    this.cuenta.estado = this.estado;
+                    cuenta = cuentaDao.updateCuenta(this.cuenta);
                     parentCuenta.formResponseUpdate(cuenta);
+                    MessageBox.Show("Cliente modificado exitosamente");
                     break;
                 default:
                     MessageBox.Show("Cuenta dada de Baja Exitosamente");

@@ -183,6 +183,7 @@
     <Compile Include="Models\CuentaModel.cs" />
     <Compile Include="Models\CuentaTipoModel.cs" />
     <Compile Include="Models\DepositoModel.cs" />
+    <Compile Include="Models\EmisorModel.cs" />
     <Compile Include="Models\MonedaModel.cs" />
     <Compile Include="Models\TipoDocumentoModel.cs" />
     <Compile Include="Models\EstadoModel.cs" />
