@@ -530,13 +530,14 @@ FROM gd_esquema.Maestra
 WHERE Cuenta_Dest_Numero IS NOT NULL
 
 -------------------------------------------DEPOSITO---------------------------------------------------
-
+-- CORREGIR
+/*
 INSERT INTO REZAGADOS.Deposito (Codigo, Id_Cuenta, Id_Tarjeta, Id_Pais, Fecha, Importe)
 SELECT g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
 FROM gd_esquema.Maestra g, REZAGADOS.Usuario u, REZAGADOS.Tarjeta t
 WHERE g.Deposito_Codigo IS NOT NULL AND u.Nombre = g.Cli_Mail AND t.Id_Usuario = u.Id_Usuario
 GROUP BY g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
-
+*/
 --------------------------------------------CHEQUE----------------------------------------------------
 
 INSERT INTO REZAGADOS.Cheque (Id_Cheque, Id_Retiro, Id_Banco, Fecha, Importe)
@@ -1026,7 +1027,6 @@ BEGIN
 			SET @RespuestaMensaje = ERROR_MESSAGE()
 			ROLLBACK TRANSACTION
 		END CATCH
-	END
 END
 GO
 
@@ -1090,7 +1090,7 @@ BEGIN
 		ELSE
 			BEGIN
 			INSERT INTO REZAGADOS.Deposito (Id_Cuenta, Id_Tarjeta, Id_Pais, Id_Moneda, Fecha, Importe)
-			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Cliente=@Id_Cliente), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
+			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Cliente=@Cliente), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
 			SET @Respuesta = @@IDENTITY
 			SET @RespuestaMensaje = 'Deposito realizado'
 			END
@@ -1996,10 +1996,10 @@ BEGIN CATCH
 	ROLLBACK TRANSACTION
 END CATCH
 END
-
+GO
 --------------------------------------------------BUSCAR CLIENTES FILTROS-------------------------------------------
 
-USE [GD1C2015]
+--USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Buscar_Cliente_Filtros') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Buscar_Cliente_Filtros
 GO
