@@ -53,7 +53,7 @@ ALTER TABLE REZAGADOS.Usuario ADD CONSTRAINT PK_Id_Usuario PRIMARY KEY (Id_Usuar
 CREATE TABLE REZAGADOS.HistorialUsuario(
 Id_Historial_Usuario numeric (18,0) IDENTITY(1,1) NOT NULL,
 Id_Usuario numeric (18,0),
-Usuario varchar(255),
+--Usuario varchar(255),
 Cantidad_Intentos_Fallidos numeric(18,0) DEFAULT 0,
 Fecha datetime,);
 ALTER TABLE REZAGADOS.HistorialUsuario ADD CONSTRAINT PK_Id_Historial_Usuario PRIMARY KEY (Id_Historial_Usuario);
@@ -185,8 +185,9 @@ Id_Banco numeric (18,0) NOT NULL,
 Fecha datetime,
 Id_Moneda numeric (18,0) DEFAULT 1,
 Importe numeric(18,2) NOT NULL,
-Num_Egreso numeric(18,2),
-Num_Item numeric(18,2),);
+--Num_Egreso numeric(18,2),
+--Num_Item numeric(18,2),
+);
 ALTER TABLE REZAGADOS.Cheque ADD CONSTRAINT PK_Id_Cheque PRIMARY KEY (Id_Cheque);
 
 CREATE TABLE REZAGADOS.Banco ( 
@@ -361,8 +362,6 @@ SELECT Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc
 FROM gd_esquema.Maestra
 GROUP BY Cli_Tipo_Doc_Cod, Cli_Tipo_Doc_Desc)
 
-INSERT INTO REZAGADOS.TipoDocumento VALUES (80,'DNI')
-
 -------------------------------------------ROL--------------------------------------------------
 
 INSERT INTO REZAGADOS.Rol (Nombre)
@@ -463,11 +462,32 @@ VALUES ('Oro', 10, 10), ('Plata', 5, 20), ('Bronce', 5, 30), ('Gratuita', 0, 0);
 INSERT INTO REZAGADOS.Cuenta (Id_Cuenta, Id_Usuario, Id_Tipo_Cuenta, Id_Pais, Id_Estado, Fecha_Creacion, Fecha_Cierre)
 SELECT g.Cuenta_Numero, u.Id_Usuario, 
 	(SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria='Gratuita') , g.Cuenta_Pais_Codigo, 
-	(SELECT e.Id_Estado FROM REZAGADOS.Estado_Cuenta e WHERE e.Nombre like 'Habilitada'), 
+	(SELECT e.Id_Estado FROM REZAGADOS.Estado_Cuenta e WHERE e.Nombre like 'Inhabilitada'), 
 	g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
 FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE u.Nombre = g.Cli_Mail AND g.Cuenta_Dest_Fecha_Creacion IS NOT NULL
 GROUP BY g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
+
+------------------------------------------FACUTRA--------------------------------------------------
+
+INSERT INTO REZAGADOS.Factura (Id_Factura, Id_Usuario, Fecha)
+SELECT g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
+FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
+WHERE u.Nombre = g.Cli_Mail AND g.Factura_Numero IS NOT NULL
+GROUP BY g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
+
+--------------------------------------------TIPO ITEM-----------------------------------------------
+
+INSERT INTO REZAGADOS.TipoItem (Tipo, Importe)
+VALUES ('Comisión por transferencia.', 10), ('Creacion de cuenta.', 0), ('Cambio de cuenta.', 0)
+
+--------------------------------------------ITEM----------------------------------------------------
+
+INSERT INTO REZAGADOS.Item (Id_Factura, Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
+SELECT  Factura_Numero, Cuenta_Numero, 1, Trans_Importe, Transf_Fecha
+FROM gd_esquema.Maestra
+WHERE Trans_Importe IS NOT NULL
+AND Trans_Importe <> 0.00
 
 -----------------------------------------EMISOR---------------------------------------------------
 
@@ -489,27 +509,6 @@ SELECT  DISTINCT g.Tarjeta_Numero,
 FROM	gd_esquema.Maestra g 
 JOIN	REZAGADOS.Cliente c ON g.Cli_Mail = c.Mail
 WHERE	g.Tarjeta_Numero IS NOT NULL
-
---------------------------------------------TIPO ITEM-----------------------------------------------
-
-INSERT INTO REZAGADOS.TipoItem (Tipo)
-VALUES ('Comisión por transferencia.'), ('Creacion de cuenta.'), ('Cambio de cuenta.')
-
-------------------------------------------FACUTRA--------------------------------------------------
-
-INSERT INTO REZAGADOS.Factura (Id_Factura, Id_Usuario, Fecha)
-SELECT g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
-FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
-WHERE u.Nombre = g.Cli_Mail AND g.Factura_Numero IS NOT NULL
-GROUP BY g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
-
---------------------------------------------ITEM----------------------------------------------------
-
-INSERT INTO REZAGADOS.Item (Id_Factura, Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-SELECT  Factura_Numero, Cuenta_Numero, 1, Trans_Importe, Transf_Fecha
-FROM gd_esquema.Maestra
-WHERE Trans_Importe IS NOT NULL
-AND Trans_Importe <> 0.00
 
 --------------------------------------------RETIRO----------------------------------------------------
 
@@ -1087,6 +1086,7 @@ DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE Id_Cliente = @I
 IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta))) > GETDATE()
 BEGIN
 UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+UPDATE Cuenta SET Fecha_Cierre = GETDATE()
 SET @Respuesta = -1
 SET @RespuestaMensaje = 'Cuenta Cancelada'
 END
@@ -1148,6 +1148,7 @@ BEGIN
 IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta))) > GETDATE()
 BEGIN
 UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+UPDATE Cuenta SET Fecha_Cierre = GETDATE()
 SET @Respuesta = -1
 SET @RespuestaMensaje = 'Cuenta Cancelada'
 END
@@ -1225,6 +1226,7 @@ BEGIN
 IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta_Origen=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta_Origen))) > GETDATE()
 BEGIN
 UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+UPDATE Cuenta SET Fecha_Cierre = GETDATE()
 SET @Respuesta = -1
 SET @RespuestaMensaje = 'Cuenta Cancelada'
 END
@@ -1357,7 +1359,7 @@ CREATE PROCEDURE REZAGADOS.Top5Retiros (	@Cuenta NUMERIC(18,0),
 AS
 BEGIN
 
-SELECT TOP 5 R.Id_Retiro, R.Id_Cuenta, R.Fecha, R.Id_Cuenta, R.Importe, C.Id_Cheque, C.Id_Retiro, C.Id_Banco, C.Fecha, C.Id_Moneda, C.Importe, C.Num_Egreso, C.Num_Item
+SELECT TOP 5 R.Id_Retiro, R.Id_Cuenta, R.Fecha, R.Id_Cuenta, R.Importe, C.Id_Cheque, C.Id_Retiro, C.Id_Banco, C.Fecha, C.Id_Moneda, C.Importe--, C.Num_Egreso, C.Num_Item
 FROM REZAGADOS.Retiro R, REZAGADOS.Cheque C
 WHERE R.Id_Cuenta = @Cuenta
 AND R.Id_Retiro = C.Id_Retiro
@@ -2391,7 +2393,7 @@ BEGIN TRANSACTION
 		OPEN C
 		FETCH C INTO @Cuenta
 		WHILE @@FETCH_STATUS = 0
-			BEGIN
+			BEGIN --Si la cuenta esta cancelada, no debería pasarla a Habilitada o Inhabilitada!
 				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta GROUP BY Item.Id_Cuenta) < 5
 				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
 				ELSE
