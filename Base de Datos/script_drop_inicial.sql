@@ -105,6 +105,10 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Cheque]'))
 	ALTER TABLE REZAGADOS.Cheque DROP CONSTRAINT FK_Cheque_to_Retiro;
 	
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Tarjeta_to_Cliente]') 
+	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Tarjeta]'))
+	ALTER TABLE REZAGADOS.Tarjeta DROP CONSTRAINT FK_Tarjeta_to_Cliente;
+	
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Cheque_to_Banco]') 
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Cheque]'))
 	ALTER TABLE REZAGADOS.Cheque DROP CONSTRAINT FK_Cheque_to_Banco;
@@ -321,7 +325,6 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id];
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Tarjeta_Cliente_Id]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Cliente_Id];
-
 
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;

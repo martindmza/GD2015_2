@@ -481,7 +481,7 @@ INSERT INTO REZAGADOS.Tarjeta ( Numero,Id_Cliente,Id_Emisor,Codigo_Seguridad, Fe
 SELECT  DISTINCT g.Tarjeta_Numero, 
 		c.Id_Cliente,
 		(	SELECT Id_Emisor FROM REZAGADOS.Emisor 
-			WHERE  Nombre = g.Tarjeta_Emisor_Descripcion)AS 'Id_Emisor',
+			WHERE  Nombre = g.Tarjeta_Emisor_Descripcion) AS 'Id_Emisor',
 		g.Tarjeta_Codigo_Seg,
 		g.Tarjeta_Fecha_Emision,
 		g.Tarjeta_Fecha_Vencimiento
@@ -505,13 +505,10 @@ GROUP BY g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
 --------------------------------------------ITEM----------------------------------------------------
 
 INSERT INTO REZAGADOS.Item (Id_Factura, Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-SELECT f.Id_Factura, c.Id_Cuenta, t.Id_Tipo_Item, g.Trans_Importe, g.Transf_Fecha
-FROM gd_esquema.Maestra g, REZAGADOS.Factura f, REZAGADOS.Usuario u, REZAGADOS.Cuenta c, REZAGADOS.TipoItem t
-WHERE f.Id_Factura = g.Factura_Numero AND u.Nombre = g.Cli_Mail AND c.Id_Usuario = u.Id_Usuario AND t.Tipo = g.Item_Factura_Descr
-UNION
-SELECT g.Factura_Numero, c.Id_Cuenta, 1, CAST(ROUND(g.Trans_Importe,1)/10 as Numeric (18,2)), g.Transf_Fecha
-FROM gd_esquema.Maestra g, REZAGADOS.Usuario u, REZAGADOS.Cuenta c
-WHERE u.Nombre = g.Cli_Mail AND c.Id_Usuario = u.Id_Usuario AND Item_Factura_Descr IS NULL AND Cuenta_Dest_Numero is not null AND Trans_Importe != 0.00
+SELECT  Factura_Numero, Cuenta_Numero, 1, Trans_Importe, Transf_Fecha
+FROM gd_esquema.Maestra
+WHERE Trans_Importe IS NOT NULL
+AND Trans_Importe <> 0.00
 
 --------------------------------------------RETIRO----------------------------------------------------
 
@@ -529,14 +526,13 @@ FROM gd_esquema.Maestra
 WHERE Cuenta_Dest_Numero IS NOT NULL
 
 -------------------------------------------DEPOSITO---------------------------------------------------
--- CORREGIR
-/*
+
 INSERT INTO REZAGADOS.Deposito (Codigo, Id_Cuenta, Id_Tarjeta, Id_Pais, Fecha, Importe)
-SELECT g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
-FROM gd_esquema.Maestra g, REZAGADOS.Usuario u, REZAGADOS.Tarjeta t
-WHERE g.Deposito_Codigo IS NOT NULL AND u.Nombre = g.Cli_Mail AND t.Id_Usuario = u.Id_Usuario
-GROUP BY g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
-*/
+SELECT Deposito_Codigo, Cuenta_Numero, Tarjeta.Id_Tarjeta, Cuenta_Pais_Codigo, Deposito_Fecha, Deposito_Importe
+FROM gd_esquema.Maestra, REZAGADOS.Tarjeta
+WHERE Deposito_Codigo IS NOT NULL
+AND Tarjeta.Numero = gd_esquema.Maestra.Tarjeta_Numero
+
 --------------------------------------------CHEQUE----------------------------------------------------
 
 INSERT INTO REZAGADOS.Cheque (Id_Cheque, Id_Retiro, Id_Banco, Fecha, Importe)
@@ -1029,19 +1025,6 @@ BEGIN
 END
 GO
 
---------------------------------------------CUENTA VENCIDA----------------------------------------------------------------------
-
-USE [GD1C2015]
-GO
-CREATE PROCEDURE REZAGADOS.Cuenta_Vencida (@Cuenta NUMERIC(18,0), @Respuesta NUMERIC(18,0) OUTPUT)
-AS
-BEGIN
-IF ((SELECT Fecha_Creacion FROM Cuenta WHERE Id_Cuenta=@Cuenta) + (SELECT Dias_Vigencia FROM TipoCuenta, Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta)) > GETDATE()
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
-SET @Respuesta = 1
-END
-GO
-
 ---------------------------------------DEPOSITAR---------------------------------------------------------------
 
 USE [GD1C2015]
@@ -1056,11 +1039,18 @@ CREATE PROCEDURE REZAGADOS.Depositar(
 @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
---EXEC REZAGADOS.Cuenta_Vencida(@Cuenta);
 DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
 DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cliente)
 
+IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta))) > GETDATE()
+BEGIN
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+SET @Respuesta = -1
+SET @RespuestaMensaje = 'Cuenta Cancelada'
+END
+ELSE
+BEGIN
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
 		BEGIN
 		SET @Respuesta = -1
@@ -1096,6 +1086,7 @@ BEGIN
 END
 END
 END
+END
 GO
 
 -----------------------------------------RETIRO EFECTIVO--------------------------------------------------------------
@@ -1113,7 +1104,14 @@ CREATE PROCEDURE REZAGADOS.RetiroEfectivo(	@Usuario VARCHAR(255),
 											@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
---EXEC REZAGADOS.Cuenta_Vencida(@Cuenta);
+IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta))) > GETDATE()
+BEGIN
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+SET @Respuesta = -1
+SET @RespuestaMensaje = 'Cuenta Cancelada'
+END
+ELSE
+BEGIN
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
 		BEGIN
@@ -1163,6 +1161,7 @@ BEGIN
 						END
 END
 END
+END
 GO
 
 ----------------------------------------------TRANSFERENCIA ENTRE CUENTAS-------------------------------------------------------
@@ -1182,7 +1181,14 @@ CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Usuario VARCHAR(255),
 														@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
---EXEC REZAGADOS.Cuenta_Vencida(@Cuenta_Origen);
+IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta_Origen=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta_Origen))) > GETDATE()
+BEGIN
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+SET @Respuesta = -1
+SET @RespuestaMensaje = 'Cuenta Cancelada'
+END
+ELSE
+BEGIN
 DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
 		BEGIN
@@ -1248,6 +1254,7 @@ BEGIN
 						SET @Respuesta = -1
 						SET @RespuestaMensaje = ERROR_MESSAGE()
 					END CATCH
+END
 END
 END
 GO
@@ -2413,4 +2420,3 @@ BEGIN TRANSACTION
 	DEALLOCATE C
 	COMMIT
 GO
-
