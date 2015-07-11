@@ -529,19 +529,11 @@ WHERE Cuenta_Dest_Numero IS NOT NULL
 -------------------------------------------DEPOSITO---------------------------------------------------
 
 INSERT INTO REZAGADOS.Deposito (Codigo, Id_Cuenta, Id_Tarjeta, Id_Pais, Fecha, Importe)
-<<<<<<< HEAD
 SELECT Deposito_Codigo, Cuenta_Numero, Tarjeta.Id_Tarjeta, Cuenta_Pais_Codigo, Deposito_Fecha, Deposito_Importe
 FROM gd_esquema.Maestra, REZAGADOS.Tarjeta
 WHERE Deposito_Codigo IS NOT NULL
 AND Tarjeta.Numero = gd_esquema.Maestra.Tarjeta_Numero
 
-=======
-SELECT g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
-FROM gd_esquema.Maestra g, REZAGADOS.Cliente c, REZAGADOS.Tarjeta t
-WHERE g.Deposito_Codigo IS NOT NULL AND c.Mail = g.Cli_Mail AND t.Id_Cliente = c.Id_Cliente
-GROUP BY g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
-*/
->>>>>>> origin/master
 --------------------------------------------CHEQUE----------------------------------------------------
 
 INSERT INTO REZAGADOS.Cheque (Id_Cheque, Id_Retiro, Id_Banco, Fecha, Importe)
@@ -1092,7 +1084,6 @@ DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id
 DECLARE @Id_Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
 DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE Id_Cliente = @Id_Cliente)
 
-<<<<<<< HEAD
 IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta))) > GETDATE()
 BEGIN
 UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
@@ -1101,10 +1092,7 @@ SET @RespuestaMensaje = 'Cuenta Cancelada'
 END
 ELSE
 BEGIN
-IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
-=======
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Id_Cliente) = 0
->>>>>>> origin/master
 		BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Cliente Inhabilitado'
@@ -2322,7 +2310,7 @@ BEGIN
 END
 GO
 
-----------------------------------------------Listar Emisores--------------------------------------------------
+----------------------------------------------LISTAR EMISOR--------------------------------------------------
 
 USE [GD1C2015]
 GO

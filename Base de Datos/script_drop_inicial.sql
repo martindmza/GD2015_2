@@ -144,7 +144,6 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[HistorialUsuario]'))
 	ALTER TABLE REZAGADOS.HistorialUsuario DROP CONSTRAINT FK_Historial_Usuario_to_Usuario;
 
-
 IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Cuentas]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Historial_Cuentas]
 
@@ -341,19 +340,12 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id];
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Tarjeta_Cliente_Id]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Cliente_Id];
-
-<<<<<<< HEAD
-=======
-
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Tarjeta]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].Modificar_Tarjeta;	
 	
-
->>>>>>> origin/master
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;
 	
-
 IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
 
