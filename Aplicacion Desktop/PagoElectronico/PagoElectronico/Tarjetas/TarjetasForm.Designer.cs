@@ -112,6 +112,7 @@
             // numeroText
             // 
             this.numeroText.Location = new System.Drawing.Point(135, 14);
+            this.numeroText.MaxLength = 16;
             this.numeroText.Name = "numeroText";
             this.numeroText.Size = new System.Drawing.Size(149, 20);
             this.numeroText.TabIndex = 2;

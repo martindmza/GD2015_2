@@ -156,12 +156,6 @@
     <Compile Include="FormsExtras\PaisesForm.Designer.cs">
       <DependentUpon>PaisesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormsExtras\TarjetaDeCreditoForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormsExtras\TarjetaDeCreditoForm.Designer.cs">
-      <DependentUpon>TarjetaDeCreditoForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Frame\RolSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -263,9 +257,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormsExtras\PaisesForm.resx">
       <DependentUpon>PaisesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormsExtras\TarjetaDeCreditoForm.resx">
-      <DependentUpon>TarjetaDeCreditoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Frame\Frame.resx">
       <DependentUpon>Frame.cs</DependentUpon>
