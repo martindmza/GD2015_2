@@ -9,11 +9,14 @@ using System.Windows.Forms;
 using DAO;
 using Models;
 using Logins;
+using ABM;
+using Depositos;
 
 namespace Tarjetas
 {
     public partial class TarjetasAbm : Form
     {
+        private Boolean openedToSelect;
         private const int AGREGAR = 0;
         private const int MODIFICAR = 1;
         private const int DESHABILITAR = 2;
@@ -24,11 +27,36 @@ namespace Tarjetas
         private TarjetaDeCreditoModel tarjetaActiva;
 
         private ClienteModel cliente;
+        private ClienteForm parentClienteForm;
+        private DepositosAbm parentDepositos;
 
         public TarjetasAbm()
         {
+            init();
+        }
+
+        public TarjetasAbm(ClienteForm parentClienteForm)
+        {
+            init();
+            this.buttonCerrar.Visible = true;
+            this.parentClienteForm = parentClienteForm;
+            this.parentClienteForm.Enabled = false;
+            ControlBox = false;
+        }
+
+        public TarjetasAbm(DepositosAbm parentDepositos)
+        {
+            initToSelect();
+            this.parentDepositos = parentDepositos;
+            this.parentDepositos.Enabled = false;
+        }
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void init()
+        {
             InitializeComponent();
 
+            openedToSelect = false;
             dao = new TarjetaDeCreditoDao();
             UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
             cliente = new ClienteDao().getClienteByUser(usuario);
@@ -36,16 +64,49 @@ namespace Tarjetas
             {
                 tarjetas = dao.getTarjetasByCliente(cliente);
             }
-            else {
+            else
+            {
                 buttonBuscar.Enabled = false;
             }
             fillData();
 
+            buttonElegir.Visible = false;
+            buttonCancelar.Visible = false;
             buttonQuitar.Enabled = false;
             buttonModificar.Enabled = false;
         }
+        //-----------------------------------------------------------------------------------------------------------------
 
+        //-----------------------------------------------------------------------------------------------------------------
+        private void initToSelect()
+        {
+            InitializeComponent();
 
+            openedToSelect = false;
+            dao = new TarjetaDeCreditoDao();
+            UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
+            cliente = new ClienteDao().getClienteByUser(usuario);
+            if (cliente != null)
+            {
+                tarjetas = dao.getTarjetasByCliente(cliente);
+            }
+            else
+            {
+                buttonBuscar.Enabled = false;
+            }
+            fillData();
+
+            this.Text = "Seleccionar una Cuenta";
+
+            buttonElegir.Visible = true;
+            buttonElegir.Enabled = false;
+            buttonCancelar.Visible = true;
+            buttonQuitar.Visible = false;
+            buttonModificar.Visible = false;
+            buttonAgregar.Visible = false;
+            ControlBox = false;
+        }
+        //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
         private void fillData()
@@ -85,7 +146,11 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
         public void formResponseDisable(TarjetaDeCreditoModel tarjeta)
         {
-            tarjetas[tarjetaActivoIndex] = tarjeta;
+            tarjetas.Remove(tarjeta);
+            tarjetaActiva = null;
+            tarjetaActivoIndex = 0;
+            buttonModificar.Enabled = false;
+            buttonQuitar.Enabled = false;
             fillData();
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -94,7 +159,7 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonAgregar_Click(object sender, EventArgs e)
         {
-            Form f = new TarjetasForm(AGREGAR, this, null);
+            Form f = new TarjetasForm(AGREGAR, this, null,cliente);
             f.MdiParent = this.MdiParent;
             f.Show();
         }
@@ -103,7 +168,7 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonModificar_Click(object sender, EventArgs e)
         {
-            Form f = new TarjetasForm(MODIFICAR, this, tarjetaActiva);
+            Form f = new TarjetasForm(MODIFICAR, this, tarjetaActiva,cliente);
             f.MdiParent = this.MdiParent;
             f.Show();
         }
@@ -112,7 +177,7 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonQuitar_Click(object sender, EventArgs e)
         {
-            Form f = new TarjetasForm(DESHABILITAR, this, tarjetaActiva);
+            Form f = new TarjetasForm(DESHABILITAR, this, tarjetaActiva,cliente);
             f.MdiParent = this.MdiParent;
             f.Show();
         }
@@ -173,6 +238,49 @@ namespace Tarjetas
             catch (NullReferenceException eru) { }
             catch (Exception erg) { }
             fillData();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonElegir_Click(object sender, EventArgs e)
+        {
+            if (parentDepositos != null)
+            {
+                parentDepositos.formResponseTarjeta(tarjetaActiva);
+                parentDepositos.Enabled = true;
+            }
+
+            this.Close();
+            this.Dispose();
+            GC.Collect();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonCancelar_Click(object sender, EventArgs e)
+        {
+            if (parentDepositos != null)
+            {
+                parentDepositos.Enabled = true;
+            }
+
+            this.Close();
+            this.Dispose();
+            GC.Collect();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonCerrar_Click(object sender, EventArgs e)
+        {
+            if (parentClienteForm != null)
+            {
+                parentClienteForm.Enabled = true;
+            }
+
+            this.Close();
+            this.Dispose();
+            GC.Collect();
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

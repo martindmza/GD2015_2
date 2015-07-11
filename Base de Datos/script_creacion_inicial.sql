@@ -153,6 +153,7 @@ Fecha_Emision datetime,
 Vencimiento datetime,
 Habilitada bit DEFAULT 1,);
 ALTER TABLE REZAGADOS.Tarjeta ADD CONSTRAINT PK_Id_Tarjeta PRIMARY KEY (Id_Tarjeta);
+ALTER TABLE REZAGADOS.Tarjeta ADD CONSTRAINT UQ_Num_Tarjeta UNIQUE (Numero);
 
 CREATE TABLE REZAGADOS.Emisor(
 Id_Emisor NUMERIC(18,0) IDENTITY(1,1) NOT NULL,
@@ -528,11 +529,19 @@ WHERE Cuenta_Dest_Numero IS NOT NULL
 -------------------------------------------DEPOSITO---------------------------------------------------
 
 INSERT INTO REZAGADOS.Deposito (Codigo, Id_Cuenta, Id_Tarjeta, Id_Pais, Fecha, Importe)
+<<<<<<< HEAD
 SELECT Deposito_Codigo, Cuenta_Numero, Tarjeta.Id_Tarjeta, Cuenta_Pais_Codigo, Deposito_Fecha, Deposito_Importe
 FROM gd_esquema.Maestra, REZAGADOS.Tarjeta
 WHERE Deposito_Codigo IS NOT NULL
 AND Tarjeta.Numero = gd_esquema.Maestra.Tarjeta_Numero
 
+=======
+SELECT g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
+FROM gd_esquema.Maestra g, REZAGADOS.Cliente c, REZAGADOS.Tarjeta t
+WHERE g.Deposito_Codigo IS NOT NULL AND c.Mail = g.Cli_Mail AND t.Id_Cliente = c.Id_Cliente
+GROUP BY g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
+*/
+>>>>>>> origin/master
 --------------------------------------------CHEQUE----------------------------------------------------
 
 INSERT INTO REZAGADOS.Cheque (Id_Cheque, Id_Retiro, Id_Banco, Fecha, Importe)
@@ -978,12 +987,12 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Baja_Tarjeta(	@Nro_Tarjeta NUMERIC(18,0),
+CREATE PROCEDURE REZAGADOS.Baja_Tarjeta(	@Id_Tarjeta NUMERIC(18,0),
 											@RespuestaMensaje VARCHAR(255) OUTPUT,
 											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
-UPDATE REZAGADOS.Tarjeta SET Habilitada=0 WHERE Tarjeta.Id_Tarjeta = @Nro_Tarjeta
+UPDATE REZAGADOS.Tarjeta SET Habilitada=0 WHERE Tarjeta.Id_Tarjeta = @Id_Tarjeta
 SET @RespuestaMensaje = 'Baja exitosa'
 SET @Respuesta = 1
 END
@@ -994,7 +1003,8 @@ GO
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(	@Id_Cliente NUMERIC(18,0),
-											@Nro_Tarjeta NUMERIC(18,0),
+											@Nro_Tarjeta VARCHAR(20),
+											@Id_Emisor NUMERIC(18,0),
 											@Fecha DATETIME,
 											@Fecha_Venc DATETIME,
 											@Codigo VARCHAR(255),
@@ -1003,7 +1013,7 @@ CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(	@Id_Cliente NUMERIC(18,0),
 AS
 BEGIN
 
-	IF EXISTS (SELECT Id_Tarjeta FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta)
+	IF EXISTS (SELECT 1 FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta)
 	BEGIN
 		SET @RespuestaMensaje = 'Ya existe la tarjeta'
 		SET @Respuesta = -1
@@ -1011,8 +1021,8 @@ BEGIN
 	ELSE
 		BEGIN TRY
 			BEGIN TRANSACTION
-				INSERT INTO REZAGADOS.Tarjeta (Id_Cliente, Numero, Codigo_Seguridad, Fecha_Emision, Vencimiento)
-				VALUES (@Id_Cliente, @Nro_Tarjeta, @Codigo, @Fecha, @Fecha_Venc)
+				INSERT INTO REZAGADOS.Tarjeta (Id_Cliente, Numero, Id_Emisor ,Codigo_Seguridad, Fecha_Emision, Vencimiento)
+				VALUES (@Id_Cliente, @Nro_Tarjeta, @Id_Emisor ,@Codigo, @Fecha, @Fecha_Venc)
 				SET @Respuesta = (SELECT @@IDENTITY)
 				SET @RespuestaMensaje = 'Se ingresó Exitosamente'
 			COMMIT
@@ -1022,7 +1032,46 @@ BEGIN
 			SET @RespuestaMensaje = ERROR_MESSAGE()
 			ROLLBACK TRANSACTION
 		END CATCH
-END
+	END
+GO
+
+-------------------------------------------MODIFICAR TARJETA----------------------------------------------------
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE REZAGADOS.Modificar_Tarjeta(	@Id_Tarjeta NUMERIC(18,0),
+												@Nro_Tarjeta VARCHAR(255),
+												@Id_Emisor NUMERIC(18,0),
+												@Fecha DATETIME,
+												@Fecha_Venc DATETIME,
+												@RespuestaMensaje VARCHAR(255) OUTPUT,
+												@Respuesta NUMERIC(18,0) OUTPUT)
+AS
+BEGIN
+	IF EXISTS (SELECT 1 FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta AND Id_Tarjeta <> @Id_Tarjeta)
+	BEGIN
+		SET @RespuestaMensaje = 'Ya existe la tarjeta'
+		SET @Respuesta = -1
+	END
+	ELSE
+		BEGIN TRY
+			BEGIN TRANSACTION
+				PRINT @Nro_Tarjeta
+				UPDATE REZAGADOS.Tarjeta SET	Numero = @Nro_Tarjeta,
+												Fecha_Emision = @Fecha,
+												Vencimiento = @Fecha_Venc,
+												Id_Emisor = @Id_Emisor
+				WHERE Id_Tarjeta = @Id_Tarjeta
+				SET @Respuesta = 1
+				SET @RespuestaMensaje = 'Datos Modificados Exitosamente'
+			COMMIT
+		END TRY
+		BEGIN CATCH
+			SET @Respuesta = 1
+			SET @RespuestaMensaje = ERROR_MESSAGE()
+			ROLLBACK TRANSACTION
+		END CATCH
+	END
 GO
 
 ---------------------------------------DEPOSITAR---------------------------------------------------------------
@@ -1040,9 +1089,10 @@ CREATE PROCEDURE REZAGADOS.Depositar(
 AS
 BEGIN
 DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
-DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
-DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE @Cliente=Id_Cliente)
+DECLARE @Id_Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
+DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE Id_Cliente = @Id_Cliente)
 
+<<<<<<< HEAD
 IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta))) > GETDATE()
 BEGIN
 UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
@@ -1052,6 +1102,9 @@ END
 ELSE
 BEGIN
 IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
+=======
+IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Id_Cliente) = 0
+>>>>>>> origin/master
 		BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Cliente Inhabilitado'
@@ -1079,7 +1132,7 @@ BEGIN
 		ELSE
 			BEGIN
 			INSERT INTO REZAGADOS.Deposito (Id_Cuenta, Id_Tarjeta, Id_Pais, Id_Moneda, Fecha, Importe)
-			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Cliente=@Cliente), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
+			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Cliente=@Id_Cliente), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
 			SET @Respuesta = @@IDENTITY
 			SET @RespuestaMensaje = 'Deposito realizado'
 			END
@@ -2003,21 +2056,21 @@ CREATE PROCEDURE [REZAGADOS].[Modificar_Cuenta] (
 								@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
-BEGIN TRY
-	BEGIN TRANSACTION
-		UPDATE	REZAGADOS.Cuenta
-		SET	Id_Tipo_Cuenta = @Tipo,
-				Id_Estado = @Estado
-		WHERE Id_Cuenta = @Id
-		SET @RespuestaMensaje = 'La cuenta ha sido modificado!'
-		SET @Respuesta = 1
-	COMMIT TRANSACTION
-END TRY
-BEGIN CATCH
-	SET @Respuesta = -1
-	SET @RespuestaMensaje = 'La Cuenta no se pudo modificar'
-	ROLLBACK TRANSACTION
-END CATCH
+	BEGIN TRY
+		BEGIN TRANSACTION
+			UPDATE	REZAGADOS.Cuenta
+			SET	Id_Tipo_Cuenta = @Tipo,
+					Id_Estado = @Estado
+			WHERE Id_Cuenta = @Id
+			SET @RespuestaMensaje = 'La cuenta ha sido modificado!'
+			SET @Respuesta = 1
+		COMMIT TRANSACTION
+	END TRY
+	BEGIN CATCH
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'La Cuenta no se pudo modificar'
+		ROLLBACK TRANSACTION
+	END CATCH
 END
 GO
 --------------------------------------------------BUSCAR CLIENTES FILTROS-------------------------------------------

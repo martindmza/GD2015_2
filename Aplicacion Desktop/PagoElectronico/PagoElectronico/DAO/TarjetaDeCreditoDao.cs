@@ -34,7 +34,13 @@ namespace DAO
             try
             {
                 SqlCommand command = InitializeConnection("Crear_Tarjeta");
-                command = llenarParametros(tarjeta, command);
+                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = tarjeta.propietario.id;
+                command.Parameters.Add("@Nro_Tarjeta", System.Data.SqlDbType.NVarChar, 255).Value = tarjeta.numero;
+                command.Parameters.Add("@Id_Emisor", System.Data.SqlDbType.Decimal).Value = tarjeta.emisor.id;
+                command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = tarjeta.emision;
+                command.Parameters.Add("@Fecha_Venc", System.Data.SqlDbType.DateTime).Value = tarjeta.vencimiento;
+                command.Parameters.Add("@Codigo", System.Data.SqlDbType.NVarChar, 255).Value = hash(tarjeta.codigoSeguridad);
+
                 return operacionDml(command);
             }
             catch (Exception excepcion)
@@ -44,15 +50,39 @@ namespace DAO
             }
         }
 
-        public TarjetaDeCreditoModel modificarTarjeta(TarjetaDeCreditoModel tarjeta)
+        public Respuesta modificarTarjeta(TarjetaDeCreditoModel tarjeta)
         {
 
-            return tarjeta;
+            try
+            {
+                SqlCommand command = InitializeConnection("Modificar_Tarjeta");
+                command.Parameters.Add("@Id_Tarjeta", System.Data.SqlDbType.Decimal).Value = tarjeta.id;
+                command.Parameters.Add("@Nro_Tarjeta", System.Data.SqlDbType.NVarChar, 255).Value = tarjeta.numero;
+                command.Parameters.Add("@Id_Emisor", System.Data.SqlDbType.Decimal).Value = tarjeta.emisor.id;
+                command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = tarjeta.emision;
+                command.Parameters.Add("@Fecha_Venc", System.Data.SqlDbType.DateTime).Value = tarjeta.vencimiento;
+
+                return operacionDml(command);
+            }
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                throw excepcion;
+            }
         }
-        public TarjetaDeCreditoModel borrarTarjeta(TarjetaDeCreditoModel tarjeta)
+        public Respuesta borrarTarjeta(TarjetaDeCreditoModel tarjeta)
         {
-            tarjeta.habilitada = false;
-            return tarjeta;
+            try
+            {
+                SqlCommand command = InitializeConnection("Baja_Tarjeta");
+                command.Parameters.Add("@Id_Tarjeta", System.Data.SqlDbType.Decimal).Value = tarjeta.id;
+                return operacionDml(command);
+            }
+            catch (Exception excepcion)
+            {
+                Console.Write(excepcion);
+                throw excepcion;
+            }
         }
 
         public override TarjetaDeCreditoModel getModeloBasico(System.Data.DataRow fila)
@@ -92,36 +122,6 @@ namespace DAO
             throw new NotImplementedException();
         }
 
-        private SqlCommand llenarParametros(TarjetaDeCreditoModel tarjeta, SqlCommand command)
-        {
-            if (tarjeta.id != 0)
-            {
-                command.Parameters.Add("@Id_Tarjeta", System.Data.SqlDbType.Decimal).Value = tarjeta.id;
-            }
-            if (tarjeta.propietario != null)
-            {
-                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = tarjeta.propietario.id;
-            }
-            if (tarjeta.numero != null && tarjeta.numero.Trim().Length != 0)
-            {
-                command.Parameters.Add("@Nro_Tarjeta", System.Data.SqlDbType.NVarChar, 255).Value = tarjeta.numero;
-            }
-            if (tarjeta.emision != null)
-            {
-                command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = tarjeta.emision;
-            }
-            if (tarjeta.vencimiento != null)
-            {
-                command.Parameters.Add("@Fecha_Venc", System.Data.SqlDbType.DateTime).Value = tarjeta.vencimiento;
-            }
-            if (tarjeta.codigoSeguridad != null && tarjeta.codigoSeguridad.Trim().Length != 0)
-            {
-                command.Parameters.Add("@Codigo", System.Data.SqlDbType.NVarChar, 255).Value = tarjeta.codigoSeguridad;
-            }
-
-            return command;
-        }
-
         private List<TarjetaDeCreditoModel> operacionSelect(SqlCommand command)
         {
             List<TarjetaDeCreditoModel> result = new List<TarjetaDeCreditoModel>();
@@ -142,8 +142,8 @@ namespace DAO
             {
                 DataTable dt = new DataTable();
                 //
-                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
-                var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
+                var pOut = command.Parameters.Add("@Respuesta", SqlDbType.Decimal);
+                var pOut2 = command.Parameters.Add("@RespuestaMensaje", SqlDbType.NVarChar, 255);
                 pOut.Direction = ParameterDirection.Output;
                 pOut2.Direction = ParameterDirection.Output;
                 //
@@ -160,6 +160,23 @@ namespace DAO
                 throw excepcion;
             }
         }
+
+
+        //--------------------------------------------------------------------
+        public static string hash(string input)
+        {
+
+            System.Security.Cryptography.SHA256 sha256 = new System.Security.Cryptography.SHA256Managed();
+            byte[] sha256Bytes = System.Text.Encoding.Default.GetBytes(input);
+            byte[] cryString = sha256.ComputeHash(sha256Bytes);
+            string resultEncriptado = string.Empty;
+            for (int i = 0; i < cryString.Length; i++)
+            {
+                resultEncriptado += cryString[i].ToString("X");
+            }
+            return resultEncriptado;
+        }
+        //--------------------------------------------------------------------
 
     }
 }

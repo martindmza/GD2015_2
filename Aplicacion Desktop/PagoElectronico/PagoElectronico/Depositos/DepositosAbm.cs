@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Models;
 using DAO;
-using FormsExtras;
+using Tarjetas;
 using ABM;
 using Logins;
 
@@ -90,7 +90,7 @@ namespace Depositos
         //buscar tarjeta
         private void trigger2_Click(object sender, EventArgs e)
         {
-            Form f = new TarjetaDeCreditoForm(this,cliente);
+            Form f = new TarjetasAbm(this);
             f.MdiParent = this.MdiParent;
             f.Show();
         }
