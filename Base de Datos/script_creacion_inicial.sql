@@ -201,8 +201,7 @@ Id_Factura numeric(18,0),
 Id_Cuenta numeric(18,0),
 Id_Tipo_Item numeric(18,0),
 Importe numeric(18,2) NOT NULL, 
-Fecha datetime,
-Habilitada bit DEFAULT 1,);
+Fecha datetime,);
 ALTER TABLE REZAGADOS.Item ADD CONSTRAINT PK_Id_Item PRIMARY KEY (Id_Item);
 
 CREATE TABLE REZAGADOS.TipoItem(
@@ -531,13 +530,14 @@ FROM gd_esquema.Maestra
 WHERE Cuenta_Dest_Numero IS NOT NULL
 
 -------------------------------------------DEPOSITO---------------------------------------------------
-
+-- CORREGIR
+/*
 INSERT INTO REZAGADOS.Deposito (Codigo, Id_Cuenta, Id_Tarjeta, Id_Pais, Fecha, Importe)
 SELECT g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
 FROM gd_esquema.Maestra g, REZAGADOS.Cliente c, REZAGADOS.Tarjeta t
 WHERE g.Deposito_Codigo IS NOT NULL AND c.Mail = g.Cli_Mail AND t.Id_Cliente = c.Id_Cliente
 GROUP BY g.Deposito_Codigo, g.Cuenta_Numero, t.Id_Tarjeta, g.Cuenta_Pais_Codigo, g.Deposito_Fecha, g.Deposito_Importe
-
+*/
 --------------------------------------------CHEQUE----------------------------------------------------
 
 INSERT INTO REZAGADOS.Cheque (Id_Cheque, Id_Retiro, Id_Banco, Fecha, Importe)
@@ -1208,6 +1208,8 @@ GO
 
 ----------------------------------------------TRANSFERENCIA ENTRE CUENTAS-------------------------------------------------------
 
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[TransferenciaEntreCuentas]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.TransferenciaEntreCuentas;
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Usuario VARCHAR(255),
@@ -1255,12 +1257,21 @@ BEGIN
 					SET @RespuestaMensaje = 'Importe mayor al saldo'
 				END
 				ELSE
+					BEGIN TRY
+						BEGIN TRANSACTION
+						
 						UPDATE REZAGADOS.Cuenta SET
 						Saldo=Saldo-@Importe
 						WHERE Id_Cuenta=@Cuenta_Origen	
+							
 						UPDATE REZAGADOS.Cuenta SET
 						Saldo=Saldo+@Importe
 						WHERE Id_Cuenta=@Cuenta_Destino						
+						
+							INSERT INTO REZAGADOS.Transferencia (Id_Cuenta_Emi, Id_Cuenta_Dest, Fecha, Id_Moneda, Importe)
+							VALUES (@Cuenta_Origen, @Cuenta_Destino, @Fecha, @Moneda, @Importe) 		
+		
+						COMMIT TRANSACTION
 						
 						IF ((SELECT Id_Usuario from Cuenta WHERE @Cuenta_Origen=Id_Cuenta)=(SELECT Id_Usuario from Cuenta WHERE @Cuenta_Destino=Id_Cuenta))
 						BEGIN
@@ -1272,6 +1283,12 @@ BEGIN
 								SET @Respuesta = 1						
 								SET @RespuestaMensaje = 'Transferencia realizada con costo'
 							END
+					END TRY
+					BEGIN CATCH
+						ROLLBACK TRANSACTION
+						SET @Respuesta = -1
+						SET @RespuestaMensaje = ERROR_MESSAGE()
+					END CATCH
 END
 END
 GO
@@ -2037,10 +2054,9 @@ BEGIN
 	END CATCH
 END
 GO
-
 --------------------------------------------------BUSCAR CLIENTES FILTROS-------------------------------------------
 
-USE [GD1C2015]
+--USE [GD1C2015]
 IF OBJECT_ID ('REZAGADOS.Buscar_Cliente_Filtros') IS NOT NULL
     DROP PROCEDURE REZAGADOS.Buscar_Cliente_Filtros
 GO
@@ -2407,3 +2423,35 @@ BEGIN TRANSACTION
   DEALLOCATE C
  COMMIT
 GO
+
+----------------------------------------INSERTA ITEM TRANSFERENCIA---------------------------------------------------------
+
+USE [GD1C2015]
+IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL
+	DROP TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
+GO
+CREATE TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
+ON [REZAGADOS].[Transferencia]
+AFTER INSERT
+AS
+BEGIN TRANSACTION
+	DECLARE C CURSOR
+	FOR SELECT Id_Cuenta_Emi, Id_Cuenta_Dest, Importe, Fecha FROM INSERTED
+	DECLARE @Id_Cuenta_Emi NUMERIC(18,0)
+	DECLARE @Id_Cuenta_Dest NUMERIC(18,0)
+	DECLARE @Importe NUMERIC(18,2)
+	DECLARE @Fecha DATETIME
+	OPEN C
+	FETCH C INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
+	WHILE @@FETCH_STATUS = 0
+		IF ((SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Emi) <> (SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Dest))
+		BEGIN
+			IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi ) <> 'Gratuita'
+			INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha) 
+			VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), (SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi), GETDATE())
+		END
+	CLOSE C
+	DEALLOCATE C
+	COMMIT
+GO
+

@@ -40,6 +40,10 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Cliente]'))
 	ALTER TABLE REZAGADOS.Cliente DROP CONSTRAINT FK_Cliente_to_Pais;
 	
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Cliente_to_Nacionalidad]') 
+	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Cliente]'))
+	ALTER TABLE REZAGADOS.Cliente DROP CONSTRAINT FK_Cliente_to_Nacionalidad;
+
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Cuenta_to_Usuario]') 
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Cuenta]'))
 	ALTER TABLE REZAGADOS.Cuenta DROP CONSTRAINT FK_Cuenta_to_Usuario;
@@ -329,6 +333,11 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE [REZAGADOS].[Listar_Emisores];
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Emisor_Id]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].[Buscar_Emisor_Id];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Tarjeta_Usuario_Id]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id];
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Tarjeta_Cliente_Id]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Cliente_Id];
+
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Tarjeta]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].Modificar_Tarjeta;	
@@ -337,6 +346,9 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;
 	
+
+IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
 
 USE [GD1C2015]
 GO
