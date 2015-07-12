@@ -105,6 +105,17 @@ namespace ABM
 
             button3.Enabled = false;
             button4.Enabled = false;
+            UserModel usuario = Logins.UsuarioSingleton.getInstance().getUsuario();
+            if (usuario.cliente != null)
+            {
+                this.formResponseCliente(usuario.cliente);
+                cuentas = cuentaDao.getCuentasByCliente(usuario.cliente);
+                fillTable();
+                button1.Visible = false;
+                button5.Visible = false;
+                buttonLimpiar.Visible = false;
+            }
+            
         }
         //-----------------------------------------------------------------------------------------------------------------
 
