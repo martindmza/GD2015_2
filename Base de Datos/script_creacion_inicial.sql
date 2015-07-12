@@ -2360,18 +2360,18 @@ AFTER UPDATE
 AS
 IF UPDATE(Id_Estado)
 BEGIN TRANSACTION
-	DECLARE C CURSOR
+	DECLARE A CURSOR
 	FOR SELECT Id_Cuenta, Id_Estado FROM INSERTED
 	DECLARE @Cuenta NUMERIC(18,0)
 	DECLARE @Estado NUMERIC(18,0)
-		OPEN C
-		FETCH C INTO @Cuenta, @Estado
+		OPEN A
+		FETCH A INTO @Cuenta, @Estado
 		WHILE @@FETCH_STATUS = 0
 			BEGIN
 				INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) VALUES (@Cuenta, GETDATE(), @Estado)
 			END
-	CLOSE C
-	DEALLOCATE C
+	CLOSE A
+	DEALLOCATE A
 	COMMIT
 
 GO
@@ -2388,11 +2388,11 @@ ON [REZAGADOS].[Item]
 AFTER UPDATE, INSERT
 AS
 BEGIN TRANSACTION
-	DECLARE C CURSOR
+	DECLARE B CURSOR
 	FOR SELECT Id_Cuenta FROM INSERTED
 	DECLARE @Cuenta NUMERIC(18,0)
-		OPEN C
-		FETCH C INTO @Cuenta
+		OPEN B
+		FETCH B INTO @Cuenta
 		WHILE @@FETCH_STATUS = 0
 			BEGIN --Si la cuenta esta cancelada, no debería pasarla a Habilitada o Inhabilitada!
 				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta GROUP BY Item.Id_Cuenta) < 5
@@ -2400,8 +2400,8 @@ BEGIN TRANSACTION
 				ELSE
 				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada')
 			END
-	CLOSE C
-	DEALLOCATE C
+	CLOSE B
+	DEALLOCATE B
 	COMMIT
 GO
 
@@ -2445,31 +2445,22 @@ ON [REZAGADOS].[Transferencia]
 AFTER INSERT
 AS
 BEGIN TRANSACTION
-	DECLARE C CURSOR
+	DECLARE D CURSOR
 	FOR SELECT Id_Cuenta_Emi, Id_Cuenta_Dest, Importe, Fecha FROM INSERTED
 	DECLARE @Id_Cuenta_Emi NUMERIC(18,0)
 	DECLARE @Id_Cuenta_Dest NUMERIC(18,0)
 	DECLARE @Importe NUMERIC(18,2)
 	DECLARE @Fecha DATETIME
-	OPEN C
-	FETCH C INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
+	OPEN D
+	FETCH D INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
 	WHILE @@FETCH_STATUS = 0
 		IF ((SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Emi) <> (SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Dest))
 		BEGIN
 			IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi ) <> 'Gratuita'
-			INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha) 
+			INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha) --Importe debe ser el 10%
 			VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), (SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi), GETDATE())
 		END
-	CLOSE C
-	DEALLOCATE C
+	CLOSE D
+	DEALLOCATE D
 	COMMIT
 GO
-
-/* EN LA MIGRACION DE Item... LAS TRANS ENTRE MIS PROPIAS CUENTAS TIENE QUE COSTAR 0
-SELECT * FROM gd_esquema.Maestra 
-WHERE Cuenta_Numero NOT IN (
-	SELECT Cuenta.Id_Cuenta
-	from REZAGADOS.Cuenta, REZAGADOS.Cliente
-	WHERE cliente.Id_Usuario=Cuenta.Id_Usuario
-	AND Cliente.Mail= gd_esquema.Maestra.Cli_Mail)
-	*/
