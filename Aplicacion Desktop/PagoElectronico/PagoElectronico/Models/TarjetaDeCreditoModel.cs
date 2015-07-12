@@ -32,27 +32,29 @@ namespace Models
         public TarjetaDeCreditoModel(DataRow fila) : base(fila) { }
 
 
-        public TarjetaDeCreditoModel(String numero, String codigoSeguridad,
+        public TarjetaDeCreditoModel(String numero, String codigoSeguridad, EmisorModel emisor,
                                         DateTime emision, DateTime vencimiento)
         {
             this.id = id;
             this.numero = numero;
             this.codigoSeguridad = codigoSeguridad;
+            this.emisor = emisor;
             this.emision = emision;
             this.vencimiento = vencimiento;
         }
 
-        public TarjetaDeCreditoModel(Decimal id,String numero, String codigoSeguridad,
+        public TarjetaDeCreditoModel(Decimal id, String numero, String codigoSeguridad, EmisorModel emisor,
                                         DateTime emision, DateTime vencimiento) 
         {
             this.id = id;
             this.numero = numero;
             this.codigoSeguridad = codigoSeguridad;
+            this.emisor = emisor;
             this.emision = emision;
             this.vencimiento = vencimiento;
         }
 
-        public TarjetaDeCreditoModel(UInt32 id, String numero, String codigoSeguridad,
+        public TarjetaDeCreditoModel(UInt32 id, String numero, String codigoSeguridad, 
                                         DateTime emision, DateTime vencimiento,
                                         EmisorModel emisor)
         {

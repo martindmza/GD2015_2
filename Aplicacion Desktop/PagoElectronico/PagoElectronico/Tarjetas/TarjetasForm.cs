@@ -25,13 +25,15 @@ namespace Tarjetas
 
         private TarjetaDeCreditoModel tarjeta;
         private EmisorModel emisor;
+        private ClienteModel propietario;
 
         private const int OPEN_CLIENTE_ABM_TO_SELECT = 1;
         private const String EXCEPTION_MESSAGE = "La operacion no se pudo completar";
 
-        public TarjetasForm(UInt32 operacionTipo,TarjetasAbm parent,TarjetaDeCreditoModel tarjeta)
+        public TarjetasForm(UInt32 operacionTipo,TarjetasAbm parent,TarjetaDeCreditoModel tarjeta,ClienteModel propietario)
         {
             this.parent = parent;
+            this.propietario = propietario;
             init(operacionTipo,tarjeta);
         }
 
@@ -58,11 +60,15 @@ namespace Tarjetas
                 case 1:
                     buttonAceptar.Enabled = true;
                     this.Text = "Modificar Tarjeta";
+                    codigoSeguridadText.Visible = false;
+                    label5.Visible = false;
                     break;
                 case 2:
                     buttonAceptar.Enabled = true;
                     this.Text = "Dar de Baja Tarjeta";
                     this.buttonAceptar.Text = "Dar de Baja";
+                    codigoSeguridadText.Visible = false;
+                    label5.Visible = false;
                     disableInputs();
                     break;
             }
@@ -92,7 +98,6 @@ namespace Tarjetas
         //-----------------------------------------------------------------------------------------------------------------
         private void fillData()
         {
-
             if (tarjeta == null)    
             {
                 numeroText.Text = "";
@@ -107,6 +112,9 @@ namespace Tarjetas
                 emisionText.Value = tarjeta.emision;
                 vencimientoText.Value = tarjeta.vencimiento;
                 codigoSeguridadText.Text = tarjeta.codigoSeguridad.ToString();
+                emisorText.Text = tarjeta.emisor.id.ToString();
+                emisorNameLabel.Text = tarjeta.emisor.nombre;
+                emisor = tarjeta.emisor;
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -189,10 +197,9 @@ namespace Tarjetas
             switch (operacionTipo)
             {
                 case 0:
-                    tarjeta = new TarjetaDeCreditoModel(numeroText.Text, codigoSeguridadText.Text, emisionText.Value,
-                                                            vencimientoText.Value);
-
-                    
+                    tarjeta = new TarjetaDeCreditoModel(numeroText.Text, codigoSeguridadText.Text, emisor,
+                                                            emisionText.Value, vencimientoText.Value);
+                    tarjeta.propietario = propietario;
                     try
                     {
                         respuesta = tarjetasDao.crearTarjeta(tarjeta);
@@ -213,22 +220,46 @@ namespace Tarjetas
                     }
                     break;
                 case 1:
-                    tarjeta = new TarjetaDeCreditoModel(tarjeta.id,numeroText.Text, codigoSeguridadText.Text, 
+                    tarjeta = new TarjetaDeCreditoModel(tarjeta.id,numeroText.Text, codigoSeguridadText.Text, emisor,
                                                            emisionText.Value, vencimientoText.Value);
-                    MessageBox.Show("Cliente modificado exitosamente");
-                    tarjeta = tarjetasDao.modificarTarjeta(tarjeta);
-                    parent.formResponseUpdate(tarjeta);
+                    try
+                    {
+                        respuesta = tarjetasDao.modificarTarjeta(tarjeta);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            parent.formResponseUpdate(tarjeta);
+                            parent.Enabled = true;
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
+                    }
                     break;
                 default:
-                    MessageBox.Show("Cuenta dada de Baja Exitosamente");
-                    tarjeta = tarjetasDao.borrarTarjeta(tarjeta);
-                    parent.formResponseDisable(tarjeta);
+                    try
+                    {
+                        respuesta = tarjetasDao.borrarTarjeta(tarjeta);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            parent.formResponseDisable(tarjeta);
+                            parent.Enabled = true;
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
+                    }
                     break;
             }
-            parent.Enabled = true;
-            this.Close();
-            this.Dispose();
-            GC.Collect();
         }
         //-----------------------------------------------------------------------------------------------------------------
 

@@ -16,7 +16,6 @@ namespace ABM
 {
     public partial class CuentaAbm : Form
     {
-        private Boolean openedToSelect;
         private const int AGREGAR = 0;
         private const int MODIFICAR = 1;
         private const int DESHABILITAR = 2;
@@ -94,7 +93,6 @@ namespace ABM
         private void init() {
             InitializeComponent();
 
-            openedToSelect = false;
             this.cuentaDao = new CuentaDao();
             this.extraDao = new ExtraDao();
             this.cuentas = new List<CuentaModel>();
@@ -124,7 +122,6 @@ namespace ABM
         {
             InitializeComponent();
 
-            openedToSelect = true;
             this.cuentaDao = new CuentaDao();
             this.extraDao = new ExtraDao();
             this.cuentas = cuentaDao.getListado();
