@@ -2463,17 +2463,7 @@ BEGIN TRANSACTION
 	CLOSE D
 	DEALLOCATE D
 	COMMIT
-<<<<<<< HEAD
-GO
-=======
+
+
 GO
 
-/* EN LA MIGRACION DE Item... LAS TRANS ENTRE MIS PROPIAS CUENTAS TIENE QUE COSTAR 0
-SELECT * FROM gd_esquema.Maestra 
-WHERE Cuenta_Numero NOT IN (
-	SELECT Cuenta.Id_Cuenta
-	from REZAGADOS.Cuenta, REZAGADOS.Cliente
-	WHERE cliente.Id_Usuario=Cuenta.Id_Usuario
-	AND Cliente.Mail= gd_esquema.Maestra.Cli_Mail)
-	*/
->>>>>>> origin/master
