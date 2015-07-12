@@ -479,15 +479,14 @@ GROUP BY g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
 --------------------------------------------TIPO ITEM-----------------------------------------------
 
 INSERT INTO REZAGADOS.TipoItem (Tipo, Importe)
-VALUES ('Comisión por transferencia.', 10), ('Creacion de cuenta.', 0), ('Cambio de cuenta.', 0)
+VALUES ('Comisión por transferencia.', 10), ('Creacion de cuenta.', 5), ('Cambio de cuenta.', 2)
 
 --------------------------------------------ITEM----------------------------------------------------
 
 INSERT INTO REZAGADOS.Item (Id_Factura, Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-SELECT  Factura_Numero, Cuenta_Numero, 1, Trans_Importe, Transf_Fecha
+SELECT  Factura_Numero, Cuenta_Numero, 1, CAST(ROUND(Trans_Importe,1)/10 AS NUMERIC (18,2)), Transf_Fecha
 FROM gd_esquema.Maestra
 WHERE Trans_Importe IS NOT NULL
-AND Trans_Importe <> 0.00
 
 -----------------------------------------EMISOR---------------------------------------------------
 
@@ -1085,10 +1084,10 @@ DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE Id_Cliente = @I
 
 IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta))) > GETDATE()
 BEGIN
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cerrada')
 UPDATE Cuenta SET Fecha_Cierre = GETDATE()
 SET @Respuesta = -1
-SET @RespuestaMensaje = 'Cuenta Cancelada'
+SET @RespuestaMensaje = 'Cuenta Cerrada'
 END
 ELSE
 BEGIN
@@ -1134,6 +1133,7 @@ GO
 
 USE [GD1C2015]
 GO
+
 CREATE PROCEDURE REZAGADOS.RetiroEfectivo(	@Usuario VARCHAR(255),
 											@Tipo_Documento NUMERIC(18,0),
 											@Nro_Documento NUMERIC(18,0),
@@ -1147,10 +1147,10 @@ AS
 BEGIN
 IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta))) > GETDATE()
 BEGIN
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cerrada')
 UPDATE Cuenta SET Fecha_Cierre = GETDATE()
 SET @Respuesta = -1
-SET @RespuestaMensaje = 'Cuenta Cancelada'
+SET @RespuestaMensaje = 'Cuenta Cerrada'
 END
 ELSE
 BEGIN
@@ -1210,6 +1210,7 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[TransferenciaEntreCuentas]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.TransferenciaEntreCuentas;
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Usuario VARCHAR(255),
@@ -1225,10 +1226,10 @@ AS
 BEGIN
 IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta_Origen=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta_Origen))) > GETDATE()
 BEGIN
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cancelada')
+UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cerrada')
 UPDATE Cuenta SET Fecha_Cierre = GETDATE()
 SET @Respuesta = -1
-SET @RespuestaMensaje = 'Cuenta Cancelada'
+SET @RespuestaMensaje = 'Cuenta Cerrada'
 END
 ELSE
 BEGIN
@@ -2463,3 +2464,12 @@ BEGIN TRANSACTION
 	DEALLOCATE C
 	COMMIT
 GO
+
+/* EN LA MIGRACION DE Item... LAS TRANS ENTRE MIS PROPIAS CUENTAS TIENE QUE COSTAR 0
+SELECT * FROM gd_esquema.Maestra 
+WHERE Cuenta_Numero NOT IN (
+	SELECT Cuenta.Id_Cuenta
+	from REZAGADOS.Cuenta, REZAGADOS.Cliente
+	WHERE cliente.Id_Usuario=Cuenta.Id_Usuario
+	AND Cliente.Mail= gd_esquema.Maestra.Cli_Mail)
+	*/
