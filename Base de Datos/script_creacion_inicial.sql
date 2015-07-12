@@ -409,7 +409,7 @@ FROM gd_esquema.Maestra
 WHERE Cli_Mail IS NOT NULL
 
 INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
-VALUES ('admin','83725956498A914502C515217D3310E5E7FA4DE8083DFAD999B63EED48EE6', GETDATE(), GETDATE())
+VALUES ('admin','E6B87050BFCB8143FCB8DB170A4DC9ED0D904DDD3E2A4AD1B1E8DCFDC9BE7', GETDATE(), GETDATE())
 
 ----------------------------------------ADMINISTRADOR-----------------------------------------------
 
@@ -910,7 +910,7 @@ VALUES ((SELECT MAX(c1.Id_Cuenta)+1 FROM REZAGADOS.Cuenta c1 ),
 	 FROM REZAGADOS.Estado_Cuenta e 
 	 WHERE e.Nombre LIKE 'Pendiente de activación'), @Fecha)
 SET @RespuestaMensaje = 'Creación exitosa'
-SET @Respuesta = (SELECT @@IDENTITY)
+SET @Respuesta =  (SELECT Max(c1.Id_Cuenta) FROM REZAGADOS.Cuenta c1)
 END
 GO
 

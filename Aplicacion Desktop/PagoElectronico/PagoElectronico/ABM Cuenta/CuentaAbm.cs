@@ -20,8 +20,8 @@ namespace ABM
         private const int MODIFICAR = 1;
         private const int DESHABILITAR = 2;
 
-        private CuentaDao cuentaDao;
-        private ExtraDao extraDao;
+ //       private CuentaDao cuentaDao;
+ //       private ExtraDao extraDao;
 
         private ClienteModel clienteSeleccionado;
         private Int32 cuentaActivoIndex;
@@ -62,7 +62,7 @@ namespace ABM
             this.parentRetiros.Enabled = false;
 
             formResponseCliente(Logins.UsuarioSingleton.getInstance().getUsuario().cliente);
-            cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
+            cuentas = new CuentaDao().getCuentasByCliente(clienteSeleccionado);
             fillTable();
             button1.Enabled = false;
             button5.Visible = false;
@@ -72,9 +72,6 @@ namespace ABM
         {
             if (origenOdestino == 0) {
                 initToSelect(false);
-                formResponseCliente(Logins.UsuarioSingleton.getInstance().getUsuario().cliente);
-                cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
-                fillTable();
                 button1.Enabled = false;
                 button5.Visible = false;
                 this.parentTransferenciaOrigen = parentTransferencia;
@@ -92,28 +89,30 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void init() {
             InitializeComponent();
-
-            this.cuentaDao = new CuentaDao();
-            this.extraDao = new ExtraDao();
-            this.cuentas = new List<CuentaModel>();
-            this.cuentas = cuentaDao.getCuentas();
-            
-            fillTable();
-            this.nombreLabel.Text = "";
-
             button3.Enabled = false;
             button4.Enabled = false;
+            cargarCuentasSiTieneCliente();
+            
+        }
+
+        private void cargarCuentasSiTieneCliente()
+        {
             UserModel usuario = Logins.UsuarioSingleton.getInstance().getUsuario();
             if (usuario.cliente != null)
             {
                 this.formResponseCliente(usuario.cliente);
-                cuentas = cuentaDao.getCuentasByCliente(usuario.cliente);
+                cuentas = new CuentaDao().getCuentasByCliente(usuario.cliente);
                 fillTable();
                 button1.Visible = false;
                 button5.Visible = false;
                 buttonLimpiar.Visible = false;
             }
-            
+            else
+            {
+                this.cuentas = new CuentaDao().getCuentas();
+                fillTable();
+                this.nombreLabel.Text = "";
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -122,17 +121,8 @@ namespace ABM
         {
             InitializeComponent();
 
-            this.cuentaDao = new CuentaDao();
-            this.extraDao = new ExtraDao();
-            this.cuentas = cuentaDao.getListado();
-
-            if (doFillTable){
-                fillTable();
-            }
-            
-            this.nombreLabel.Text = "";
+            this.cargarCuentasSiTieneCliente();
             this.Text = "Seleccionar una Cuenta";
-
             buttonElegir.Visible = true;
             buttonElegir.Enabled = false;
             buttonCancelar.Visible = true;
@@ -253,10 +243,10 @@ namespace ABM
         {
             if (clienteSeleccionado == null)
             {
-                cuentas = cuentaDao.getCuentas();
+                cuentas = new CuentaDao().getCuentas();
             }
             else {
-                cuentas = cuentaDao.getCuentasByCliente(clienteSeleccionado);
+                cuentas = new CuentaDao().getCuentasByCliente(clienteSeleccionado);
             }
             fillTable();
         }
