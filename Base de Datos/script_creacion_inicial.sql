@@ -2405,7 +2405,7 @@ BEGIN TRANSACTION
 				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
 				ELSE
 				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada')
-				FETCH C INTO @Cuenta
+				FETCH B INTO @Cuenta
 			END
 	CLOSE B
 	DEALLOCATE B
@@ -2432,9 +2432,14 @@ BEGIN TRANSACTION
 		FETCH C INTO @Cuenta, @Tipo
 		WHILE @@FETCH_STATUS = 0
 			BEGIN
-				IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta ) <> 'Gratuita'
-				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-				VALUES (@Cuenta, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Cambio de cuenta.'), (SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta), GETDATE())
+				PRINT 'Controlar'
+				IF EXISTS(select Id_Tipo_Cuenta from REZAGADOS.TipoCuenta where NOT Categoria like 'Gratuita' and Id_Tipo_Cuenta = @Tipo)
+				BEGIN
+					PRINT 'TRIGGER Tipo CUenta TRansaccion'+CAST(@Cuenta as varchar) +' - '+ CAST(@Tipo as varchar)
+					INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
+					VALUES (@Cuenta, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Cambio de cuenta.'), 
+					(SELECT Costo FROM REZAGADOS.TipoCuenta t WHERE t.Id_Tipo_Cuenta=@Tipo), GETDATE())
+				END
 				FETCH C INTO @Cuenta, @Tipo
 			END
   CLOSE C
