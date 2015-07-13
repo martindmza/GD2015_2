@@ -2346,7 +2346,6 @@ BEGIN
 END
 GO
 
-
 ---------------------------------------------------------------------------------------------------------------
 ----------------------------------------------TRIGGERS---------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
@@ -2470,15 +2469,12 @@ BEGIN TRANSACTION
 		IF ((SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Emi) <> (SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Dest))
 		BEGIN
 			IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi ) <> 'Gratuita'
-			INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha) --Importe debe ser el 10%
-			VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), (SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi), GETDATE())
+			INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
+			VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), CAST(ROUND(@Importe,1)/(SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi) AS NUMERIC (18,2)), GETDATE())
 			FETCH C INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
 
 		END
 	CLOSE D
 	DEALLOCATE D
 	COMMIT
-
-
 GO
-
