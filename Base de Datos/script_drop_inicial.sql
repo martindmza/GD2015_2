@@ -68,6 +68,10 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[HistorialCuenta]'))
 	ALTER TABLE REZAGADOS.HistorialCuenta DROP CONSTRAINT FK_Historial_Cuenta_to_Cuenta;
 	
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Historial_Cuenta_to_Estado]') 
+	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[HistorialCuenta]'))
+	ALTER TABLE REZAGADOS.HistorialCuenta DROP CONSTRAINT FK_Historial_Cuenta_to_Estado;
+	
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Deposito_to_Cuenta]') 
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Deposito]'))
 	ALTER TABLE REZAGADOS.Deposito DROP CONSTRAINT FK_Deposito_to_Cuenta;

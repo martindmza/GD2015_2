@@ -139,6 +139,34 @@ namespace DAO
             return entity;
         }
 
+        public TEntity bajaBasica(TEntity entity)
+        {
+            DataTable dt = new DataTable();
+            SqlCommand command = InitializeConnection(this.getProcedureBajaBasica());
+            command.Parameters.Add("Id", System.Data.SqlDbType.Decimal).Value = entity.id;
+            command = addParametrosParaBaja(command, entity);
+            var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
+            var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
+            pOut.Direction = ParameterDirection.Output;
+            pOut2.Direction = ParameterDirection.Output;
+            //
+            SqlDataAdapter da = new SqlDataAdapter(command);
+            da.Fill(dt);
+            Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (decimal)(pOut.Value);
+            string value2 = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+            if (value != -1)
+            {
+                entity.id = value;
+            }
+            else
+            {
+                MessageBox.Show(value2, "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            return entity;
+        }
+
+        protected abstract SqlCommand addParametrosParaBaja(SqlCommand command, object entity);
+
         public abstract SqlCommand addParametrosParaAgregar(SqlCommand command, TEntity entity);
 
         public abstract SqlCommand addParametrosParaModificar(SqlCommand command, TEntity entity);
@@ -146,6 +174,8 @@ namespace DAO
         protected abstract string getProcedureCrearBasica();
 
         protected abstract string getProcedureModificarBasica();
+
+        protected abstract string getProcedureBajaBasica();
 
         public abstract string getProcedureEncontrarPorId();
 

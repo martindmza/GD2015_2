@@ -63,5 +63,15 @@ namespace DAO
         {
             throw new NotImplementedException();
         }
+
+        protected override System.Data.SqlClient.SqlCommand addParametrosParaBaja(System.Data.SqlClient.SqlCommand command, object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureBajaBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

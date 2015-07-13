@@ -111,5 +111,15 @@ namespace DAO
         {
             return "Listar_Deposito";
         }
+
+        protected override SqlCommand addParametrosParaBaja(SqlCommand command, object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureBajaBasica()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

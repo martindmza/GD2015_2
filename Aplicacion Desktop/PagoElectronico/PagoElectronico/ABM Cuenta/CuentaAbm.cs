@@ -20,9 +20,6 @@ namespace ABM
         private const int MODIFICAR = 1;
         private const int DESHABILITAR = 2;
 
- //       private CuentaDao cuentaDao;
- //       private ExtraDao extraDao;
-
         private ClienteModel clienteSeleccionado;
         private Int32 cuentaActivoIndex;
         private CuentaModel cuentaActiva;
@@ -60,10 +57,6 @@ namespace ABM
             initToSelect(false);
             this.parentRetiros = parentRetiros;
             this.parentRetiros.Enabled = false;
-
-            formResponseCliente(Logins.UsuarioSingleton.getInstance().getUsuario().cliente);
-            cuentas = new CuentaDao().getCuentasByCliente(clienteSeleccionado);
-            fillTable();
             button1.Enabled = false;
             button5.Visible = false;
         }
@@ -102,7 +95,6 @@ namespace ABM
             {
                 this.formResponseCliente(usuario.cliente);
                 cuentas = new CuentaDao().getCuentasByCliente(usuario.cliente);
-                fillTable();
                 button1.Visible = false;
                 button5.Visible = false;
                 buttonLimpiar.Visible = false;
@@ -110,9 +102,9 @@ namespace ABM
             else
             {
                 this.cuentas = new CuentaDao().getCuentas();
-                fillTable();
                 this.nombreLabel.Text = "";
             }
+            fillTable();
         }
         //-----------------------------------------------------------------------------------------------------------------
 

@@ -129,6 +129,7 @@ CREATE TABLE REZAGADOS.HistorialCuenta(
 Id_Historial_Cuenta numeric (18,0) IDENTITY(1,1) NOT NULL,
 Id_Cuenta numeric (18,0),
 Fecha datetime,
+Id_Estado numeric (18,0),
 Estado varchar(255),);
 ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT PK_Id_Historial_Cuenta PRIMARY KEY (Id_Historial_Cuenta);
 
@@ -273,6 +274,9 @@ FOREIGN KEY (Id_Moneda) REFERENCES REZAGADOS.Moneda (Id_Moneda)
 ;
 ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT FK_Historial_Cuenta_to_Cuenta
 FOREIGN KEY (Id_Cuenta) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
+;
+ALTER TABLE REZAGADOS.HistorialCuenta ADD CONSTRAINT FK_Historial_Cuenta_to_Estado
+FOREIGN KEY (Id_Estado) REFERENCES REZAGADOS.Estado_Cuenta (Id_Estado)
 ;
 ALTER TABLE REZAGADOS.Deposito ADD CONSTRAINT FK_Deposito_to_Cuenta
 FOREIGN KEY (Id_Cuenta) REFERENCES REZAGADOS.Cuenta (Id_Cuenta)
@@ -2359,23 +2363,24 @@ ON [REZAGADOS].[Cuenta]
 AFTER UPDATE
 AS
 IF UPDATE(Id_Estado)
-BEGIN TRANSACTION
+BEGIN TRAN
 	DECLARE C CURSOR
-	FOR SELECT Id_Cuenta, Id_Estado FROM INSERTED
+	FOR SELECT i.Id_Cuenta, i.Id_Estado, e.Nombre FROM INSERTED i JOIN REZAGADOS.Estado_Cuenta e ON i.Id_Estado = e.Id_Estado
 	DECLARE @Cuenta NUMERIC(18,0)
-	DECLARE @Estado NUMERIC(18,0)
+	DECLARE @Id_Estado NUMERIC(18,0)
+	DECLARE @Estado VARCHAR(255)
 		OPEN C
-		FETCH C INTO @Cuenta, @Estado
+		FETCH C INTO @Cuenta, @Id_Estado, @Estado
 		WHILE @@FETCH_STATUS = 0
 			BEGIN
-				INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Estado) VALUES (@Cuenta, GETDATE(), @Estado)
+				PRINT CAST(@Cuenta as varchar) +' - '+ @Estado 
+				INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Id_Estado,Estado) VALUES (@Cuenta, GETDATE(),@Id_Estado, @Estado)
+				FETCH C INTO @Cuenta, @Id_Estado, @Estado
 			END
 	CLOSE C
 	DEALLOCATE C
-	COMMIT
-
+COMMIT TRAN 
 GO
-
 ----------------------------------------5 TRANSACCIONES---------------------------------------------------------
 
 IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
@@ -2399,6 +2404,7 @@ BEGIN TRANSACTION
 				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
 				ELSE
 				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada')
+				FETCH C INTO @Cuenta
 			END
 	CLOSE C
 	DEALLOCATE C
@@ -2428,6 +2434,7 @@ BEGIN TRANSACTION
 				IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta ) <> 'Gratuita'
 				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
 				VALUES (@Cuenta, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Cambio de cuenta.'), (SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Cuenta), GETDATE())
+				FETCH C INTO @Cuenta, @Tipo
 			END
   CLOSE C
   DEALLOCATE C
@@ -2459,6 +2466,8 @@ BEGIN TRANSACTION
 			IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi ) <> 'Gratuita'
 			INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha) 
 			VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), (SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi), GETDATE())
+			FETCH C INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
+
 		END
 	CLOSE C
 	DEALLOCATE C
