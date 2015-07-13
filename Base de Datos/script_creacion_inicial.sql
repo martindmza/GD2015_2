@@ -1085,57 +1085,90 @@ GO
 
 ---------------------------------------DEPOSITAR---------------------------------------------------------------
 
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Depositar]') 
+AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Depositar;
+
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Depositar(
-@Cuenta NUMERIC(18,0),
+@Id_Cliente NUMERIC(18,0),
+@Id_Cuenta NUMERIC(18,0),
 @Importe NUMERIC(18,0),
-@Moneda NUMERIC(18,0),
-@Nro_Tarjeta NUMERIC(18,0), 
+@Id_Moneda NUMERIC(18,0),
+@Id_Tarjeta NUMERIC(18,0), 
 @Fecha DATETIME,
 @Respuesta NUMERIC(18,0) OUTPUT,
 @RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
---EXEC REZAGADOS.Cuenta_Vencida(@Cuenta);
-DECLARE @Usuario NUMERIC(18,0) = (SELECT Id_Usuario FROM Cuenta WHERE @Cuenta=Id_Cuenta)
-DECLARE @Id_Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE @Usuario=Id_Usuario)
-DECLARE @Pais NUMERIC(18,0) = (SELECT Id_Pais FROM Cliente WHERE Id_Cliente = @Id_Cliente)
-
-IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Id_Cliente) = 0
-		BEGIN
+	IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Id_Cliente) = 0
+	BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Cliente Inhabilitado'
-		END
-ELSE
-BEGIN
-IF ((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) = 'Inhabilitado')
-		BEGIN
+	END
+
+	IF ((SELECT Id_Estado FROM Cuenta WHERE Id_Cuenta = @Id_Cuenta) = 3)
+	BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Cuenta Inhabilitada'
-		END
-ELSE
-BEGIN
-	IF (@Fecha > (SELECT Vencimiento FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
-		BEGIN
+	END
+	
+	DECLARE @Vencimiento DATETIME
+	DECLARE @Habiltiada BIT
+	DECLARE @Id_Cliente_Tarjeta NUMERIC (18,0)
+	 SELECT	@Vencimiento = Vencimiento,
+			@Habiltiada = Habilitada,
+			@Id_Cliente_Tarjeta = Id_Cliente
+	   FROM Tarjeta WHERE @Id_Tarjeta=Id_Tarjeta
+
+	IF (@Fecha > @Vencimiento)
+	BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Tarjeta Vencida'
-		END
-	ELSE
-		IF (0=(SELECT habilitada FROM Tarjeta WHERE @Nro_Tarjeta=Numero))
-			BEGIN
-			SET @Respuesta = -1
-			SET @RespuestaMensaje = 'Tarjeta Inhabilitada'
-			END
-		ELSE
-			BEGIN
-			INSERT INTO REZAGADOS.Deposito (Id_Cuenta, Id_Tarjeta, Id_Pais, Id_Moneda, Fecha, Importe)
-			VALUES (@Cuenta, (SELECT Id_Tarjeta FROM Tarjeta WHERE Id_Cliente=@Id_Cliente), @Pais, (SELECT Id_Moneda FROM Moneda WHERE @Moneda=Descripcion), @Fecha, @Importe)
+	END
+	
+	IF (@Habiltiada = 0)
+		BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Tarjeta Inhabilitada'
+	END
+	
+	IF (@Id_Cliente_Tarjeta <> @Id_cliente)
+		BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'La tarjeta seleccionada no pertenece al cliente'
+	END
+	
+	IF (@Importe < 1)
+		BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'El importe a depositar no puede ser menor a uno'
+	END
+
+	SET @Respuesta = 1
+	SET @RespuestaMensaje = 'todo piola'
+	RETURN
+	
+	BEGIN TRY
+		BEGIN TRANSACTION
+			
+			--Inserto la transaccion
+			INSERT INTO REZAGADOS.Deposito (Id_Cuenta, Id_Tarjeta, Id_Moneda, Fecha, Importe)
+			VALUES (@Id_Cuenta, @Id_Tarjeta , @Id_Moneda, @Fecha, @Importe)
+			
+			--Modifico el Saldo
+			UPDATE REZAGADOS.Cuenta SET Saldo = Saldo + @Importe WHERE Id_Cuenta = @Id_Cuenta
+								
 			SET @Respuesta = @@IDENTITY
 			SET @RespuestaMensaje = 'Deposito realizado'
-			END
-END
-END
+		COMMIT
+	END TRY
+	BEGIN CATCH
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = ERROR_MESSAGE()
+		ROLLBACK TRANSACTION
+	END CATCH
 END
 GO
 

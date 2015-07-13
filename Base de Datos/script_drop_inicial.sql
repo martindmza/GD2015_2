@@ -84,7 +84,7 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Deposito]'))
 	ALTER TABLE REZAGADOS.Deposito DROP CONSTRAINT FK_Deposito_to_Moneda;
 	
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Tarjeta_to_Usuario]') 
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Tarjeta_to_Cliente]') 
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Tarjeta]'))
 	ALTER TABLE REZAGADOS.Tarjeta DROP CONSTRAINT FK_Tarjeta_to_Cliente;
 
@@ -162,12 +162,12 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP TABLE REZAGADOS.UsuarioXRol;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Administrador]') AND type in (N'U'))
 	DROP TABLE REZAGADOS.Administrador;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Tarjeta]') AND type in (N'U'))
+	DROP TABLE REZAGADOS.Tarjeta;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Cliente]') AND type in (N'U'))	
 	DROP TABLE REZAGADOS.Cliente;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[TipoDocumento]') AND type in (N'U'))
 	DROP TABLE REZAGADOS.TipoDocumento;
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Tarjeta]') AND type in (N'U'))
-	DROP TABLE REZAGADOS.Tarjeta;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Factura]') AND type in (N'U'))
 	DROP TABLE REZAGADOS.Factura;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Pais]') AND type in (N'U'))
@@ -337,8 +337,6 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Usuario_Id];
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Tarjeta_Cliente_Id]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Cliente_Id];
-
-
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Tarjeta]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].Modificar_Tarjeta;	
 	

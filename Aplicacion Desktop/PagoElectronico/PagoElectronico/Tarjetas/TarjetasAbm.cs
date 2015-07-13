@@ -204,11 +204,13 @@ namespace Tarjetas
                     count++;
                 }
 
+                buttonElegir.Enabled = true;
                 buttonModificar.Enabled = true;
                 buttonQuitar.Enabled = true;
             }
             catch (NullReferenceException errTarj)
             {
+                buttonElegir.Enabled = false;
                 buttonModificar.Enabled = false;
                 buttonQuitar.Enabled = false;
             }

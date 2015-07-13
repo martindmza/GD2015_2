@@ -163,22 +163,17 @@ namespace Depositos
             try
             {
                 Respuesta respuesta = depositoDao.createDeposito(deposito);
-
+                MessageBox.Show(respuesta.mensaje);
                 if (respuesta.codigo > 0)
                 {
                     deposito.id = respuesta.codigo;
-                    MessageBox.Show(respuesta.mensaje);
-                    if (respuesta.codigo > 0)
-                    {
-                        deposito.id = respuesta.codigo;
-                        Form f = new DepositosComprobante(deposito);
-                        f.MdiParent = this.MdiParent;
-                        f.Show();
+                    Form f = new DepositosComprobante(deposito);
+                    f.MdiParent = this.MdiParent;
+                    f.Show();
 
-                        this.Close();
-                        this.Dispose();
-                        GC.Collect();
-                    }
+                    this.Close();
+                    this.Dispose();
+                    GC.Collect();
                 }
             }
             catch (Exception err)

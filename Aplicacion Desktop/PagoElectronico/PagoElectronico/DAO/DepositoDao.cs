@@ -19,10 +19,11 @@ namespace DAO
             {
                 SqlCommand command = InitializeConnection(DEPOSITAR);
 
-                command.Parameters.Add("@Cuenta", System.Data.SqlDbType.Decimal).Value = deposito.cuentaDestino.id;
+                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = deposito.depositante.id;
+                command.Parameters.Add("@Id_Cuenta", System.Data.SqlDbType.Decimal).Value = deposito.cuentaDestino.id;
                 command.Parameters.Add("@Importe", System.Data.SqlDbType.Decimal).Value = deposito.importe;
-                command.Parameters.Add("@Moneda", System.Data.SqlDbType.Decimal).Value = deposito.monedaId;
-                command.Parameters.Add("@Nro_Tarjeta", System.Data.SqlDbType.Decimal).Value = deposito.tarjetaDeCredito.id;
+                command.Parameters.Add("@Id_Moneda", System.Data.SqlDbType.Decimal).Value = deposito.monedaId.id;
+                command.Parameters.Add("@Id_Tarjeta", System.Data.SqlDbType.Decimal).Value = deposito.tarjetaDeCredito.id;
                 command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = deposito.fecha;
 
                 DataTable dt = new DataTable();
