@@ -20,8 +20,10 @@ namespace Retiros
         private CuentaModel cuenta;
         private ClienteModel cliente;
         private ExtraDao extraDao;
+        private TipoDocumentoDAO docDao;
         private RetiroDao retiroDao;
         private RetiroModel retiro;
+        private BancoModel banco;
 
         private const int OPEN_CLIENTE_ABM_TO_SELECT = 1;
 
@@ -29,8 +31,10 @@ namespace Retiros
         {
             extraDao = new ExtraDao();
             retiroDao = new RetiroDao();
+            docDao = new TipoDocumentoDAO();
 
             InitializeComponent();
+            fillDocTypes();
 
             aceptar.Enabled = false;
         }
@@ -47,10 +51,41 @@ namespace Retiros
             {
                 this.cuenta = cuenta;
                 cuentaText.Text = cuenta.id.ToString();
-                clienteDestinoLabel.Text = cuenta.propietario.apellido + ", " + cuenta.propietario.nombre;
-                clienteDestinoLabel.Visible = true;
                 label2.Visible = true;
+
+                saldoLabel.Visible = true;
+                saldoText.Visible = true;
+                saldoText.Text = cuenta.saldo.ToString() + "  USD";
             }
+            
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        public void formResponseBanco(BancoModel banco)
+        {
+            if (banco != null)
+            {
+                this.banco = banco;
+                bancoText.Text = banco.id.ToString();
+
+                bancoLabel.Visible = true;
+                bancoLabel.Text = banco.nombre;
+            }
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void fillDocTypes()
+        {
+            foreach (TipoDocumentoModel tipo in docDao.getListado())
+            {
+                docTipo.Items.Add(new KeyValuePair<Decimal, String>(tipo.id, tipo.nombre));
+            }
+            docTipo.DisplayMember = "Value";
+            docTipo.ValueMember = "Key";
+            docTipo.SelectedIndex = 0;
             
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -96,7 +131,8 @@ namespace Retiros
         //-----------------------------------------------------------------------------------------------------------------
         private void requireds_TextChanged(object sender, EventArgs e)
         {
-            if (importeText.Text.Length != 0 && dniText.Text.Length != 0 && cuentaText.Text.Length != 0)
+            if (importeText.Text.Length != 0 && dniText.Text.Length != 0 && 
+                cuentaText.Text.Length != 0 && bancoText.Text.Trim() != "" )
             {
                 aceptar.Enabled = true;
             }
@@ -110,13 +146,11 @@ namespace Retiros
         //-----------------------------------------------------------------------------------------------------------------
         private void aceptar_Click(object sender, EventArgs e)
         {
-            //validar Documento
-            if (!dniText.Text.Equals(UsuarioSingleton.getInstance().getUsuario().cliente.nroDocumento.ToString()))
-            {
-                MessageBox.Show("Número de Documento Inválido");
-                dniText.Text = "";
-                return;
-            }
+
+            String[] result = docTipo.SelectedItem.ToString().Split(',');
+            String[] valueString = result[0].Split('[');
+            Decimal docTipoSelected = Decimal.Parse(valueString[1]);
+            TipoDocumentoModel documento = docDao.dameTuModelo(docTipoSelected.ToString());
 
             //set importe
             Double importe = Double.Parse(importeText.Text);
@@ -125,25 +159,40 @@ namespace Retiros
                 MessageBox.Show("El importe a retirar no puede ser mayor al saldo de la cuenta");
                 importeText.Text = "";
                 return;
-            } 
-
-            retiro = new RetiroModel(cuenta, importe,null,extraDao.getDayToday());
-            retiro = retiroDao.agregarBasica(retiro);
-
-            if (retiro.id != null)
-            {
-                Form f = new ChequeForm(retiro);
-                f.MdiParent = this.MdiParent;
-                f.Show();
-
-                this.Close();
-                this.Dispose();
-                GC.Collect();
             }
-            else
+
+            MonedaModel moneda = new MonedaModel();
+            retiro = new RetiroModel(cuenta, importe,moneda,extraDao.getDayToday());
+            retiro.banco = this.banco;
+            try
             {
-                throw new Exception("No se pudo crear el cheque");
+                Respuesta respuesta = retiroDao.createRetiro(retiro,documento, Decimal.Parse(dniText.Text));
+                MessageBox.Show(respuesta.mensaje);
+                if (respuesta.codigo > 0)
+                {
+                    retiro.id = respuesta.codigo;
+                    Form f = new ChequeForm(retiro);
+                    f.MdiParent = this.MdiParent;
+                    f.Show();
+
+                    this.Close();
+                    this.Dispose();
+                    GC.Collect();
+                }
             }
+            catch (Exception err)
+            {
+                MessageBox.Show("No se pudo completar la operación" + err);
+            }
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void trigger2_Click(object sender, EventArgs e)
+        {
+            Form f = new BancosForm(this);
+            f.MdiParent = this.MdiParent;
+            f.Show();
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

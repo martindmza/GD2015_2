@@ -178,7 +178,7 @@ namespace Depositos
             }
             catch (Exception err)
             {
-                MessageBox.Show("No se pudo completar la operación");
+                MessageBox.Show("No se pudo completar la operación" + err);
             }
 
 

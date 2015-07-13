@@ -102,7 +102,7 @@ namespace DAO
 
         public CuentaModel unsubscribeCuenta(CuentaModel cuenta)
         {
-            //cuenta.habilitado = false;
+            this.bajaBasica(cuenta);
             return cuenta;
         }
 
@@ -146,6 +146,16 @@ namespace DAO
         protected override string getProcedureModificarBasica()
         {
             return "Modificar_Cuenta";
+        }
+
+        protected override SqlCommand addParametrosParaBaja(SqlCommand command, object entity)
+        {
+            return command;
+        }
+
+        protected override string getProcedureBajaBasica()
+        {
+            return "Baja_Cuenta"; 
         }
     }
 }

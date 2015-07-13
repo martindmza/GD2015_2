@@ -144,6 +144,12 @@
     <Compile Include="Facturacion\FacturaForm.Designer.cs">
       <DependentUpon>FacturaForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormsExtras\BancosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsExtras\BancosForm.Designer.cs">
+      <DependentUpon>BancosForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormsExtras\EmisoresForm.cs">
       <SubType>Form</SubType>
     </Compile>

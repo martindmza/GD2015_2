@@ -39,6 +39,7 @@ namespace ABM
             if (cuenta != null)
             {
                 this.cuenta = cuenta;
+                
             }
             this.operacionTipo = operacionTipo;
             this.cuentaDao = new CuentaDao();
@@ -47,7 +48,7 @@ namespace ABM
             this.estadoDao = new EstadoDao();
             this.monedaDao = new MonedaDAO();
             this.parentCuenta = parentCuenta;
-
+            this.cliente = Logins.UsuarioSingleton.getInstance().getUsuario().cliente;
 
             tipos = cuentaDao.getCuentaTypes();
             fillComboBox();
@@ -59,6 +60,11 @@ namespace ABM
                     aceptar.Enabled = false;
                     estadoText.Visible = false;
                     estadoLabel.Visible = false;
+                    if (cliente != null)
+                    {
+                        this.formResponseCliente(cliente);
+                        this.button1.Visible = false;
+                    }
                     this.Text = "Crear Nueva Cuenta";
                     break;
                 case 1:
@@ -77,7 +83,7 @@ namespace ABM
             }
 
             parentCuenta.Enabled = false;
-            clienteNameLabel.Text = "";
+            //clienteNameLabel.Text = "";
 
         }
 

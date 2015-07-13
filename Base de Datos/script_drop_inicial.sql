@@ -68,6 +68,10 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[HistorialCuenta]'))
 	ALTER TABLE REZAGADOS.HistorialCuenta DROP CONSTRAINT FK_Historial_Cuenta_to_Cuenta;
 	
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Historial_Cuenta_to_Estado]') 
+	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[HistorialCuenta]'))
+	ALTER TABLE REZAGADOS.HistorialCuenta DROP CONSTRAINT FK_Historial_Cuenta_to_Estado;
+	
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Deposito_to_Cuenta]') 
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Deposito]'))
 	ALTER TABLE REZAGADOS.Deposito DROP CONSTRAINT FK_Deposito_to_Cuenta;
@@ -112,6 +116,10 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Cheque]'))
 	ALTER TABLE REZAGADOS.Cheque DROP CONSTRAINT FK_Cheque_to_Retiro;
 	
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Tarjeta_to_Cliente]') 
+	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Tarjeta]'))
+	ALTER TABLE REZAGADOS.Tarjeta DROP CONSTRAINT FK_Tarjeta_to_Cliente;
+	
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Cheque_to_Banco]') 
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[Cheque]'))
 	ALTER TABLE REZAGADOS.Cheque DROP CONSTRAINT FK_Cheque_to_Banco;
@@ -139,7 +147,6 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGADOS].[FK_Historial_Usuario_to_Usuario]') 
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[HistorialUsuario]'))
 	ALTER TABLE REZAGADOS.HistorialUsuario DROP CONSTRAINT FK_Historial_Usuario_to_Usuario;
-
 
 IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Cuentas]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Historial_Cuentas]
@@ -340,11 +347,9 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Tarjeta]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].Modificar_Tarjeta;	
 	
-
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;
 	
-
 IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
 

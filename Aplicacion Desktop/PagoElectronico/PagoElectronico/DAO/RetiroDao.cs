@@ -3,11 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Models;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace DAO
 {
     public class RetiroDao:BasicaDAO<RetiroModel>
     {
+
+        private const String RETIRAR = "RetiroEfectivo";
+
+
+        public Respuesta createRetiro(RetiroModel retiro,TipoDocumentoModel docTipo,Decimal docNum)
+        {
+            try
+            {
+                SqlCommand command = InitializeConnection(RETIRAR);
+
+                command.Parameters.Add("@Id_Cuenta", System.Data.SqlDbType.Decimal).Value = retiro.cuenta.id;
+                command.Parameters.Add("@Id_Tipo_Documento", System.Data.SqlDbType.Decimal).Value = docTipo.id;
+                command.Parameters.Add("@Nro_Documento", System.Data.SqlDbType.Decimal).Value = docNum;
+                command.Parameters.Add("@Importe", System.Data.SqlDbType.Decimal).Value = retiro.importe;
+                command.Parameters.Add("@Id_Moneda", System.Data.SqlDbType.Decimal).Value = retiro.moneda.id;
+                command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = retiro.fecha;
+                command.Parameters.Add("@Id_Banco", System.Data.SqlDbType.Decimal).Value = retiro.banco.id;
+
+                DataTable dt = new DataTable();
+                //
+                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
+                var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
+                pOut.Direction = ParameterDirection.Output;
+                pOut2.Direction = ParameterDirection.Output;
+                //
+
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+                Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (Decimal)(pOut.Value);
+                String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+
+                return new Respuesta(value, mensaje);
+            }
+            catch (Exception excepcion)
+            {
+                throw excepcion;
+            }
+        }
+
+
+
+
         public List<RetiroModel> getRetirosByCuenta(CuentaModel cuenta, int limit)
         {
 
@@ -60,6 +104,16 @@ namespace DAO
         }
 
         public override string getProcedureListar()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override System.Data.SqlClient.SqlCommand addParametrosParaBaja(System.Data.SqlClient.SqlCommand command, object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureBajaBasica()
         {
             throw new NotImplementedException();
         }

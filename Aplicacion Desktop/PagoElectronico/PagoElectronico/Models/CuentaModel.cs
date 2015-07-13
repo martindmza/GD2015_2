@@ -18,6 +18,7 @@ namespace Models
         public const String PROPIETARIO_ID = "PROPIETARIO_ID";
         public const String PROPIETARIO_APELLIDO = "PROPIETARIO_APELLIDO";
         public const String PROPIETARIO_NOMBRE = "PROPIETARIO_NOMBRE";
+        public const String SALDO = "SALDO";
 
 
         public PaisModel pais { get; set; }
@@ -81,6 +82,7 @@ namespace Models
             this.estado= new EstadoDao().dameTuModelo(fila[ESTADO].ToString());
             this.fechaCreacion = this.mapearFecha(fila[FECHA_CREACION]);
             this.fechaCierre = this.mapearFecha(fila[FECHA_CIERRE]);
+            this.saldo = Double.Parse(fila[SALDO].ToString());
             this.propietario = new ClienteModel((Decimal) fila[PROPIETARIO_ID],
                                                 fila[PROPIETARIO_APELLIDO].ToString(),
                                                 fila[PROPIETARIO_NOMBRE].ToString());

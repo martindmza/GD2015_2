@@ -19,7 +19,6 @@ namespace DAO
             {
                 SqlCommand command = InitializeConnection(DEPOSITAR);
 
-                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = deposito.depositante.id;
                 command.Parameters.Add("@Id_Cuenta", System.Data.SqlDbType.Decimal).Value = deposito.cuentaDestino.id;
                 command.Parameters.Add("@Importe", System.Data.SqlDbType.Decimal).Value = deposito.importe;
                 command.Parameters.Add("@Id_Moneda", System.Data.SqlDbType.Decimal).Value = deposito.monedaId.id;
@@ -111,6 +110,16 @@ namespace DAO
         public override string getProcedureListar()
         {
             return "Listar_Deposito";
+        }
+
+        protected override SqlCommand addParametrosParaBaja(SqlCommand command, object entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string getProcedureBajaBasica()
+        {
+            throw new NotImplementedException();
         }
     }
 }
