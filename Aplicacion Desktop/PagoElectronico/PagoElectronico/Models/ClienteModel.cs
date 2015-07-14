@@ -55,7 +55,7 @@ namespace Models
 
         private List<CuentaModel> getListaDeCuentas()
         {
-            return new CuentaDao().getCuentasByCliente(this);
+            return new CuentaDao().getListadoByCliente(this);
         }
 
         public ClienteModel(String apellido, String nombre, TipoDocumentoModel tipoDocumento, Decimal nroDocumento,

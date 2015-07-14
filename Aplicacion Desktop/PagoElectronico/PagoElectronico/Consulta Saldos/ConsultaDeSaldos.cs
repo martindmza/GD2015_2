@@ -23,16 +23,16 @@ namespace ABM
         private List<DepositoModel> depositos;
         private List<TransferenciaModel> transferencias;
 
-        private RetiroDao retiroDao;
-        private DepositoDao depositoDao;
-        private TransferenciaDao transferenciaDao;
 
         public ConsultaDeSaldos()
         {
-            retiroDao = new RetiroDao();
-            depositoDao = new DepositoDao();
-            transferenciaDao = new TransferenciaDao();
-
+            ClienteModel cliente = Logins.UsuarioSingleton.getInstance().getUsuario().cliente;
+            if (cliente != null)
+            {
+                retiros = new RetiroDao().getListadoByCliente(cliente);
+                depositos = new DepositoDao().getListadoByCliente(cliente);
+                transferencias = new TransferenciaDao().getListadoByCliente(cliente);
+            }
             InitializeComponent();
         }
 
@@ -116,9 +116,9 @@ namespace ABM
                 labelSaldoText.Text = cuenta.saldo.ToString();
 
 
-                retiros = retiroDao.getRetirosByCuenta(cuenta, 5);
-                depositos = depositoDao.getDepositosByCuenta(cuenta, 5);
-                transferencias = transferenciaDao.getTransferenciasByCuenta(cuenta, 10);
+                retiros = new RetiroDao().getRetirosByCuenta(cuenta, 5);
+                depositos = new DepositoDao().getDepositosByCuenta(cuenta, 5);
+                transferencias = new TransferenciaDao().getTransferenciasByCuenta(cuenta, 10);
 
                 fillTables();
             }

@@ -10,23 +10,15 @@ namespace DAO
 {
     public class RetiroDao:BasicaDAO<RetiroModel>
     {
-
         private const String RETIRAR = "RetiroEfectivo";
-
-
         public Respuesta createRetiro(RetiroModel retiro,TipoDocumentoModel docTipo,Decimal docNum)
         {
             try
             {
                 SqlCommand command = InitializeConnection(RETIRAR);
-
-                command.Parameters.Add("@Id_Cuenta", System.Data.SqlDbType.Decimal).Value = retiro.cuenta.id;
+                this.addParametrosParaAgregar(command,retiro);
                 command.Parameters.Add("@Id_Tipo_Documento", System.Data.SqlDbType.Decimal).Value = docTipo.id;
                 command.Parameters.Add("@Nro_Documento", System.Data.SqlDbType.Decimal).Value = docNum;
-                command.Parameters.Add("@Importe", System.Data.SqlDbType.Decimal).Value = retiro.importe;
-                command.Parameters.Add("@Id_Moneda", System.Data.SqlDbType.Decimal).Value = retiro.moneda.id;
-                command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = retiro.fecha;
-                command.Parameters.Add("@Id_Banco", System.Data.SqlDbType.Decimal).Value = retiro.banco.id;
 
                 DataTable dt = new DataTable();
                 //
@@ -49,27 +41,9 @@ namespace DAO
             }
         }
 
-
-
-
         public List<RetiroModel> getRetirosByCuenta(CuentaModel cuenta, int limit)
         {
-
             List<RetiroModel> retiros = new List<RetiroModel>();
-
-           /* PaisModel p1 = new PaisModel(1, "Argentina", "Argentino");
-            CuentaTipoModel oro = new CuentaTipoModel(1, "oro", 10, 1000);
-            EstadoModel e1 = new EstadoModel(1, "abierta");
-            ClienteModel cliente = new ClienteModel(1, "Pepe", "Martinez");
-            CuentaModel c1 = new CuentaModel(1, p1, oro, 1, "dolar", e1, new DateTime(2000, 1, 1), new DateTime(2005, 1, 1), cliente);
-            TarjetaDeCreditoModel t1 = new TarjetaDeCreditoModel(1, "1234567812344450", "123", DateTime.Today, new DateTime(2020, 1, 1), cliente, Login.Login.userLogued);
-
-            retiros.Add(new RetiroModel(1,c1,2000,1,"Dolar",DateTime.Today,1,new BancoModel(1,"Nacion")));
-            retiros.Add(new RetiroModel(2, c1, 2345, 1, "Dolar", DateTime.Today, 1, new BancoModel(1, "Nacion")));
-            retiros.Add(new RetiroModel(3, c1, 2345, 1, "Dolar", DateTime.Today, 1, new BancoModel(1, "Nacion")));
-            retiros.Add(new RetiroModel(4, c1, 4321, 1, "Dolar", DateTime.Today, 1, new BancoModel(1, "Frances")));
-            retiros.Add(new RetiroModel(5, c1, 5555, 1, "Dolar", DateTime.Today, 1, new BancoModel(1, "Nacion")));
-            */
             return retiros;
         }
 
@@ -78,44 +52,82 @@ namespace DAO
             return new RetiroModel(fila);
         }
 
-        public override System.Data.SqlClient.SqlCommand addParametrosParaAgregar(System.Data.SqlClient.SqlCommand command, RetiroModel entity)
+        public override SqlCommand addParametrosParaAgregar(SqlCommand command, RetiroModel retiro)
         {
-            throw new NotImplementedException();
+            command.Parameters.Add("@Id_Cuenta", System.Data.SqlDbType.Decimal).Value = retiro.cuenta.id;
+            command.Parameters.Add("@Importe", System.Data.SqlDbType.Decimal).Value = retiro.importe;
+            command.Parameters.Add("@Id_Moneda", System.Data.SqlDbType.Decimal).Value = retiro.moneda.id;
+            command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = retiro.fecha;
+            command.Parameters.Add("@Id_Banco", System.Data.SqlDbType.Decimal).Value = retiro.banco.id;
+            return command;
         }
 
-        public override System.Data.SqlClient.SqlCommand addParametrosParaModificar(System.Data.SqlClient.SqlCommand command, RetiroModel entity)
+        public override SqlCommand addParametrosParaModificar(SqlCommand command, RetiroModel entity)
         {
-            throw new NotImplementedException();
+            return command;
         }
 
         protected override string getProcedureCrearBasica()
         {
-            throw new NotImplementedException();
+            return RETIRAR;
         }
 
         protected override string getProcedureModificarBasica()
         {
-            throw new NotImplementedException();
+            return "Modificar_Retiro";
         }
 
         public override string getProcedureEncontrarPorId()
         {
-            throw new NotImplementedException();
+            return "Listar_Retiros_ID";
         }
 
         public override string getProcedureListar()
         {
-            throw new NotImplementedException();
+            return "Listar_Retiros";
         }
 
-        protected override System.Data.SqlClient.SqlCommand addParametrosParaBaja(System.Data.SqlClient.SqlCommand command, object entity)
+        protected override SqlCommand addParametrosParaBaja(SqlCommand command, object entity)
         {
-            throw new NotImplementedException();
+            return command;
         }
 
         protected override string getProcedureBajaBasica()
         {
-            throw new NotImplementedException();
+            return "Baja_Retiro";
+        }
+
+
+        protected List<RetiroModel> getListadoByCliente(ClienteModel cliente)
+        {
+            List<RetiroModel> lista = new List<RetiroModel>();
+            DataTable data = this.getListaDeBaseByCliente(cliente);
+            foreach (DataRow fila in data.Rows)
+            {
+                RetiroModel model = this.getModeloBasico(fila);
+                lista.Add(model);
+            }
+            return lista;
+        }
+
+        private DataTable getListaDeBaseByCliente(ClienteModel cliente)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Listar_Retiros_By_Cliente"))
+            {
+                command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = cliente.id;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null; 
+        }
+
+
+        protected override string getProcedureListarByCliente()
+        {
+            return "Listar_Retiro_ID_Cliente";
         }
     }
 }
