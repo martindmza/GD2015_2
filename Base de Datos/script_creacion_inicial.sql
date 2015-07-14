@@ -1456,18 +1456,20 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Top5Depositos (	@Cuenta NUMERIC(18,0),
-											@RespuestaMensaje VARCHAR(255) OUTPUT,
-											@Respuesta NUMERIC(18,0) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Top5Depositos (@Cuenta NUMERIC(18,0))
 AS
 BEGIN
-    SELECT TOP 5 D.Id_Deposito, D.Codigo, D.Id_Cuenta, D.Id_Tarjeta, D. Id_Pais, D.Id_Moneda, D.Fecha, D.Importe, T.Numero AS 'Numero Tjta'
-    FROM REZAGADOS.Deposito D, REZAGADOS.Tarjeta T
-    WHERE D.Id_Cuenta = @Cuenta
-    AND D.Id_Tarjeta = T.Id_Tarjeta
+    SELECT TOP 5 d.Id_Deposito ID,
+    		 d.Id_Cuenta CUENTA_ID,
+    		 m.Descripcion MONEDA,
+    		 d.Fecha FECHA,
+    		 d.Importe IMOPRTE,
+    		 t.Numero TARJETA_NUMERO
+    FROM REZAGADOS.Deposito d
+    JOIN REZAGADOS.Moneda m ON d.Id_Moneda = m.Id_Moneda
+    JOIN REZAGADOS.Tarjeta t ON d.Id_Tarjeta = t.Id_Tarjeta
+    WHERE d.Id_Cuenta = @Cuenta
     ORDER BY Fecha DESC, Id_Deposito DESC
-SET @RespuestaMensaje = 'Listado exitoso'
-SET @Respuesta = 1
 END
 GO
 
@@ -1475,19 +1477,16 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Top5Retiros (	@Cuenta NUMERIC(18,0),
-											@RespuestaMensaje VARCHAR(255) OUTPUT,
-											@Respuesta NUMERIC(18,0) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Top5Retiros ( @Cuenta NUMERIC(18,0))
 AS
 BEGIN
 
-SELECT TOP 5 R.Id_Retiro, R.Id_Cuenta, R.Fecha, R.Id_Cuenta, R.Importe, C.Id_Cheque, C.Id_Retiro, C.Id_Banco, C.Fecha, C.Id_Moneda, C.Importe--, C.Num_Egreso, C.Num_Item
-FROM REZAGADOS.Retiro R, REZAGADOS.Cheque C
-WHERE R.Id_Cuenta = @Cuenta
-AND R.Id_Retiro = C.Id_Retiro
-ORDER BY R.Fecha DESC, C.Id_Retiro DESC
-SET @RespuestaMensaje = 'Listado exitoso'
-SET @Respuesta = 1
+	SELECT TOP 5 R.Id_Retiro, R.Id_Cuenta, R.Fecha, R.Id_Cuenta, R.Importe, C.Id_Cheque, C.Id_Retiro, C.Id_Banco, C.Fecha, C.Id_Moneda, C.Importe--, C.Num_Egreso, C.Num_Item
+	FROM REZAGADOS.Retiro R, REZAGADOS.Cheque C
+	WHERE R.Id_Cuenta = @Cuenta
+	AND R.Id_Retiro = C.Id_Retiro
+	ORDER BY R.Fecha DESC, C.Id_Retiro DESC
+
 END
 GO
 
