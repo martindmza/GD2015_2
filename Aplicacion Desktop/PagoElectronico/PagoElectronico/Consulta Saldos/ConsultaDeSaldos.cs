@@ -88,7 +88,6 @@ namespace ABM
                                             t.cuentaOrigen.id.ToString(),
                                             t.cuentaDestino.id.ToString(),
                                             t.importe.ToString(),
-                                            t.moneda.nombre.ToString(),
                                             t.fecha.ToShortDateString(),
                                             t.costo.ToString()
                                         };

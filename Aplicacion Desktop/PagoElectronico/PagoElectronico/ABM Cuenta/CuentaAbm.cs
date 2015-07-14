@@ -116,7 +116,15 @@ namespace ABM
         {
             InitializeComponent();
 
-            this.cargarCuentasSiTieneCliente();
+            if (doFillTable)
+            {
+                cuentas = new CuentaDao().getCuentas();
+                fillTable();
+            }
+            else {
+                this.cargarCuentasSiTieneCliente();
+            }
+
             this.Text = "Seleccionar una Cuenta";
             buttonElegir.Visible = true;
             buttonElegir.Enabled = false;

@@ -1318,93 +1318,109 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Usuario VARCHAR(255),
-														@Tipo_Documento NUMERIC(18,0),
-														@Cuenta_Origen NUMERIC(18,0),
+CREATE PROCEDURE REZAGADOS.TransferenciaEntreCuentas (	@Cuenta_Origen NUMERIC(18,0),
 														@Cuenta_Destino NUMERIC(18,0),
 														@Importe NUMERIC(18,0),
-														@Moneda VARCHAR(255),
 														@Fecha DATETIME,
 														@Respuesta NUMERIC(18,0) OUTPUT,
 														@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
 BEGIN
-IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta_Origen=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta_Origen))) > GETDATE()
-BEGIN
-UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cerrada')
-UPDATE Cuenta SET Fecha_Cierre = GETDATE()
-SET @Respuesta = -1
-SET @RespuestaMensaje = 'Cuenta Cerrada'
-END
-ELSE
-BEGIN
-DECLARE @Cliente NUMERIC(18,0) = (SELECT Id_Cliente FROM Cliente WHERE Id_Usuario=@Usuario)
-IF (SELECT Habilitada FROM Cliente WHERE Id_Cliente=@Cliente) = 0
+
+	DECLARE @Id_Cliente NUMERIC(18,0) 
+	DECLARE @Habilitado BIT
+	SELECT  @Id_Cliente = c.Id_Cliente,
+			@Habilitado = c.HAbilitada
+	   FROM [REZAGADOS].[Cliente] c
+	   JOIN REZAGADOS.Usuario u ON c.Id_Usuario = u.Id_Usuario
+	   JOIN REZAGADOS.Cuenta cu ON u.Id_Usuario = cu.Id_Usuario
+	   WHERE cu.Id_Cuenta = @Cuenta_Origen
+	   
+	DECLARE @Cuenta_Origen_Id_Tipo NUMERIC(18,0)
+	DECLARE @Cuenta_Origen_Id_Estado NUMERIC(18,0)
+	DECLARE @Cuenta_Origen_Saldo NUMERIC(18,2)
+	SELECT  @Cuenta_Origen_Id_Estado = Id_Estado,
+			@Cuenta_Origen_Id_Tipo = Id_Tipo_Cuenta,
+			@Cuenta_Origen_Saldo = Saldo		
+	   FROM REZAGADOS.Cuenta WHERE Id_Cuenta = @Cuenta_Origen
+	
+	DECLARE @Cuenta_Destino_Id_Estado NUMERIC(18,0)
+	SELECT  @Cuenta_Destino_Id_Estado = Id_Estado FROM REZAGADOS.Cuenta WHERE Id_Cuenta = @Cuenta_Destino
+
+	IF (@Cuenta_Origen_Id_Tipo <> 4)
+	BEGIN
+		IF (DATEADD(day, (SELECT Dias_Vigencia FROM REZAGADOS.TipoCuenta, REZAGADOS.Cuenta WHERE @Cuenta_Origen=Cuenta.Id_Cuenta AND Cuenta.Id_Tipo_Cuenta=TipoCuenta.Id_Tipo_Cuenta), (SELECT Fecha_Creacion FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Cuenta_Origen))) > GETDATE()
 		BEGIN
+			UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Cerrada')
+			UPDATE Cuenta SET Fecha_Cierre = GETDATE()
+			SET @Respuesta = -1
+			SET @RespuestaMensaje = 'Cuenta Cerrada'
+			RETURN
+		END
+	END
+
+	IF (@Habilitado = 0 )
+	BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Cliente Inhabilitado'
-		END
-ELSE
-BEGIN
-	IF (@Cuenta_Origen NOT IN (SELECT Id_Cuenta from Cuenta WHERE @Usuario=Id_Usuario))
-	BEGIN
-		SET @Respuesta = -1	
-		SET @RespuestaMensaje = 'Cuenta origen no pertenece al cliente'
+		RETURN
 	END
-	ELSE
-		IF (((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) = 'Cerrada') OR
-			((SELECT e.Nombre FROM Cuenta c INNER JOIN Estado_Cuenta e ON e.Id_Estado = c.Id_Estado WHERE @Usuario=Id_Usuario) = 'Pendiente de activación'))
+	
+	-- si la cuenta destino esta cerrada o pendiente de activacion
+	IF ( @Cuenta_Destino_Id_Estado = 1 OR @Cuenta_Destino_Id_Estado = 2 )
+	BEGIN
+		SET @Respuesta = -1		
+		SET @RespuestaMensaje = 'Cuenta destino cerrada o pendiente de activacion'
+		RETURN
+	END
+
+	IF (@Importe<=0)
+	BEGIN
+		SET @Respuesta = -1			
+		SET @RespuestaMensaje = 'El Importe no puede ser menor o igual a cero'
+		RETURN
+	END
+	
+	IF (@Cuenta_Origen_Saldo < @Importe)
+	BEGIN
+		SET @Respuesta = -1			
+		SET @RespuestaMensaje = 'El Importe a transferir no puede ser mayor al saldo'
+		RETURN
+	END
+	
+
+	BEGIN TRY
+		BEGIN TRANSACTION
+		
+			UPDATE REZAGADOS.Cuenta SET
+			Saldo=Saldo-@Importe
+			WHERE Id_Cuenta=@Cuenta_Origen	
+				
+			UPDATE REZAGADOS.Cuenta SET
+			Saldo=Saldo+@Importe
+			WHERE Id_Cuenta=@Cuenta_Destino						
+		
+			INSERT INTO REZAGADOS.Transferencia (Id_Cuenta_Emi, Id_Cuenta_Dest, Fecha, Importe)
+			VALUES (@Cuenta_Origen, @Cuenta_Destino, @Fecha, @Importe) 		
+
+		COMMIT TRANSACTION
+		
+		IF ((SELECT Id_Usuario from Cuenta WHERE @Cuenta_Origen=Id_Cuenta)=(SELECT Id_Usuario from Cuenta WHERE @Cuenta_Destino=Id_Cuenta))
 		BEGIN
-			SET @Respuesta = -1		
-			SET @RespuestaMensaje = 'Cuenta destino cerrada o pendiente de activacion'
+			SET @Respuesta = @@IDENTITY
+			SET @RespuestaMensaje = 'Transferencia realizada sin costo'
 		END
 		ELSE
-			IF (@Importe<=0)
 			BEGIN
-				SET @Respuesta = -1			
-				SET @RespuestaMensaje = 'Importe menor o igual a cero'
+				SET @Respuesta = @@IDENTITY
+				SET @RespuestaMensaje = 'Transferencia realizada con costo'
 			END
-			ELSE
-				IF ((SELECT Saldo from Cuenta WHERE @Cuenta_Origen=Id_Cuenta)>=@Importe)
-				BEGIN
-					SET @Respuesta = -1			
-					SET @RespuestaMensaje = 'Importe mayor al saldo'
-				END
-				ELSE
-					BEGIN TRY
-						BEGIN TRANSACTION
-						
-						UPDATE REZAGADOS.Cuenta SET
-						Saldo=Saldo-@Importe
-						WHERE Id_Cuenta=@Cuenta_Origen	
-							
-						UPDATE REZAGADOS.Cuenta SET
-						Saldo=Saldo+@Importe
-						WHERE Id_Cuenta=@Cuenta_Destino						
-						
-							INSERT INTO REZAGADOS.Transferencia (Id_Cuenta_Emi, Id_Cuenta_Dest, Fecha, Id_Moneda, Importe)
-							VALUES (@Cuenta_Origen, @Cuenta_Destino, @Fecha, @Moneda, @Importe) 		
-		
-						COMMIT TRANSACTION
-						
-						IF ((SELECT Id_Usuario from Cuenta WHERE @Cuenta_Origen=Id_Cuenta)=(SELECT Id_Usuario from Cuenta WHERE @Cuenta_Destino=Id_Cuenta))
-						BEGIN
-							SET @Respuesta = 1						
-							SET @RespuestaMensaje = 'Transferencia realizada sin costo'
-						END
-						ELSE
-							BEGIN
-								SET @Respuesta = 1						
-								SET @RespuestaMensaje = 'Transferencia realizada con costo'
-							END
-					END TRY
-					BEGIN CATCH
-						ROLLBACK TRANSACTION
-						SET @Respuesta = -1
-						SET @RespuestaMensaje = ERROR_MESSAGE()
-					END CATCH
-END
-END
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = ERROR_MESSAGE()
+	END CATCH
 END
 GO
 

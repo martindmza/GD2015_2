@@ -82,7 +82,12 @@ namespace Models
             this.estado= new EstadoDao().dameTuModelo(fila[ESTADO].ToString());
             this.fechaCreacion = this.mapearFecha(fila[FECHA_CREACION]);
             this.fechaCierre = this.mapearFecha(fila[FECHA_CIERRE]);
-            this.saldo = Double.Parse(fila[SALDO].ToString());
+
+            if (fila.Table.Columns.Contains(SALDO))
+            {
+                this.saldo = Double.Parse(fila[SALDO].ToString());   
+            }
+
             this.propietario = new ClienteModel((Decimal) fila[PROPIETARIO_ID],
                                                 fila[PROPIETARIO_APELLIDO].ToString(),
                                                 fila[PROPIETARIO_NOMBRE].ToString());

@@ -57,7 +57,7 @@ namespace Transferencias
         public void formResponseCuentaDestino(CuentaModel cuenta)
         {
 
-            if (cuenta.estado.id == 3 || cuenta.estado.id == 4)
+            if (cuenta.estado.id == 1 || cuenta.estado.id == 2)
             {
                 MessageBox.Show("Seleccione una cuenta que no esté ni cerrada ni pendiente de Activación");
             }
@@ -146,20 +146,26 @@ namespace Transferencias
                 return;
             }
 
-            transferencia = new TransferenciaModel(cuentaOrigen, cuentaDestino, importe, null);
-            transferencia = transferenciaDao.createTransferencia(transferencia);
+            transferencia = new TransferenciaModel(cuentaOrigen, cuentaDestino, importe);
 
-            if (transferencia.id != null)
+            try
             {
-                MessageBox.Show("Transferencia realizada con éxito");
-                this.Close();
-                this.Dispose();
-                GC.Collect();
+                Respuesta respuesta = transferenciaDao.createTransferencia(transferencia);
+                MessageBox.Show(respuesta.mensaje);
+                if (respuesta.codigo > 0)
+                {
+                    transferencia.id = respuesta.codigo;
+                    this.Close();
+                    this.Dispose();
+                    GC.Collect();
+                }
             }
-            else
+            catch (Exception err)
             {
-                throw new Exception("No se pudo realizar la operación");
+                MessageBox.Show("No se pudo completar la operación" + err);
             }
+
+
         }
         //-----------------------------------------------------------------------------------------------------------------
 
