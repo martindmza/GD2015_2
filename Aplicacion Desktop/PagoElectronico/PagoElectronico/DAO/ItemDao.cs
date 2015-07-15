@@ -90,5 +90,10 @@ namespace DAO
         {
             throw new NotImplementedException();
         }
+
+        protected override string getProcedureListarByCliente()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
