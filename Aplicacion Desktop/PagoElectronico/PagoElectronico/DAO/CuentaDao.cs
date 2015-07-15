@@ -46,22 +46,7 @@ namespace DAO
                 return dt;
             return null;
         }
-
      
-        private DataTable getCuentasDeBasePorIdUsuario(decimal idUsuario)
-        {
-            DataTable dt = new DataTable();
-            using (SqlCommand command = InitializeConnection("Listar_Cuenta_Usuario"))
-            {
-                command.Parameters.Add("@Id_Usuario", System.Data.SqlDbType.Int).Value = idUsuario;
-                SqlDataAdapter da = new SqlDataAdapter(command);
-                da.Fill(dt);
-            }
-            if (dt.Rows.Count > 0)
-                return dt;
-            return null;
-        }
-
         public List<CuentaTipoModel> getCuentaTypes()
         {
             return new CuentaTipoDAO().getListado();
