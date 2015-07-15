@@ -29,6 +29,11 @@ namespace Models
             this.nombre = nombre;
         }
 
+        public BasicaModel(Decimal id)
+        {
+            this.id = id;
+        }
+
         public override void mapeoFilaAModel(DataRow fila)
         {
             base.mapeoFilaAModel(fila);

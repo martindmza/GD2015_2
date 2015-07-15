@@ -36,18 +36,6 @@ namespace Models
             : base(fila)
         {
         }
-/*        public CuentaModel(PaisModel pais, CuentaTipoModel tipo, MonedaModel moneda,
-               EstadoModel estado, DateTime fechaCreacion, ClienteModel propietario)
-        {
-            
-           // this.id = id;
-            this.pais = pais;
-            this.tipo = tipo;
-            this.moneda = moneda;
-            this.estado = estado;
-            this.fechaCreacion = fechaCreacion;
-            this.fechaCierre = fechaCierre;
-        }*/
 
         public CuentaModel(Decimal id, PaisModel pais, CuentaTipoModel tipo, MonedaModel moneda,
                EstadoModel estado, DateTime fechaCreacion, DateTime fechaCierre) { 

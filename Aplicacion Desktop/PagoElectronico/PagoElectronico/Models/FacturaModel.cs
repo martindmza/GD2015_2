@@ -10,7 +10,7 @@ namespace Models
     {
         public static String FECHA = "FECHA";
         public DateTime fecha;
-        public List<TransaccionModel> transacciones;
+        public List<ItemModel> transacciones;
 
 
         public FacturaModel() { }
@@ -19,18 +19,23 @@ namespace Models
             transacciones = this.obtenerMisTransacciones();
         }
 
-        private List<TransaccionModel> obtenerMisTransacciones()
+        private List<ItemModel> obtenerMisTransacciones()
         {
-            return new List<TransaccionModel>();
+            return new List<ItemModel>();
         }
 
-        public FacturaModel( DateTime fecha, List<TransaccionModel> transacciones)
+        public FacturaModel(Decimal id)
+            : base(id)
+        { 
+        }
+
+        public FacturaModel( DateTime fecha, List<ItemModel> transacciones)
         {
             this.fecha = fecha;
             this.transacciones = transacciones;
         }
 
-        public FacturaModel(UInt32 id,DateTime fecha, List<TransaccionModel> transacciones)
+        public FacturaModel(Decimal id,DateTime fecha, List<ItemModel> transacciones)
         {
             this.id = id;
             this.fecha = fecha;

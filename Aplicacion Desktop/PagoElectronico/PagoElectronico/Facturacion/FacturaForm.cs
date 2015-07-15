@@ -14,7 +14,7 @@ namespace Facturacion
     public partial class FacturaForm : Form
     {
         private FacturaDao facturaDao;
-        private TransaccionDao transaccionDao;
+        private ItemDao transaccionDao;
         private FacturacionAbm parent;
 
         private FacturaModel factura;
@@ -23,7 +23,7 @@ namespace Facturacion
         public FacturaForm(FacturaModel factura,Double total, FacturacionAbm parent)
         {
             facturaDao = new FacturaDao();
-            transaccionDao = new TransaccionDao();
+            transaccionDao = new ItemDao();
             this.factura = factura;
             this.total = total;
             this.parent = parent;
@@ -38,7 +38,7 @@ namespace Facturacion
         private void fillData() {
             dataGridView1.Rows.Clear();
             string[] row;
-            foreach (TransaccionModel t in factura.transacciones)
+            foreach (ItemModel t in factura.transacciones)
             {
                 row = new String[] {    t.id.ToString(),
                                         t.cuenta.id.ToString(),
@@ -61,7 +61,7 @@ namespace Facturacion
             {
                 this.factura = facturaDao.crearFactura(factura);
 
-                foreach (TransaccionModel t in factura.transacciones)
+                foreach (ItemModel t in factura.transacciones)
                 {
                     transaccionDao.insertTransaccion(t, factura);
                 }
