@@ -1259,7 +1259,7 @@ BEGIN
 	IF (@Id_Estado <> 4 )
 	BEGIN
 		SET @Respuesta = -1
-		SET @RespuestaMensaje = 'Cuenta no habilitada'
+		SET @RespuestaMensaje = 'Cuenta Inhabilitada o pendente de pago'
 		RETURN
 	END
 
@@ -1339,9 +1339,11 @@ BEGIN
 	DECLARE @Cuenta_Origen_Id_Tipo NUMERIC(18,0)
 	DECLARE @Cuenta_Origen_Id_Estado NUMERIC(18,0)
 	DECLARE @Cuenta_Origen_Saldo NUMERIC(18,2)
+	DECLARE @Cuenta_Origen_Habilitada NUMERIC(18,0)
 	SELECT  @Cuenta_Origen_Id_Estado = Id_Estado,
 			@Cuenta_Origen_Id_Tipo = Id_Tipo_Cuenta,
-			@Cuenta_Origen_Saldo = Saldo		
+			@Cuenta_Origen_Saldo = Saldo,
+			@Cuenta_Origen_Habilitada = Id_Estado	
 	   FROM REZAGADOS.Cuenta WHERE Id_Cuenta = @Cuenta_Origen
 	
 	DECLARE @Cuenta_Destino_Id_Estado NUMERIC(18,0)
@@ -1359,7 +1361,14 @@ BEGIN
 		END
 	END
 
-	IF (@Habilitado = 0 )
+	IF (@Cuenta_Origen_Habilitada = 3 )
+	BEGIN
+		SET @Respuesta = -1
+		SET @RespuestaMensaje = 'Cuenta Inhabilitada'
+		RETURN
+	END
+	
+		IF (@Habilitado = 0 )
 	BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Cliente Inhabilitado'
