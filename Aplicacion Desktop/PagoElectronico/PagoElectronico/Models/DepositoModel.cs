@@ -16,6 +16,7 @@ namespace Models
         public const String MONEDA = "MONEDA";
         public const String TARJETA = "TARJETA";
         public const String FECHA = "FECHA";
+        public const String PAIS = "PAIS";
 
         public ClienteModel depositante;
         public CuentaModel cuentaDestino;
@@ -23,6 +24,7 @@ namespace Models
         public MonedaModel monedaId;
         public TarjetaDeCreditoModel tarjetaDeCredito;
         public DateTime fecha;
+        public PaisModel pais;
 
 
         public DepositoModel() { 
@@ -37,7 +39,8 @@ namespace Models
             base.mapeoFilaAModel(fila);
             this.depositante = new ClienteDao().dameTuModelo(this.mapearValor(fila[DEPOSITANTE]));
             this.cuentaDestino = new CuentaDao().dameTuModelo(this.mapearValor(fila[CUENTA_DESTINO]));
-            this.importe = this.mapearImporte(fila[CUENTA_DESTINO]);
+            this.pais = new PaisDAO().dameTuModelo(this.mapearValor(fila[PAIS]));
+            this.importe = this.mapearImporte(fila[IMPORTE]);
             this.monedaId = new MonedaDAO().dameTuModelo(this.mapearValor(fila[MONEDA]));
             this.tarjetaDeCredito = new TarjetaDeCreditoDao().dameTuModelo(this.mapearValor(fila[TARJETA]));
             this.fecha = this.mapearFecha(fila[FECHA]);

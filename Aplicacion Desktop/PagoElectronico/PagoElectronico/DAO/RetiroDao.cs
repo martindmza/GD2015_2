@@ -79,12 +79,12 @@ namespace DAO
 
         public override string getProcedureEncontrarPorId()
         {
-            return "Listar_Retiros_ID";
+            return "Buscar_Retiro_ID";
         }
 
         public override string getProcedureListar()
         {
-            return "Listar_Retiros";
+            return "Listar_Retiro";
         }
 
         protected override SqlCommand addParametrosParaBaja(SqlCommand command, object entity)

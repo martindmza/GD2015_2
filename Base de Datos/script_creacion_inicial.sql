@@ -652,7 +652,7 @@ AS
 BEGIN
 BEGIN TRY
 	BEGIN TRANSACTION
-		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
+		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail AND Id_Cliente <> @Id_Cliente) )
 			BEGIN
 			SET @RespuestaMensaje = 'El e-mail ya existe.'
 			SET @Respuesta = -1
@@ -1663,12 +1663,12 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO,
+SELECT c.Id_Cliente ID, c.Nombre NOMBRE, c.Apellido APELLIDO,
 	c.Id_Usuario USUARIO, c.Id_Tipo_Documento DOCUMENTO, c.Nro_Documento NRO_DOCUMENTO,
 	c.Id_Pais PAIS,	c.Direccion_Calle DIRECCION_CALLE, c.Direccion_Numero_Calle DIRECCION_NRO,
 	c.Direccion_Piso DIRECCION_PISO, c.Direccion_Departamento DIRECCION_DEPTO, 
 	c.Fecha_Nacimiento FECHA_NACIMIENTO, c.Mail EMAIL, c.Localidad LOCALIDAD,
-	c.Habilitada HABILITADA
+	c.Habilitada HABILITADA,c.Id_Nacionalidad NACIONALIDAD
 	FROM  [REZAGADOS].Cliente c 
 	WHERE c.Id_Cliente = @Id
 	AND	  c.Habilitada = 1
@@ -1690,6 +1690,55 @@ BEGIN
 	FROM [REZAGADOS].Pais p 
 	WHERE p.Id_Pais = @Id
 END
+GO
+
+-------------------------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Tarjeta]
+@Id decimal 
+AS
+BEGIN
+
+SELECT	t.Id_Tarjeta ID,
+t.Id_Cliente		ID_CLIENTE,
+t.Numero			NUMERO,
+t.Id_Emisor			EMISOR_ID,
+e.Nombre			EMISOR_NOMBRE,
+t.Codigo_Seguridad	CODIGO,
+t.Fecha_Emision		EMISION,
+t.Vencimiento		VENCIMIENTO,
+t.Habilitada		HABILITADA
+FROM REZAGADOS.Tarjeta t
+JOIN REZAGADOS.Emisor e ON t.Id_Emisor = e.ID_Emisor
+
+END
+
+GO
+----------------------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Buscar_Tarjeta_ID]
+@Id decimal 
+AS
+BEGIN
+
+SELECT	t.Id_Tarjeta ID,
+t.Id_Cliente		ID_CLIENTE,
+t.Numero			NUMERO,
+t.Id_Emisor			EMISOR_ID,
+e.Nombre			EMISOR_NOMBRE,
+t.Codigo_Seguridad	CODIGO,
+t.Fecha_Emision		EMISION,
+t.Vencimiento		VENCIMIENTO,
+t.Habilitada		HABILITADA
+FROM REZAGADOS.Tarjeta t
+JOIN REZAGADOS.Emisor e ON t.Id_Emisor = e.ID_Emisor
+WHERE t.Id_Tarjeta = @Id   
+END
+
 GO
 
 ------------------------------------------------ROLES--------------------------------------------------------------------
@@ -2277,6 +2326,66 @@ BEGIN
 	END CATCH
 END
 GO
+
+--------------------------------------------------------------------------------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Retiro_ID_Cliente] (	@Id_Cliente NUMERIC(18,0))
+AS
+BEGIN
+
+SELECT R.Id_Retiro ID, R.Id_Cuenta CUENTA, R.Fecha FECHA, R.Importe IMPORTE, Che.Id_Cheque CHEQUE, Che.Id_Banco BANCO, Che.Id_Moneda MONEDA
+FROM REZAGADOS.Retiro R, REZAGADOS.Cliente C, REZAGADOS.Cuenta cu, REZAGADOS.Usuario u, REZAGADOS.Cheque che
+WHERE C.Id_Cliente = @Id_Cliente
+AND R.Id_Cuenta = Cu.Id_Cuenta
+AND Cu.Id_Usuario = u.Id_Usuario
+AND u.Id_Usuario = C.Id_Usuario
+AND che.Id_Retiro = r.Id_Retiro
+ORDER BY R.Fecha DESC, R.Id_Retiro DESC
+END
+
+GO
+
+---------------------------------------------------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Deposito_ID_Cliente] (	@Id_Cliente NUMERIC(18,0))
+AS
+BEGIN
+
+SELECT D.Id_Deposito ID,C.Id_Cliente DEPOSITANTE, D.Codigo NOMBRE, D.Id_Cuenta CUENTA_DESTINO, D.Id_Tarjeta TARJETA, D. Id_Pais PAIS,
+ D.Id_Moneda MONEDA, D.Fecha FECHA, D.Importe IMPORTE, T.Numero TARJETA 
+FROM REZAGADOS.Deposito D, REZAGADOS.Tarjeta T, REZAGADOS.Cliente C, REZAGADOS.Cuenta cu, REZAGADOS.Usuario u
+WHERE C.Id_Cliente = @Id_Cliente
+AND D.Id_Cuenta = Cu.Id_Cuenta
+AND Cu.Id_Usuario = u.Id_Usuario
+AND u.Id_Usuario = C.Id_Usuario
+AND t.Id_Tarjeta = d.Id_Tarjeta
+ORDER BY D.Fecha DESC, D.Id_Deposito DESC
+END
+GO
+---------------------------------------------------------------------------------------------------
+
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Listar_Transferencia_ID_Cliente] (	@Id_Cliente NUMERIC(18,0))
+AS
+BEGIN
+
+   SELECT T.Id_Transferencia ID, T.Id_Cuenta_Emi CUENTA_ORIGEN, T.Id_Cuenta_Dest CUENTA_DESTINO,
+    T.Fecha FECHA, T.Id_Moneda MONEDA, T.Importe IMPORTE
+    FROM REZAGADOS.Transferencia T, REZAGADOS.Cliente C, REZAGADOS.Cuenta cu, REZAGADOS.Usuario u
+WHERE C.Id_Cliente = @Id_Cliente
+AND T.Id_Cuenta_Emi = Cu.Id_Cuenta
+AND Cu.Id_Usuario = u.Id_Usuario
+AND u.Id_Usuario = C.Id_Usuario
+ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
+END
+GO
+
 --------------------------------------------------BUSCAR CLIENTES FILTROS-------------------------------------------
 
 --USE [GD1C2015]
@@ -2554,7 +2663,34 @@ BEGIN
 	WHERE Id_Emisor = @Id_Emisor
 END
 GO
+---------------------------------------------------------------------------------------------------------------
+USE [GD1C2015]
+GO
 
+CREATE PROCEDURE [REZAGADOS].[Listar_Transferencia] (	@Id_Cliente NUMERIC(18,0))
+AS
+BEGIN
+
+   SELECT T.Id_Transferencia ID, T.Id_Cuenta_Emi CUENTA_ORIGEN, T.Id_Cuenta_Dest CUENTA_DESTINO,
+    T.Fecha FECHA, T.Id_Moneda MONEDA, T.Importe IMPORTE
+    FROM REZAGADOS.Transferencia T
+END
+GO
+--------------------------------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Buscar_Transferencia_ID] 
+@Id decimal 
+AS
+BEGIN
+
+   SELECT T.Id_Transferencia ID, T.Id_Cuenta_Emi CUENTA_ORIGEN, T.Id_Cuenta_Dest CUENTA_DESTINO,
+    T.Fecha FECHA, T.Id_Moneda MONEDA, T.Importe IMPORTE
+    FROM REZAGADOS.Transferencia T
+    WHERE T.Id_Transferencia = @Id;
+END
+GO
 ---------------------------------------------------------------------------------------------------------------
 ----------------------------------------------TRIGGERS---------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
