@@ -88,6 +88,7 @@ namespace ABM
                                             t.cuentaOrigen.id.ToString(),
                                             t.cuentaDestino.id.ToString(),
                                             t.importe.ToString(),
+                                            t.moneda.nombre.ToString(),
                                             t.fecha.ToShortDateString()
                                         };
 
@@ -115,9 +116,9 @@ namespace ABM
                 labelSaldoText.Text = cuenta.saldo.ToString();
 
 
-                retiros = new RetiroDao().getRetirosByCuenta(cuenta, 5);
-                depositos = new DepositoDao().getDepositosByCuenta(cuenta, 5);
-                transferencias = new TransferenciaDao().getTransferenciasByCuenta(cuenta, 10);
+                retiros = new RetiroDao().getRetiroByCuenta(cuenta);
+                depositos = new DepositoDao().getDepositosByCuenta(cuenta);
+                transferencias = new TransferenciaDao().getTransferenciasByCuenta(cuenta);
 
                 fillTables();
             }

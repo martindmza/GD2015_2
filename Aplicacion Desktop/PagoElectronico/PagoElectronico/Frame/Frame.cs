@@ -17,6 +17,7 @@ using Tarjetas;
 using Models;
 using Logins;
 using DAO;
+using PagoElectronico.Listados;
 
 namespace Frame
 {
@@ -212,6 +213,13 @@ namespace Frame
         private void usuariosToolStripMenuItem1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void estadisticasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form f = new FormEstadistico();
+            f.MdiParent = this;
+            f.Show();
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

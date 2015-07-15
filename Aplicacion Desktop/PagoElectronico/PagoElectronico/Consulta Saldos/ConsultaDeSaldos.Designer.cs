@@ -52,15 +52,14 @@
             this.banco2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabTransferencias = new System.Windows.Forms.TabPage();
             this.dataGridViewTransferencias = new System.Windows.Forms.DataGridView();
+            this.labelSaldo = new System.Windows.Forms.Label();
+            this.labelSaldoText = new System.Windows.Forms.Label();
             this.id3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cuentaOrigen = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.destino = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.importe3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.moneda3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fecha3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Costo3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.labelSaldo = new System.Windows.Forms.Label();
-            this.labelSaldoText = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabDepositos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDepositos)).BeginInit();
@@ -259,12 +258,31 @@
             this.destino,
             this.importe3,
             this.moneda3,
-            this.fecha3,
-            this.Costo3});
+            this.fecha3});
             this.dataGridViewTransferencias.Location = new System.Drawing.Point(6, 6);
             this.dataGridViewTransferencias.Name = "dataGridViewTransferencias";
             this.dataGridViewTransferencias.Size = new System.Drawing.Size(647, 331);
             this.dataGridViewTransferencias.TabIndex = 0;
+            // 
+            // labelSaldo
+            // 
+            this.labelSaldo.AutoSize = true;
+            this.labelSaldo.Location = new System.Drawing.Point(482, 15);
+            this.labelSaldo.Name = "labelSaldo";
+            this.labelSaldo.Size = new System.Drawing.Size(37, 13);
+            this.labelSaldo.TabIndex = 3;
+            this.labelSaldo.Text = "Saldo:";
+            this.labelSaldo.Visible = false;
+            // 
+            // labelSaldoText
+            // 
+            this.labelSaldoText.AutoSize = true;
+            this.labelSaldoText.Location = new System.Drawing.Point(525, 15);
+            this.labelSaldoText.Name = "labelSaldoText";
+            this.labelSaldoText.Size = new System.Drawing.Size(97, 13);
+            this.labelSaldoText.TabIndex = 3;
+            this.labelSaldoText.Text = "$$$$$$$$$$$$$$$";
+            this.labelSaldoText.Visible = false;
             // 
             // id3
             // 
@@ -295,31 +313,6 @@
             // 
             this.fecha3.HeaderText = "Fecha";
             this.fecha3.Name = "fecha3";
-            // 
-            // Costo3
-            // 
-            this.Costo3.HeaderText = "Costo";
-            this.Costo3.Name = "Costo3";
-            // 
-            // labelSaldo
-            // 
-            this.labelSaldo.AutoSize = true;
-            this.labelSaldo.Location = new System.Drawing.Point(482, 15);
-            this.labelSaldo.Name = "labelSaldo";
-            this.labelSaldo.Size = new System.Drawing.Size(37, 13);
-            this.labelSaldo.TabIndex = 3;
-            this.labelSaldo.Text = "Saldo:";
-            this.labelSaldo.Visible = false;
-            // 
-            // labelSaldoText
-            // 
-            this.labelSaldoText.AutoSize = true;
-            this.labelSaldoText.Location = new System.Drawing.Point(525, 15);
-            this.labelSaldoText.Name = "labelSaldoText";
-            this.labelSaldoText.Size = new System.Drawing.Size(97, 13);
-            this.labelSaldoText.TabIndex = 3;
-            this.labelSaldoText.Text = "$$$$$$$$$$$$$$$";
-            this.labelSaldoText.Visible = false;
             // 
             // ConsultaDeSaldos
             // 
@@ -386,6 +379,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn importe3;
         private System.Windows.Forms.DataGridViewTextBoxColumn moneda3;
         private System.Windows.Forms.DataGridViewTextBoxColumn fecha3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Costo3;
     }
 }

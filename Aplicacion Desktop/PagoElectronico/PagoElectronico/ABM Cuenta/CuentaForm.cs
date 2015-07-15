@@ -36,6 +36,7 @@ namespace ABM
         public CuentaForm(int operacionTipo, CuentaModel cuenta,CuentaAbm parentCuenta)
         {
             InitializeComponent();
+            this.apertura.Value = new ExtraDao().getDayToday();
             if (cuenta != null)
             {
                 this.cuenta = cuenta;
@@ -126,7 +127,7 @@ namespace ABM
 
             if (cuenta == null)
             {
-                apertura.Value = DateTime.Today;
+                //apertura.Value = DateTime.Today;
                 tipoCuenta.SelectedItem = tipoCuenta.Items[0];
                 tipoActivo = tipos[0];
                 moneda.SelectedItem = moneda.Items[0];

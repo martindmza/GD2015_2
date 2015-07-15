@@ -1468,15 +1468,17 @@ GO
 CREATE PROCEDURE REZAGADOS.Top5Depositos (@Cuenta NUMERIC(18,0))
 AS
 BEGIN
-    SELECT TOP 5 d.Id_Deposito ID,
-    		 d.Id_Cuenta CUENTA_ID,
-    		 m.Descripcion MONEDA,
-    		 d.Fecha FECHA,
-    		 d.Importe IMOPRTE,
-    		 t.Numero TARJETA_NUMERO
+   SELECT TOP 5 D.Id_Deposito ID,cli.Id_Cliente DEPOSITANTE, 
+D.Codigo NOMBRE, D.Id_Cuenta CUENTA_DESTINO, D.Id_Tarjeta TARJETA, 
+D. Id_Pais PAIS,
+ D.Id_Moneda MONEDA, D.Fecha FECHA, D.Importe IMPORTE, 
+ T.Numero TARJETA 
     FROM REZAGADOS.Deposito d
     JOIN REZAGADOS.Moneda m ON d.Id_Moneda = m.Id_Moneda
     JOIN REZAGADOS.Tarjeta t ON d.Id_Tarjeta = t.Id_Tarjeta
+    JOIN REZAGADOS.Cuenta cu ON d.Id_Cuenta = cu.Id_Cuenta
+    JOIN REZAGADOS.Usuario u ON u.Id_Usuario = cu.Id_Usuario
+    JOIN REZAGADOS.Cliente cli ON cli.Id_Usuario = u.Id_Usuario
     WHERE d.Id_Cuenta = @Cuenta
     ORDER BY Fecha DESC, Id_Deposito DESC
 END
@@ -1490,11 +1492,14 @@ CREATE PROCEDURE REZAGADOS.Top5Retiros ( @Cuenta NUMERIC(18,0))
 AS
 BEGIN
 
-	SELECT TOP 5 R.Id_Retiro, R.Id_Cuenta, R.Fecha, R.Id_Cuenta, R.Importe, C.Id_Cheque, C.Id_Retiro, C.Id_Banco, C.Fecha, C.Id_Moneda, C.Importe--, C.Num_Egreso, C.Num_Item
-	FROM REZAGADOS.Retiro R, REZAGADOS.Cheque C
-	WHERE R.Id_Cuenta = @Cuenta
-	AND R.Id_Retiro = C.Id_Retiro
-	ORDER BY R.Fecha DESC, C.Id_Retiro DESC
+SELECT TOP 5 R.Id_Retiro ID, R.Id_Cuenta CUENTA, R.Fecha FECHA, R.Importe IMPORTE, Che.Id_Cheque CHEQUE, Che.Id_Banco BANCO, Che.Id_Moneda MONEDA
+FROM REZAGADOS.Retiro R, REZAGADOS.Cliente C, REZAGADOS.Cuenta cu, REZAGADOS.Usuario u, REZAGADOS.Cheque che
+WHERE Cu.Id_Cuenta = @Cuenta
+AND R.Id_Cuenta = Cu.Id_Cuenta
+AND Cu.Id_Usuario = u.Id_Usuario
+AND u.Id_Usuario = C.Id_Usuario
+AND che.Id_Retiro = r.Id_Retiro
+ORDER BY R.Fecha DESC, R.Id_Retiro DESC
 
 END
 GO
@@ -1503,17 +1508,18 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Top10Transferencias (@Cuenta_Emi NUMERIC(18,0),
-												@RespuestaMensaje VARCHAR(255) OUTPUT,
-												@Respuesta NUMERIC(18,0) OUTPUT)
+CREATE PROCEDURE REZAGADOS.Top10Transferencias (@Cuenta NUMERIC(18,0))
 AS
 BEGIN
-    SELECT TOP 10 T.Id_Transferencia, T.Id_Cuenta_Emi, T.Id_Cuenta_Dest, T.Fecha, T.Id_Moneda, T.Importe
-    FROM REZAGADOS.Transferencia T
-    WHERE T.Id_Cuenta_Emi = @Cuenta_Emi
-    ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
-    SET @RespuestaMensaje = 'Listado exitoso'
-	SET @Respuesta = 1
+   SELECT TOP 10 T.Id_Transferencia ID, T.Id_Cuenta_Emi CUENTA_ORIGEN, T.Id_Cuenta_Dest CUENTA_DESTINO,
+    T.Fecha FECHA, T.Id_Moneda MONEDA, T.Importe IMPORTE
+    FROM REZAGADOS.Transferencia T, REZAGADOS.Cliente C, REZAGADOS.Cuenta cu, REZAGADOS.Usuario u
+	WHERE Cu.Id_Cuenta = @Cuenta
+	AND T.Id_Cuenta_Emi = Cu.Id_Cuenta
+	AND Cu.Id_Usuario = u.Id_Usuario
+	AND u.Id_Usuario = C.Id_Usuario
+	ORDER BY T.Fecha DESC, T.Id_Transferencia DESC
+
 END
 GO
 
@@ -2665,6 +2671,21 @@ BEGIN
 END
 GO
 ---------------------------------------------------------------------------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Buscar_Tipo_Item_ID]
+@Id decimal
+AS
+BEGIN
+	
+	 SELECT	Id_Tipo_Item	ID,
+			Tipo			NOMBRE,
+			Importe			IMPORTE
+	   FROM REZAGADOS.TipoItem	   
+	   where Id_Tipo_Item = @Id
+END
+GO
 ----------------------------------------------TRIGGERS---------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
 

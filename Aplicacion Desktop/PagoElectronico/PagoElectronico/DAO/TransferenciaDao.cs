@@ -45,14 +45,34 @@ namespace DAO
 
         }
 
-        public List<TransferenciaModel> getTransferenciasByCuenta(CuentaModel cuenta,int limit)
+        public List<TransferenciaModel> getTransferenciasByCuenta(CuentaModel cuenta)
         {
 
             List<TransferenciaModel> transf = new List<TransferenciaModel>();
-
+            DataTable dataCuentas = this.getTransferenciaDeBaseIdCuenta(cuenta.id);
+            foreach (DataRow cuentaBase in dataCuentas.Rows)
+            {
+                TransferenciaModel depositoModel = new TransferenciaModel(cuentaBase);
+                transf.Add(depositoModel);
+            }
+            
             return transf;
         }
 
+
+        private DataTable getTransferenciaDeBaseIdCuenta(decimal p)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Top10Transferencias"))
+            {
+                command.Parameters.Add("@Cuenta", System.Data.SqlDbType.Decimal).Value = p;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
+        }
         public override TransferenciaModel getModeloBasico(System.Data.DataRow fila)
         {
             return new TransferenciaModel(fila);
