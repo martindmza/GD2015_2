@@ -648,7 +648,7 @@ AS
 BEGIN
 BEGIN TRY
 	BEGIN TRANSACTION
-		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail) )
+		IF (EXISTS(SELECT Mail FROM REZAGADOS.Cliente  WHERE @Mail = Mail AND Id_Cliente <> @Id_Cliente) )
 			BEGIN
 			SET @RespuestaMensaje = 'El e-mail ya existe.'
 			SET @Respuesta = -1
