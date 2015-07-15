@@ -213,7 +213,7 @@ Importe numeric(18,0) DEFAULT 0,);
 ALTER TABLE REZAGADOS.TipoItem ADD CONSTRAINT PK_Id_Tipo_Item PRIMARY KEY (Id_Tipo_Item);
 
 CREATE TABLE REZAGADOS.Factura (
-Id_Factura numeric(18,0) NOT NULL,
+Id_Factura NUMERIC(18,0) IDENTITY(1,1) NOT NULL,
 Id_Usuario numeric(18,0) NOT NULL,
 Fecha datetime NOT NULL,);
 ALTER TABLE REZAGADOS.Factura ADD CONSTRAINT PK_Id_Factura PRIMARY KEY (Id_Factura);
@@ -473,12 +473,16 @@ WHERE u.Nombre = g.Cli_Mail AND g.Cuenta_Dest_Fecha_Creacion IS NOT NULL
 GROUP BY g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
 
 ------------------------------------------FACUTRA--------------------------------------------------
-
+SET IDENTITY_INSERT REZAGADOS.Factura ON
 INSERT INTO REZAGADOS.Factura (Id_Factura, Id_Usuario, Fecha)
 SELECT g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
 FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE u.Nombre = g.Cli_Mail AND g.Factura_Numero IS NOT NULL
 GROUP BY g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
+SET IDENTITY_INSERT REZAGADOS.Factura OFF
+DECLARE @Begin_Factura NUMERIC(18,0)
+SET @Begin_Factura = (SELECT TOP 1 Id_Factura FROM REZAGADOS.Factura ORDER BY Id_Factura DESC)+ 1
+DBCC checkident ('REZAGADOS.Factura', reseed, @Begin_Factura)
 
 --------------------------------------------TIPO ITEM-----------------------------------------------
 
@@ -2152,6 +2156,26 @@ BEGIN
 END
 GO
 
+--------------------------------------------------------LISTAR TIPO ITEMS---------------------------------------
+USE [GD1C2015]
+IF OBJECT_ID ('[REZAGADOS].[Buscar_Tipo_Item_ID]') IS NOT NULL
+    DROP PROCEDURE [REZAGADOS].Buscar_Tipo_Item_ID
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Buscar_Tipo_Item_ID (@Id NUMERIC(18,0))
+AS
+BEGIN
+	
+	 SELECT	Id_Tipo_Item	ID,
+			Tipo			NOMBRE,
+			Importe			IMPORTE
+	   FROM REZAGADOS.TipoItem
+	   WHERE Id_Tipo_Item = @Id
+END
+GO
+
+
 --------------------------------------------------------LISTAR ITEMS A PAGAR---------------------------------------
 USE [GD1C2015]
 IF OBJECT_ID ('[REZAGADOS].[Listar_Items_Deuda]') IS NOT NULL
@@ -2183,29 +2207,32 @@ IF OBJECT_ID ('[REZAGADOS].[Facturar]') IS NOT NULL
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].[Facturar] (	@Id_Items IdLista READONLY,
-											@Id_Usuario NUMERIC(18,0),
+											@Id_Cliente NUMERIC(18,0),
+											@Fecha DATETIME,
 											@Respuesta NUMERIC(18,0) OUTPUT,
 											@RespuestaMensaje VARCHAR(255) OUTPUT)
  AS
-SET NOCOUNT ON
-BEGIN TRY
-BEGIN TRANSACTION
-	BEGIN	
-		--DECLARE @TOTAL INT SET SELECT SUM(Importe) FROM REZAGADOS.Item WHERE Id_Item IN (SELECT * FROM @Id_Items)
-		--INSERT INTO REZAGADOS.Factura (Id_Usuario, Fecha) VALUES (SELECT Id_Usuario FROM REZAGADOS.Item, REZAGADOS.Cuenta WHERE Cuenta.Id_Cuenta=Item.Id_Cuenta 
-		INSERT INTO REZAGADOS.Factura (Id_Usuario, Fecha) VALUES (@Id_Usuario, GETDATE())
-		DECLARE @Id_Factura NUMERIC(18,0) = (SELECT @@IDENTITY)
-		UPDATE REZAGADOS.Item SET Id_Factura=@Id_Factura WHERE Id_Item IN (SELECT * FROM @Id_Items)
-		SET @Respuesta = 1
-		SET @RespuestaMensaje = 'Items pagados exitosamente'
-	END
-COMMIT TRANSACTION
-END TRY
-BEGIN CATCH
-	ROLLBACK TRANSACTION
-	SET @Respuesta = - 1
-	SET @RespuestaMensaje =  ERROR_MESSAGE()
-END CATCH
+	SET NOCOUNT ON
+	
+	DECLARE @Id_Usuario NUMERIC(18,0)
+	SELECT TOP 1 @Id_Usuario = Id_Usuario FROM REZAGADOS.Cliente WHERE @Id_Cliente = Id_Cliente
+	
+	BEGIN TRY
+		BEGIN TRANSACTION
+			--DECLARE @TOTAL INT SET SELECT SUM(Importe) FROM REZAGADOS.Item WHERE Id_Item IN (SELECT * FROM @Id_Items)
+			--INSERT INTO REZAGADOS.Factura (Id_Usuario, Fecha) VALUES (SELECT Id_Usuario FROM REZAGADOS.Item, REZAGADOS.Cuenta WHERE Cuenta.Id_Cuenta=Item.Id_Cuenta 
+			INSERT INTO REZAGADOS.Factura (Id_Usuario, Fecha) VALUES (@Id_Usuario, @Fecha)
+			DECLARE @Id_Factura NUMERIC(18,0) = (SELECT @@IDENTITY)
+			UPDATE REZAGADOS.Item SET Id_Factura=@Id_Factura WHERE Id_Item IN (SELECT * FROM @Id_Items)
+			SET @Respuesta = @Id_Factura
+			SET @RespuestaMensaje = 'Items pagados exitosamente'
+		COMMIT TRANSACTION
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION
+		SET @Respuesta = - 1
+		SET @RespuestaMensaje =  ERROR_MESSAGE()
+	END CATCH
 GO 
 
 ---------------------------------------------------MODIFICAR TIPO CUENTA----------------------------------------
