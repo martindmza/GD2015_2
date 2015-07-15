@@ -2009,15 +2009,30 @@ SELECT	ct.Id_Tipo_Cuenta ID,
 	FROM [REZAGADOS].TipoCuenta ct 
 END
 GO
+---------------------------------------Buscar_Cuenta_ID---------------------------------------------------------------
+USE [GD1C2015]
+GO
 
+CREATE PROCEDURE [REZAGADOS].[Buscar_Cuenta_ID]
+@Id numeric(18, 0) = null
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT c.Id_Cuenta ID, c.Id_Usuario PROPIETARIO_ID, c.Id_Pais PAIS,c.Id_Tipo_Cuenta TIPO_CUENTA,
+	c.Id_Moneda MONEDA, c.Id_Estado ESTADO, c.Fecha_Cierre FECHA_CIERRE, c.Fecha_Creacion FECHA_CREACION,
+	cl.Nombre PROPIETARIO_NOMBRE, cl.Apellido PROPIETARIO_APELLIDO
+	FROM  [REZAGADOS].Cuenta c 
+	JOIN [REZAGADOS].Usuario u ON c.Id_Usuario = u.Id_Usuario
+	JOIN [REZAGADOS].Cliente cl ON u.Id_Usuario = cl.Id_Usuario
+	WHERE c.Id_Cuenta = @Id
+END
+
+GO
 ----------------------------------------BUSCAR CUENTA TIPO ID---------------------------------------------------------
 
 USE [GD1C2015]
 GO
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+
 CREATE PROCEDURE [REZAGADOS].[Buscar_CuentaTipo_ID] 
 @Id NUMERIC(18,0)
 AS
