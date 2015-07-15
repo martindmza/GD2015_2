@@ -116,6 +116,7 @@
     <Compile Include="DAO\ExtraDao.cs" />
     <Compile Include="DAO\FacturaDao.cs" />
     <Compile Include="DAO\FuncionalidadDao.cs" />
+    <Compile Include="DAO\ItemTipoDao.cs" />
     <Compile Include="DAO\LocalidadDAO.cs" />
     <Compile Include="DAO\MonedaDAO.cs" />
     <Compile Include="DAO\PaisDAO.cs" />
@@ -123,7 +124,7 @@
     <Compile Include="DAO\RetiroDao.cs" />
     <Compile Include="DAO\RolDao.cs" />
     <Compile Include="DAO\TarjetaDeCreditoDao.cs" />
-    <Compile Include="DAO\TranscaccionDao.cs" />
+    <Compile Include="DAO\ItemDao.cs" />
     <Compile Include="DAO\TransferenciaDao.cs" />
     <Compile Include="DAO\UserDao.cs" />
     <Compile Include="Depositos\DepositosAbm.cs">
@@ -194,8 +195,8 @@
     <Compile Include="Models\PaisModel.cs" />
     <Compile Include="Models\RetiroModel.cs" />
     <Compile Include="Models\TarjetaDeCreditoModel.cs" />
-    <Compile Include="Models\TransaccionModel.cs" />
-    <Compile Include="Models\TransaccionTipoModel.cs" />
+    <Compile Include="Models\ItemModel.cs" />
+    <Compile Include="Models\ItemTipoModel.cs" />
     <Compile Include="Models\TransferenciaModel.cs" />
     <Compile Include="MyExceptions\UserNotFoundException.cs" />
     <Compile Include="Facturacion\FacturacionAbm.cs">

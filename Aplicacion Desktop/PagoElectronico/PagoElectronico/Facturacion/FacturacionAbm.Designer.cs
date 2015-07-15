@@ -39,6 +39,8 @@
             this.totalText = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.buttonFacturar = new System.Windows.Forms.Button();
+            this.buttonTodos = new System.Windows.Forms.Button();
+            this.buttonNinguno = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,10 +55,10 @@
             this.importe,
             this.fecha,
             this.seleccionaod});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 33);
+            this.dataGridView1.Location = new System.Drawing.Point(12, 60);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(603, 268);
+            this.dataGridView1.Size = new System.Drawing.Size(603, 366);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
             // 
@@ -103,7 +105,7 @@
             this.label1.BackColor = System.Drawing.SystemColors.Highlight;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Location = new System.Drawing.Point(12, 38);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(603, 19);
             this.label1.TabIndex = 1;
@@ -113,7 +115,7 @@
             // totalText
             // 
             this.totalText.Enabled = false;
-            this.totalText.Location = new System.Drawing.Point(52, 307);
+            this.totalText.Location = new System.Drawing.Point(49, 434);
             this.totalText.Name = "totalText";
             this.totalText.Size = new System.Drawing.Size(100, 20);
             this.totalText.TabIndex = 3;
@@ -121,7 +123,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 307);
+            this.label2.Location = new System.Drawing.Point(9, 437);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(34, 13);
             this.label2.TabIndex = 4;
@@ -129,7 +131,7 @@
             // 
             // buttonFacturar
             // 
-            this.buttonFacturar.Location = new System.Drawing.Point(527, 307);
+            this.buttonFacturar.Location = new System.Drawing.Point(524, 432);
             this.buttonFacturar.Name = "buttonFacturar";
             this.buttonFacturar.Size = new System.Drawing.Size(88, 23);
             this.buttonFacturar.TabIndex = 5;
@@ -137,11 +139,33 @@
             this.buttonFacturar.UseVisualStyleBackColor = true;
             this.buttonFacturar.Click += new System.EventHandler(this.facturar_Click);
             // 
+            // buttonTodos
+            // 
+            this.buttonTodos.Location = new System.Drawing.Point(449, 12);
+            this.buttonTodos.Name = "buttonTodos";
+            this.buttonTodos.Size = new System.Drawing.Size(75, 23);
+            this.buttonTodos.TabIndex = 6;
+            this.buttonTodos.Text = "Todas";
+            this.buttonTodos.UseVisualStyleBackColor = true;
+            this.buttonTodos.Click += new System.EventHandler(this.buttonTodos_Click);
+            // 
+            // buttonNinguno
+            // 
+            this.buttonNinguno.Location = new System.Drawing.Point(537, 12);
+            this.buttonNinguno.Name = "buttonNinguno";
+            this.buttonNinguno.Size = new System.Drawing.Size(75, 23);
+            this.buttonNinguno.TabIndex = 6;
+            this.buttonNinguno.Text = "Ninguno";
+            this.buttonNinguno.UseVisualStyleBackColor = true;
+            this.buttonNinguno.Click += new System.EventHandler(this.buttonNinguno_Click);
+            // 
             // FacturacionAbm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 337);
+            this.ClientSize = new System.Drawing.Size(624, 467);
+            this.Controls.Add(this.buttonNinguno);
+            this.Controls.Add(this.buttonTodos);
             this.Controls.Add(this.buttonFacturar);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.totalText);
@@ -172,6 +196,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn importe;
         private System.Windows.Forms.DataGridViewTextBoxColumn fecha;
         private System.Windows.Forms.DataGridViewTextBoxColumn seleccionaod;
+        private System.Windows.Forms.Button buttonTodos;
+        private System.Windows.Forms.Button buttonNinguno;
 
     }
 }

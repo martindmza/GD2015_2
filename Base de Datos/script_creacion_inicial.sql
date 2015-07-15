@@ -564,7 +564,7 @@ DBCC checkident ('REZAGADOS.Retiro', reseed, @Begin_Cheque)
 USE [GD1C2015]
 GO
 CREATE TYPE REZAGADOS.IdLista AS TABLE 
-( Id_Funcionalidad NUMERIC(18,0) );
+( Id_Fila NUMERIC(18,0) );
 GO
 
 ------------------------------------------CREAR CLIENTE------------------------------------------------
@@ -1270,7 +1270,7 @@ BEGIN
 		RETURN
 	END
 
-	IF (@Importe >= @Saldo)
+	IF (@Importe > @Saldo)
 	BEGIN
 		SET @Respuesta = -1
 		SET @RespuestaMensaje = 'Importe mayor al saldo'
@@ -1390,7 +1390,7 @@ BEGIN
 		RETURN
 	END
 	
-	IF (@Cuenta_Origen_Saldo < @Importe)
+	IF (@Importe > @Cuenta_Origen_Saldo )
 	BEGIN
 		SET @Respuesta = -1			
 		SET @RespuestaMensaje = 'El Importe a transferir no puede ser mayor al saldo'
@@ -1433,7 +1433,7 @@ BEGIN
 END
 GO
 
-----------------------------------------------TRANSFERENCIA ROL-------------------------------------------------------
+----------------------------------------------LISTAR ROL-------------------------------------------------------
 
 USE [GD1C2015]
 GO
@@ -1871,7 +1871,7 @@ BEGIN TRY
 			
 			-- asigno las funcionalidaes enviadas
 			INSERT INTO REZAGADOS.FuncionalidadXRol (Id_Rol,Id_Funcionalidad) 
-				SELECT @Id_Rol,Id_Funcionalidad FROM @Funcionalidades;
+				SELECT @Id_Rol,Id_Fila FROM @Funcionalidades;
 			
 			-- modifico el nombre del Rol
 			UPDATE REZAGADOS.Rol SET Nombre = @Nombre_Rol WHERE Id_Rol = @Id_Rol
@@ -2182,6 +2182,47 @@ END
 GO
 
 ----------------------------------------------------FACTURACION DE COSTOS------------------------------------------
+
+--------------------------------------------------------LISTAR TIPO ITEMS---------------------------------------
+USE [GD1C2015]
+IF OBJECT_ID ('[REZAGADOS].[Listar_Tipo_Items]') IS NOT NULL
+    DROP PROCEDURE [REZAGADOS].Listar_Tipo_Items
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Listar_Tipo_Items
+AS
+BEGIN
+	
+	 SELECT	Id_Tipo_Item	ID,
+			Tipo			NOMBRE,
+			Importe			IMPORTE
+	   FROM REZAGADOS.TipoItem	   
+END
+GO
+
+--------------------------------------------------------LISTAR ITEMS A PAGAR---------------------------------------
+USE [GD1C2015]
+IF OBJECT_ID ('[REZAGADOS].[Listar_Items_Deuda]') IS NOT NULL
+    DROP PROCEDURE [REZAGADOS].Listar_Items_Deuda
+
+USE [GD1C2015]
+GO
+CREATE PROCEDURE [REZAGADOS].Listar_Items_Deuda ( @Id_Cuentas IdLista READONLY )
+AS
+BEGIN
+	
+	 SELECT	Id_Item			ID,
+			Id_Cuenta		CUENTA_ID,
+			Id_Tipo_Item	TIPO_ID,
+			Importe			IMPORTE,
+			Fecha			FECHA
+	   FROM REZAGADOS.Item
+	   WHERE Id_Cuenta IN (SELECT * FROM @Id_Cuentas)
+	     AND Id_Factura IS NULL
+END
+GO
+
 --------------------------------------------------------FACTURAR---------------------------------------------------
 
 USE [GD1C2015]
@@ -2699,7 +2740,7 @@ GO
 ----------------------------------------INSERTA ITEM TRANSFERENCIA---------------------------------------------------------
 
 USE [GD1C2015]
-IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL
+IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL 
 	DROP TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
 GO
 CREATE TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
@@ -2714,16 +2755,17 @@ BEGIN TRANSACTION
 	DECLARE @Importe NUMERIC(18,2)
 	DECLARE @Fecha DATETIME
 	OPEN D
-	FETCH D INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
-	WHILE @@FETCH_STATUS = 0
-		IF ((SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Emi) <> (SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Dest))
-		BEGIN
-			IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi ) <> 'Gratuita'
-			INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-			VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), CAST(ROUND(@Importe,1)/(SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi) AS NUMERIC (18,2)), GETDATE())
-			FETCH C INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
+		FETCH D INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
+		
+		WHILE @@FETCH_STATUS = 0
+			IF ((SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Emi) <> (SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Dest))
+			BEGIN
+				-- IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi ) <> 'Gratuita'
+				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
+				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), CAST(ROUND(@Importe,1)/(SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi) AS NUMERIC (18,2)), GETDATE())
+				FETCH C INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
 
-		END
+			END
 	CLOSE D
 	DEALLOCATE D
 	COMMIT

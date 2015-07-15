@@ -14,8 +14,9 @@ namespace Facturacion
     public partial class FacturaForm : Form
     {
         private FacturaDao facturaDao;
-        private TransaccionDao transaccionDao;
+        private ItemDao transaccionDao;
         private FacturacionAbm parent;
+        private bool confirmed = false;
 
         private FacturaModel factura;
         private Double total;
@@ -23,7 +24,7 @@ namespace Facturacion
         public FacturaForm(FacturaModel factura,Double total, FacturacionAbm parent)
         {
             facturaDao = new FacturaDao();
-            transaccionDao = new TransaccionDao();
+            transaccionDao = new ItemDao();
             this.factura = factura;
             this.total = total;
             this.parent = parent;
@@ -38,7 +39,7 @@ namespace Facturacion
         private void fillData() {
             dataGridView1.Rows.Clear();
             string[] row;
-            foreach (TransaccionModel t in factura.transacciones)
+            foreach (ItemModel t in factura.items)
             {
                 row = new String[] {    t.id.ToString(),
                                         t.cuenta.id.ToString(),
@@ -50,8 +51,7 @@ namespace Facturacion
             }
 
             fechaText.Text = factura.fecha.ToShortTimeString();
-            clienteText.Text = factura.transacciones[0].cuenta.propietario.apellido + ", " +
-                                factura.transacciones[0].cuenta.propietario.nombre;
+            clienteText.Text = factura.cliente.apellido + ", " + factura.cliente.nombre;
             totalText.Text = this.total.ToString();
         }
 
@@ -59,32 +59,39 @@ namespace Facturacion
         {
             try
             {
-                this.factura = facturaDao.crearFactura(factura);
-
-                foreach (TransaccionModel t in factura.transacciones)
+                Respuesta respuesta = facturaDao.crearFactura(factura);
+                MessageBox.Show(respuesta.mensaje);
+                if (respuesta.codigo > 0)
                 {
-                    transaccionDao.insertTransaccion(t, factura);
+                    factura.id = respuesta.codigo;
+                    factNumText.Visible = true;
+                    factNumLabel.Visible = true;
+                    factNumText.Text = factura.id.ToString();
+                    buttonAcpetar.Visible = false;
+                    button1.Text = "Finalizar";
+                    confirmed = true;
                 }
-
-                MessageBox.Show("Facturación Realizada exitosamente");
-
-                parent.Close();
-                parent.Dispose();
-
             }
-            catch (Exception err) {
-                MessageBox.Show("no se pudo completar la operacion" + err);
-                parent.Enabled = true;
+            catch (Exception err)
+            {
+                MessageBox.Show("No se pudo completar la operación" + err);
             }
-
-            this.Close();
-            this.Dispose();
-            GC.Collect();
         }
 
         private void FacturaForm_Leave(object sender, EventArgs e)
         {
             parent.Enabled = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if(confirmed){
+                parent.response();
+            }
+
+            this.Close();
+            this.Dispose();
+            GC.Collect();
         }
     }
 }

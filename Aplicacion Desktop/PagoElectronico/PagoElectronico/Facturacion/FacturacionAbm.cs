@@ -15,22 +15,22 @@ namespace Facturacion
     public partial class FacturacionAbm : Form
     {
 
-        private TransaccionDao transaccionDao;
+        private ItemDao itemDao;
         private ExtraDao extraDao;
 
-        private List<TransaccionModel> transacciones;
-        private List<TransaccionModel> transaccionesSeleccionadas;
+        private List<ItemModel> items;
+        private List<ItemModel> itemsSeleccionados;
         private ClienteModel cliente;
         private Double total;
 
 
         public FacturacionAbm()
         {
-            cliente = UsuarioSingleton.getInstance().getUsuario().cliente;
-            transaccionDao = new TransaccionDao();
+            cliente = UsuarioSingleton.getInstance().getUsuario().getMiCliente();
+            itemDao = new ItemDao();
             extraDao = new ExtraDao();
-            transacciones = transaccionDao.getTransaccionesPendientesByCliente(cliente);
-            transaccionesSeleccionadas = new List<TransaccionModel>();
+            items = itemDao.getTransaccionesPendientesByCliente(cliente);
+            itemsSeleccionados = new List<ItemModel>();
 
             InitializeComponent();
             fillTable();
@@ -38,6 +38,13 @@ namespace Facturacion
             buttonFacturar.Enabled = false;
         }
 
+        //-----------------------------------------------------------------------------------------------------------------
+        public void response() {
+            items = itemDao.getTransaccionesPendientesByCliente(cliente);
+            fillTable();
+            itemsSeleccionados.Clear();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
         private void fillTable()
@@ -45,7 +52,7 @@ namespace Facturacion
             dataGridView1.Rows.Clear();
 
             string[] row;
-            foreach (TransaccionModel t in transacciones)
+            foreach (ItemModel t in items)
             {
                 row = new String[] {    t.id.ToString(),
                                         t.cuenta.id.ToString(),
@@ -62,7 +69,7 @@ namespace Facturacion
         private void calcularPrecio()
         {
             total = 0;
-            foreach (TransaccionModel t in transaccionesSeleccionadas)
+            foreach (ItemModel t in itemsSeleccionados)
             {
                 total += t.importe;
             }
@@ -80,20 +87,20 @@ namespace Facturacion
                 String idTransaccionActiva = dataGridView1.Rows[filaActiva].Cells[0].Value.ToString();
 
                 int count = 0;
-                foreach (TransaccionModel t in transacciones)
+                foreach (ItemModel t in items)
                 {
                     if (idTransaccionActiva.Equals(t.id.ToString()))
                     {
                         //SetPrice
-                        if (transaccionesSeleccionadas.Exists(i => i == t)) {
+                        if (itemsSeleccionados.Exists(i => i == t)) {
                             dataGridView1.Rows[filaActiva].DefaultCellStyle.BackColor = Color.White;
-                            transaccionesSeleccionadas.Remove(t);
+                            itemsSeleccionados.Remove(t);
                             dataGridView1.Rows[filaActiva].Selected = false;
                         }
                         else
                         {
                             dataGridView1.Rows[filaActiva].DefaultCellStyle.BackColor = Color.LightGray;
-                            transaccionesSeleccionadas.Add(t);
+                            itemsSeleccionados.Add(t);
                             dataGridView1.Rows[filaActiva].Selected = true;
 
                         }
@@ -103,7 +110,7 @@ namespace Facturacion
                     count++;
                 }
 
-                if (transaccionesSeleccionadas.Count == 0)
+                if (itemsSeleccionados.Count == 0)
                 {
                     buttonFacturar.Enabled = false;
                 }
@@ -120,7 +127,8 @@ namespace Facturacion
         //-----------------------------------------------------------------------------------------------------------------
         private void facturar_Click(object sender, EventArgs e)
         {
-            FacturaModel factura = new FacturaModel(extraDao.getDayToday(), transaccionesSeleccionadas);
+            FacturaModel factura = new FacturaModel(extraDao.getDayToday(), itemsSeleccionados);
+            factura.cliente = cliente;
 
             if (factura != null)
             {
@@ -131,6 +139,40 @@ namespace Facturacion
             else {
                 MessageBox.Show("No se pudo crear la operación");
             }
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonNinguno_Click(object sender, EventArgs e)
+        {
+            int count = 0;
+
+            itemsSeleccionados.Clear();
+            foreach (ItemModel t in items)
+            {
+                dataGridView1.Rows[count].DefaultCellStyle.BackColor = Color.White;
+                dataGridView1.Rows[count].Selected = false;
+                count++;
+            }
+            calcularPrecio();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonTodos_Click(object sender, EventArgs e)
+        {
+
+            int count = 0;
+
+            itemsSeleccionados.Clear();
+            foreach (ItemModel t in items)
+            {
+                dataGridView1.Rows[count].DefaultCellStyle.BackColor = Color.LightGray;
+                itemsSeleccionados.Add(t);
+                dataGridView1.Rows[count].Selected = true;
+                count++;
+            }
+            calcularPrecio();
         }
         //-----------------------------------------------------------------------------------------------------------------
     }
