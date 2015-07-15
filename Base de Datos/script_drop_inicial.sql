@@ -302,7 +302,17 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE REZAGADOS.Listar_Estado;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_CuentaTipo]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Listar_CuentaTipo;
-	IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Cuenta_ID]') AND type in (N'P', N'PC'))
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Tarjeta]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Listar_Tarjeta;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Tarjeta_ID]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Buscar_Tarjeta_ID;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Retiro_ID_Cliente]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Listar_Retiro_ID_Cliente;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Deposito_ID_Cliente]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Listar_Deposito_ID_Cliente;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Listar_Transferencia_ID_Cliente]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE REZAGADOS.Listar_Transferencia_ID_Cliente;
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Cuenta_ID]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Buscar_Cuenta_ID;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_CuentaTipo_ID]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE REZAGADOS.Buscar_CuentaTipo_ID;

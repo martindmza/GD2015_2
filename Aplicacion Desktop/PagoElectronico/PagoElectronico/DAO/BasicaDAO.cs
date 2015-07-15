@@ -102,7 +102,7 @@ namespace DAO
             DataTable dt = new DataTable();
             using (SqlCommand command = InitializeConnection(this.getProcedureEncontrarPorId()))
             {
-                command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = id;
+                command.Parameters.Add("@Id", System.Data.SqlDbType.Decimal).Value = id;
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 da.Fill(dt);
             }

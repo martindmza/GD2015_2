@@ -87,17 +87,17 @@ namespace DAO
 
         public override TarjetaDeCreditoModel getModeloBasico(System.Data.DataRow fila)
         {
-            throw new NotImplementedException();
+            return new TarjetaDeCreditoModel(fila);
         }
 
         public override string getProcedureEncontrarPorId()
         {
-            throw new NotImplementedException();
+            return "Buscar_Tarjeta_ID";
         }
 
         public override string getProcedureListar()
         {
-            throw new NotImplementedException();
+            return "Listar_Tarjeta";
         }
 
         protected override string getProcedureCrearBasica()

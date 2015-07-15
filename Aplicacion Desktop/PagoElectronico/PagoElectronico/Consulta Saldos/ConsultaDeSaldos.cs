@@ -88,8 +88,7 @@ namespace ABM
                                             t.cuentaOrigen.id.ToString(),
                                             t.cuentaDestino.id.ToString(),
                                             t.importe.ToString(),
-                                            t.fecha.ToShortDateString(),
-                                            t.costo.ToString()
+                                            t.fecha.ToShortDateString()
                                         };
 
                     dataGridViewTransferencias.Rows.Add(row);

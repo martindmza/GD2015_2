@@ -55,7 +55,7 @@ namespace DAO
 
         public override TransferenciaModel getModeloBasico(System.Data.DataRow fila)
         {
-            throw new NotImplementedException();
+            return new TransferenciaModel(fila);
         }
 
         public override System.Data.SqlClient.SqlCommand addParametrosParaAgregar(System.Data.SqlClient.SqlCommand command, TransferenciaModel entity)
@@ -80,12 +80,12 @@ namespace DAO
 
         public override string getProcedureEncontrarPorId()
         {
-            throw new NotImplementedException();
+            return "Buscar_Transferencia_ID";
         }
 
         public override string getProcedureListar()
         {
-            throw new NotImplementedException();
+            return "Listar_Transferencia";
         }
 
         protected override System.Data.SqlClient.SqlCommand addParametrosParaBaja(System.Data.SqlClient.SqlCommand command, object entity)
