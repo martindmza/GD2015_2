@@ -57,7 +57,8 @@ namespace Models
                 this.factura = new FacturaModel(Decimal.Parse(fila[FACTURA_ID].ToString()));
             }
 
-            this.cuenta = new CuentaDao().dameTuModelo(this.mapearValor(fila[CUENTA_ID]));
+            //this.cuenta = new CuentaDao().dameTuModelo(this.mapearValor(fila[CUENTA_ID]));
+            this.cuenta = new CuentaModel(Decimal.Parse(fila[CUENTA_ID].ToString()));
             this.tipo = new ItemTipoDao().dameTuModelo(this.mapearValor(fila[TIPO_ID]));
             this.importe = this.mapearImporte(fila[IMPORTE]);
             this.fecha = this.mapearFecha(fila[FECHA]);

@@ -22,7 +22,7 @@ namespace DAO
 
         public override string getProcedureEncontrarPorId()
         {
-            return "Buscar_Item_ID";
+            return "Buscar_Tipo_Item_ID";
         }
 
         public override string getProcedureListar()

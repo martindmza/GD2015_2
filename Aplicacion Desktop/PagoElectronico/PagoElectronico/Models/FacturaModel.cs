@@ -10,13 +10,14 @@ namespace Models
     {
         public static String FECHA = "FECHA";
         public DateTime fecha;
-        public List<ItemModel> transacciones;
+        public List<ItemModel> items;
+        public ClienteModel cliente;
 
 
         public FacturaModel() { }
 
         public FacturaModel(DataRow fila):base(fila) {
-            transacciones = this.obtenerMisTransacciones();
+            items = this.obtenerMisTransacciones();
         }
 
         private List<ItemModel> obtenerMisTransacciones()
@@ -32,14 +33,14 @@ namespace Models
         public FacturaModel( DateTime fecha, List<ItemModel> transacciones)
         {
             this.fecha = fecha;
-            this.transacciones = transacciones;
+            this.items = transacciones;
         }
 
         public FacturaModel(Decimal id,DateTime fecha, List<ItemModel> transacciones)
         {
             this.id = id;
             this.fecha = fecha;
-            this.transacciones = transacciones;
+            this.items = transacciones;
         }
 
         public override void mapeoFilaAModel(DataRow fila)

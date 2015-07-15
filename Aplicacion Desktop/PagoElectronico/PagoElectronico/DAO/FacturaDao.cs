@@ -3,15 +3,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Models;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace DAO
 {
     public class FacturaDao:BasicaDAO<FacturaModel>
     {
-        public FacturaModel crearFactura(FacturaModel factura){
-            factura.id = 9999;
-            return factura;  
+        private const String FACTURAR = "Facturar";
+
+        public Respuesta crearFactura(FacturaModel factura){
+            try
+            {
+                DataTable itemsLista = new DataTable();
+                itemsLista.Columns.Add("Id_Fila", typeof(decimal));
+                foreach (ItemModel f in factura.items)
+                {
+                    itemsLista.Rows.Add(f.id);
+                }
+
+                SqlCommand command = InitializeConnection(FACTURAR);
+                command.Parameters.Add("@Id_Items", System.Data.SqlDbType.Structured).Value = itemsLista;
+                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = factura.cliente.id;
+                command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = factura.fecha;
+
+                DataTable dt = new DataTable();
+                //
+                var pOut = command.Parameters.Add("Respuesta", SqlDbType.Decimal);
+                var pOut2 = command.Parameters.Add("RespuestaMensaje", SqlDbType.NVarChar, 255);
+                pOut.Direction = ParameterDirection.Output;
+                pOut2.Direction = ParameterDirection.Output;
+                //
+
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+                Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (Decimal)(pOut.Value);
+                String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
+
+                return new Respuesta(value, mensaje);
+            }
+            catch (Exception excepcion)
+            {
+                throw excepcion;
+            }           
         }
+
+
 
         public override FacturaModel getModeloBasico(System.Data.DataRow fila)
         {

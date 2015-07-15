@@ -2163,9 +2163,9 @@ CREATE PROCEDURE [REZAGADOS].Listar_Items_Deuda ( @Id_Cuentas IdLista READONLY )
 AS
 BEGIN
 	
-	 SELECT	Id_Item			ID_ITEM,
-			Id_Cuenta		ID_CUENTA,
-			Id_Tipo_Item	ID_TIPO,
+	 SELECT	Id_Item			ID,
+			Id_Cuenta		CUENTA_ID,
+			Id_Tipo_Item	TIPO_ID,
 			Importe			IMPORTE,
 			Fecha			FECHA
 	   FROM REZAGADOS.Item

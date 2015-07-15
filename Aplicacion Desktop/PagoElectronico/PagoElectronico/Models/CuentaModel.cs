@@ -37,6 +37,10 @@ namespace Models
         {
         }
 
+        public CuentaModel(Decimal id) {
+            this.id = id;
+        }
+
         public CuentaModel(Decimal id, PaisModel pais, CuentaTipoModel tipo, MonedaModel moneda,
                EstadoModel estado, DateTime fechaCreacion, DateTime fechaCierre) { 
          //this.id = id;

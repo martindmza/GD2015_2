@@ -42,16 +42,19 @@
             this.clienteText = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.totalText = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.factNumLabel = new System.Windows.Forms.Label();
+            this.factNumText = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonAcpetar
             // 
-            this.buttonAcpetar.Location = new System.Drawing.Point(524, 346);
+            this.buttonAcpetar.Location = new System.Drawing.Point(523, 484);
             this.buttonAcpetar.Name = "buttonAcpetar";
             this.buttonAcpetar.Size = new System.Drawing.Size(88, 23);
             this.buttonAcpetar.TabIndex = 5;
-            this.buttonAcpetar.Text = "Aceptar";
+            this.buttonAcpetar.Text = "Confirmar";
             this.buttonAcpetar.UseVisualStyleBackColor = true;
             this.buttonAcpetar.Click += new System.EventHandler(this.buttonAcpetar_Click);
             // 
@@ -60,7 +63,7 @@
             this.label1.BackColor = System.Drawing.SystemColors.Highlight;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(9, 52);
+            this.label1.Location = new System.Drawing.Point(9, 66);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(603, 19);
             this.label1.TabIndex = 1;
@@ -100,6 +103,7 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -109,16 +113,16 @@
             this.importe,
             this.fecha});
             this.dataGridView1.Enabled = false;
-            this.dataGridView1.Location = new System.Drawing.Point(9, 74);
+            this.dataGridView1.Location = new System.Drawing.Point(9, 88);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(603, 257);
+            this.dataGridView1.Size = new System.Drawing.Size(603, 390);
             this.dataGridView1.TabIndex = 0;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(446, 27);
+            this.label2.Location = new System.Drawing.Point(446, 42);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 13);
             this.label2.TabIndex = 6;
@@ -127,7 +131,7 @@
             // fechaText
             // 
             this.fechaText.AutoSize = true;
-            this.fechaText.Location = new System.Drawing.Point(492, 27);
+            this.fechaText.Location = new System.Drawing.Point(492, 42);
             this.fechaText.Name = "fechaText";
             this.fechaText.Size = new System.Drawing.Size(97, 13);
             this.fechaText.TabIndex = 6;
@@ -136,7 +140,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 27);
+            this.label6.Location = new System.Drawing.Point(17, 42);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(42, 13);
             this.label6.TabIndex = 6;
@@ -145,7 +149,7 @@
             // clienteText
             // 
             this.clienteText.AutoSize = true;
-            this.clienteText.Location = new System.Drawing.Point(58, 27);
+            this.clienteText.Location = new System.Drawing.Point(58, 42);
             this.clienteText.Name = "clienteText";
             this.clienteText.Size = new System.Drawing.Size(97, 13);
             this.clienteText.TabIndex = 6;
@@ -154,7 +158,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 346);
+            this.label3.Location = new System.Drawing.Point(11, 484);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(34, 13);
             this.label3.TabIndex = 6;
@@ -163,21 +167,55 @@
             // totalText
             // 
             this.totalText.AutoSize = true;
-            this.totalText.Location = new System.Drawing.Point(58, 346);
+            this.totalText.Location = new System.Drawing.Point(57, 484);
             this.totalText.Name = "totalText";
             this.totalText.Size = new System.Drawing.Size(97, 13);
             this.totalText.TabIndex = 6;
             this.totalText.Text = "$$$$$$$$$$$$$$$";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(429, 484);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(88, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Cancelar";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // factNumLabel
+            // 
+            this.factNumLabel.AutoSize = true;
+            this.factNumLabel.Location = new System.Drawing.Point(12, 18);
+            this.factNumLabel.Name = "factNumLabel";
+            this.factNumLabel.Size = new System.Drawing.Size(47, 13);
+            this.factNumLabel.TabIndex = 6;
+            this.factNumLabel.Text = "Número:";
+            this.factNumLabel.Visible = false;
+            // 
+            // factNumText
+            // 
+            this.factNumText.AutoSize = true;
+            this.factNumText.Location = new System.Drawing.Point(58, 18);
+            this.factNumText.Name = "factNumText";
+            this.factNumText.Size = new System.Drawing.Size(97, 13);
+            this.factNumText.TabIndex = 6;
+            this.factNumText.Text = "$$$$$$$$$$$$$$$";
+            this.factNumText.Visible = false;
+            // 
             // FacturaForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 384);
+            this.ClientSize = new System.Drawing.Size(624, 519);
+            this.ControlBox = false;
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.factNumText);
             this.Controls.Add(this.fechaText);
             this.Controls.Add(this.totalText);
             this.Controls.Add(this.clienteText);
             this.Controls.Add(this.label3);
+            this.Controls.Add(this.factNumLabel);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.buttonAcpetar);
@@ -212,6 +250,9 @@
         private System.Windows.Forms.Label clienteText;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label totalText;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label factNumLabel;
+        private System.Windows.Forms.Label factNumText;
 
     }
 }
