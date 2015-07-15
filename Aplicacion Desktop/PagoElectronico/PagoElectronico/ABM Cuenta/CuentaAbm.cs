@@ -97,7 +97,7 @@ namespace ABM
             if (usuario.cliente != null)
             {
                 this.formResponseCliente(usuario.cliente);
-                cuentas = new CuentaDao().getCuentasByCliente(usuario.cliente);
+                cuentas = new CuentaDao().getListadoByCliente(usuario.cliente);
                 button1.Visible = false;
                 button5.Visible = false;
                 buttonLimpiar.Visible = false;
@@ -116,15 +116,15 @@ namespace ABM
         {
             InitializeComponent();
 
-            if (doFillTable)
+   /*         if (doFillTable)
             {
                 cuentas = new CuentaDao().getCuentas();
                 fillTable();
             }
             else {
                 this.cargarCuentasSiTieneCliente();
-            }
-
+            }*/
+            this.cargarCuentasSiTieneCliente();
             this.Text = "Seleccionar una Cuenta";
             buttonElegir.Visible = true;
             buttonElegir.Enabled = false;
@@ -249,7 +249,7 @@ namespace ABM
                 cuentas = new CuentaDao().getCuentas();
             }
             else {
-                cuentas = new CuentaDao().getCuentasByCliente(clienteSeleccionado);
+                cuentas = new CuentaDao().getListadoByCliente(clienteSeleccionado);
             }
             fillTable();
         }

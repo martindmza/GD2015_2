@@ -18,7 +18,7 @@ namespace DAO
             cuentasLista.Columns.Add("Id_Fila", typeof(decimal));
             CuentaDao cuentaDao = new CuentaDao();
             List<CuentaModel> cuentas = new List<CuentaModel>();
-            cuentas = cuentaDao.getCuentasByCliente(cliente);
+            cuentas = cuentaDao.getListadoByCliente(cliente);
             foreach (CuentaModel f in cuentas)
             {
                 cuentasLista.Rows.Add(f.id);

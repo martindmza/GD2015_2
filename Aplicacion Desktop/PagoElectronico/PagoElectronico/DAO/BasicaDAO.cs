@@ -12,6 +12,36 @@ namespace DAO
     public abstract class BasicaDAO<TEntity>: AbstractDAO
         where TEntity : BasicaModel , new()
     {
+
+        public List<TEntity> getListadoByCliente(ClienteModel cliente)
+        {
+            List<TEntity> lista = new List<TEntity>();
+            DataTable data = this.getListaDeBaseByCliente(cliente);
+            foreach (DataRow fila in data.Rows)
+            {
+                TEntity model = this.getModeloBasico(fila);
+                lista.Add(model);
+            }
+            return lista;
+        }
+
+        protected DataTable getListaDeBaseByCliente(ClienteModel cliente)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection(this.getProcedureListarByCliente()))
+            {
+                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Int).Value = cliente.id;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
+        }
+
+        protected abstract string getProcedureListarByCliente();
+
+
         public List<TEntity> getListado()
         {
             List<TEntity> lista = new List<TEntity>();

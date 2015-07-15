@@ -10,16 +10,6 @@ namespace DAO
 {
     public class CuentaDao: BasicaDAO<CuentaModel>
     {
-       public List<CuentaModel> getCuentasByCliente(ClienteModel cliente) {
-            List<CuentaModel> cuentas = new List<CuentaModel>();
-            DataTable dataCuentas = this.getCuentasDeBasePorIdCliente(cliente.id);
-            foreach (DataRow cuentaBase in dataCuentas.Rows)
-            {
-                CuentaModel cuentaModel = new CuentaModel(cuentaBase);
-                cuentas.Add(cuentaModel);
-            }
-            return cuentas;
-        }
 
         public List<CuentaModel> getCuentasByUsuario(UserModel usuario)
         {
@@ -28,7 +18,7 @@ namespace DAO
             {
                 return new List<CuentaModel>();
             }
-            return this.getCuentasByCliente(cliente);
+            return this.getListadoByCliente(cliente);
         }
 
         public List<CuentaModel> getCuentas()
@@ -57,20 +47,7 @@ namespace DAO
             return null;
         }
 
-        private DataTable getCuentasDeBasePorIdCliente(decimal idCliente)
-        {
-            DataTable dt = new DataTable();
-            using (SqlCommand command = InitializeConnection("Listar_Cuenta_Cliente"))
-            {
-                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Int).Value = idCliente;
-                SqlDataAdapter da = new SqlDataAdapter(command);
-                da.Fill(dt);
-            }
-            if (dt.Rows.Count > 0)
-                return dt;
-            return null;
-        }
-
+     
         private DataTable getCuentasDeBasePorIdUsuario(decimal idUsuario)
         {
             DataTable dt = new DataTable();
@@ -157,5 +134,11 @@ namespace DAO
         {
             return "Baja_Cuenta"; 
         }
+
+        protected override string getProcedureListarByCliente()
+        {
+            return "Listar_Cuenta_Cliente";
+        }
+
     }
 }

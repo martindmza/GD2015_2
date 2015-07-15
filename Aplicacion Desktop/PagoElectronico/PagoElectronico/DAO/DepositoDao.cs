@@ -121,5 +121,10 @@ namespace DAO
         {
             throw new NotImplementedException();
         }
+
+        protected override string getProcedureListarByCliente()
+        {
+            return "Listar_Deposito_ID_Cliente";
+        }
     }
 }
