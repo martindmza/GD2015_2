@@ -30,7 +30,7 @@ namespace DAO
             DataTable dt = new DataTable();
             using (SqlCommand command = InitializeConnection(this.getProcedureListarByCliente()))
             {
-                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Int).Value = cliente.id;
+                command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = cliente.id;
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 da.Fill(dt);
             }
