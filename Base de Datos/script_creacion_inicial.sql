@@ -2636,7 +2636,34 @@ BEGIN
 	WHERE Id_Emisor = @Id_Emisor
 END
 GO
+---------------------------------------------------------------------------------------------------------------
+USE [GD1C2015]
+GO
 
+CREATE PROCEDURE [REZAGADOS].[Listar_Transferencia] (	@Id_Cliente NUMERIC(18,0))
+AS
+BEGIN
+
+   SELECT T.Id_Transferencia ID, T.Id_Cuenta_Emi CUENTA_ORIGEN, T.Id_Cuenta_Dest CUENTA_DESTINO,
+    T.Fecha FECHA, T.Id_Moneda MONEDA, T.Importe IMPORTE
+    FROM REZAGADOS.Transferencia T
+END
+GO
+--------------------------------------------------------------------
+USE [GD1C2015]
+GO
+
+CREATE PROCEDURE [REZAGADOS].[Buscar_Transferencia_ID] 
+@Id decimal 
+AS
+BEGIN
+
+   SELECT T.Id_Transferencia ID, T.Id_Cuenta_Emi CUENTA_ORIGEN, T.Id_Cuenta_Dest CUENTA_DESTINO,
+    T.Fecha FECHA, T.Id_Moneda MONEDA, T.Importe IMPORTE
+    FROM REZAGADOS.Transferencia T
+    WHERE T.Id_Transferencia = @Id;
+END
+GO
 ---------------------------------------------------------------------------------------------------------------
 ----------------------------------------------TRIGGERS---------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------
