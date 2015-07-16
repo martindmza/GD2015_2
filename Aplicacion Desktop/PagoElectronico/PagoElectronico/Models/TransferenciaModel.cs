@@ -13,12 +13,13 @@ namespace Models
         public const String CUENTA_DESTINO = "CUENTA_DESTINO";
         public const String IMPORTE = "IMPORTE";
         public const String FECHA = "FECHA";
-        
+        public const String MONEDA = "MONEDA";
 
         public CuentaModel cuentaOrigen;
         public CuentaModel cuentaDestino;
         public Double importe;
         public DateTime fecha = (new ExtraDao()).getDayToday();
+        public MonedaModel moneda;
         
 
         public TransferenciaModel()
@@ -41,6 +42,7 @@ namespace Models
             this.cuentaDestino = new CuentaDao().dameTuModelo(this.mapearValor(fila[CUENTA_DESTINO]));
             this.importe = this.mapearImporte(fila[IMPORTE]);
             this.fecha = this.mapearFecha(fila[FECHA]);
+            this.moneda = new MonedaDAO().dameTuModelo(this.mapearValor(fila[MONEDA]));
          
         }
     }

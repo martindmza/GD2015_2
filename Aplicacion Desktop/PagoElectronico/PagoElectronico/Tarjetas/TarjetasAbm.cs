@@ -62,7 +62,7 @@ namespace Tarjetas
             cliente = new ClienteDao().getClienteByUser(usuario);
             if (cliente != null)
             {
-                tarjetas = dao.getTarjetasByCliente(cliente);
+                tarjetas = dao.getListadoByCliente(cliente);
             }
             else
             {
@@ -85,10 +85,10 @@ namespace Tarjetas
             openedToSelect = false;
             dao = new TarjetaDeCreditoDao();
             UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
-            cliente = new ClienteDao().getClienteByUser(usuario);
+            cliente = usuario.cliente;
             if (cliente != null)
             {
-                tarjetas = dao.getTarjetasByCliente(cliente);
+                tarjetas = dao.getListadoByCliente(cliente);
             }
             else
             {
@@ -117,7 +117,7 @@ namespace Tarjetas
             foreach (TarjetaDeCreditoModel tarjeta in tarjetas)
             {
                 row = new String[] {    tarjeta.numero.ToString(),
-                                        tarjeta.codigoSeguridad.ToString(),
+                                        //tarjeta.codigoSeguridad.ToString(),
                                         (tarjeta.emisor != null)? tarjeta.emisor.nombre : "",
                                         tarjeta.emision.ToShortDateString(),
                                         tarjeta.vencimiento.ToShortDateString()
@@ -230,7 +230,7 @@ namespace Tarjetas
                     String numero = numeroText.Text;
                     if (numero.Trim().Length == 0)
                     {
-                        tarjetas = dao.getTarjetasByCliente(cliente);
+                        tarjetas = dao.getListadoByCliente(cliente);
                     }
                     else {
                         tarjetas = dao.getTarjetasByClienteAndNumero(cliente, numero);

@@ -11,14 +11,7 @@ namespace DAO
 {
     public class TarjetaDeCreditoDao: BasicaDAO<TarjetaDeCreditoModel>
     {
-        public List<TarjetaDeCreditoModel> getTarjetasByCliente(ClienteModel cliente) {
-            SqlCommand command = InitializeConnection("Buscar_Tarjeta_Cliente_Id");
-            command.Parameters.Add("@Id_Cliente", System.Data.SqlDbType.Decimal).Value = cliente.id;
-
-            return operacionSelect(command);
-
-        }
-
+    
         public List<TarjetaDeCreditoModel> getTarjetasByClienteAndNumero(ClienteModel cliente, String numero)
         {
             SqlCommand command = InitializeConnection("Buscar_Tarjeta_Cliente_Id");
@@ -191,7 +184,7 @@ namespace DAO
 
         protected override string getProcedureListarByCliente()
         {
-            throw new NotImplementedException();
+            return "Buscar_Tarjeta_Cliente_Id";
         }
     }
 }

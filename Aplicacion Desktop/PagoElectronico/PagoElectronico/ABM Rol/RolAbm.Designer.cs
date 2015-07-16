@@ -43,6 +43,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.buttonLimpiar = new System.Windows.Forms.Button();
+            this.buttonCancelar = new System.Windows.Forms.Button();
+            this.buttonElegir = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewRoles)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -189,11 +191,33 @@
             this.buttonLimpiar.UseVisualStyleBackColor = true;
             this.buttonLimpiar.Click += new System.EventHandler(this.buttonLimpiar_Click);
             // 
+            // buttonCancelar
+            // 
+            this.buttonCancelar.Location = new System.Drawing.Point(295, 438);
+            this.buttonCancelar.Name = "buttonCancelar";
+            this.buttonCancelar.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancelar.TabIndex = 8;
+            this.buttonCancelar.Text = "Cancelar";
+            this.buttonCancelar.UseVisualStyleBackColor = true;
+            this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
+            // 
+            // buttonElegir
+            // 
+            this.buttonElegir.Location = new System.Drawing.Point(372, 438);
+            this.buttonElegir.Name = "buttonElegir";
+            this.buttonElegir.Size = new System.Drawing.Size(75, 23);
+            this.buttonElegir.TabIndex = 8;
+            this.buttonElegir.Text = "Elegir";
+            this.buttonElegir.UseVisualStyleBackColor = true;
+            this.buttonElegir.Click += new System.EventHandler(this.buttonElegir_Click);
+            // 
             // RolAbm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 488);
+            this.ClientSize = new System.Drawing.Size(454, 471);
+            this.Controls.Add(this.buttonElegir);
+            this.Controls.Add(this.buttonCancelar);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonLimpiar);
@@ -231,5 +255,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
         private System.Windows.Forms.DataGridViewTextBoxColumn Habilitada;
         private System.Windows.Forms.Button buttonLimpiar;
+        private System.Windows.Forms.Button buttonCancelar;
+        private System.Windows.Forms.Button buttonElegir;
     }
 }

@@ -47,12 +47,12 @@ namespace DAO
             return operacionSelect(command);
         }
 
-        public Respuesta addNewCliente(ClienteModel cliente)
+        public Respuesta addNewCliente(ClienteModel cliente,UserModel usuario)
         {
             try
             {
                 SqlCommand command = InitializeConnection("Crear_Cliente");
-                command = llenarParametros(cliente,command);
+                command = llenarParametros(cliente,usuario,command);
                 return operacionDml(command);
             }
             catch (Exception excepcion)
@@ -67,7 +67,7 @@ namespace DAO
             try
             {
                 SqlCommand command = InitializeConnection("Modificar_Cliente");
-                command = llenarParametros(cliente, command);
+                command = llenarParametros(cliente,null, command);
                 return operacionDml(command);
             }
             catch (Exception excepcion)
@@ -200,7 +200,7 @@ namespace DAO
             return result;
         }
 
-        private SqlCommand llenarParametros(ClienteModel cliente, SqlCommand command)
+        private SqlCommand llenarParametros(ClienteModel cliente, UserModel usuario, SqlCommand command)
         {
 
             if (cliente.id != 0)
@@ -258,6 +258,14 @@ namespace DAO
             if (cliente.nacionalidad != null)
             {
                 command.Parameters.Add("@Id_Nacionalidad", System.Data.SqlDbType.Decimal).Value = cliente.nacionalidad.id;
+            }
+
+            if (usuario != null) {
+                command.Parameters.Add("@Usuario_Nombre", System.Data.SqlDbType.NVarChar, 255).Value = usuario.nombre;
+                command.Parameters.Add("@Usuario_Pass", System.Data.SqlDbType.NVarChar, 255).Value = usuario.password;
+                command.Parameters.Add("@Usuario_Preg", System.Data.SqlDbType.NVarChar, 255).Value = usuario.pregunta;
+                command.Parameters.Add("@Usuario_Resp", System.Data.SqlDbType.NVarChar, 255).Value = usuario.respuesta;
+                command.Parameters.Add("@Usuario_Id_Rol", System.Data.SqlDbType.Decimal).Value = usuario.roles.First().id;
             }
 
             return command;

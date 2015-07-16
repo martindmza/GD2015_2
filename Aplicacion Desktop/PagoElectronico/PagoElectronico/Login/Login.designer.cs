@@ -40,7 +40,7 @@
             this.button1.Location = new System.Drawing.Point(167, 158);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(98, 31);
-            this.button1.TabIndex = 0;
+            this.button1.TabIndex = 3;
             this.button1.Text = "Ingresar";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -51,7 +51,6 @@
             this.usuario.Name = "usuario";
             this.usuario.Size = new System.Drawing.Size(202, 20);
             this.usuario.TabIndex = 1;
-            this.usuario.Text = "";
             // 
             // password
             // 
@@ -60,7 +59,6 @@
             this.password.PasswordChar = '*';
             this.password.Size = new System.Drawing.Size(202, 20);
             this.password.TabIndex = 2;
-            this.password.Text = "";
             // 
             // label1
             // 

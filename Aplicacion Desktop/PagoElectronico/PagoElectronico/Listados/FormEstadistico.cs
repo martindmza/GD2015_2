@@ -9,11 +9,21 @@ using System.Windows.Forms;
 
 namespace PagoElectronico.Listados
 {
-    public partial class Form1 : Form
+    public partial class FormEstadistico : Form
     {
-        public Form1()
+        public FormEstadistico()
         {
             InitializeComponent();
+        }
+
+        private void btnListar_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void setTablaClientesConCuentasInhabilitadas()
+        {
+            
         }
     }
 }

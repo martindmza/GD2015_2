@@ -46,7 +46,7 @@ namespace DAO
             }
         }
 
-        public List<DepositoModel> getDepositosByCuenta(CuentaModel cuenta, int limit)
+        public List<DepositoModel> getDepositosByCuenta(CuentaModel cuenta)
         {
             List<DepositoModel> depositos = new List<DepositoModel>();
             DataTable dataCuentas = this.getDepositosDeBasePorIdCuenta(cuenta.id);
@@ -61,8 +61,10 @@ namespace DAO
         private DataTable getDepositosDeBasePorIdCuenta(decimal p)
         {
             DataTable dt = new DataTable();
-            using (SqlCommand command = InitializeConnection("Buscar_Deposito_ID_Cuenta"))
+            using (SqlCommand command = InitializeConnection("Top5Depositos"))
+
             {
+                command.Parameters.Add("@Cuenta", System.Data.SqlDbType.Decimal).Value = p;
                 SqlDataAdapter da = new SqlDataAdapter(command);
                 da.Fill(dt);
             }

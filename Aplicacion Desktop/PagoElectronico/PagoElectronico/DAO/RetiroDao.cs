@@ -41,10 +41,33 @@ namespace DAO
             }
         }
 
-        public List<RetiroModel> getRetirosByCuenta(CuentaModel cuenta, int limit)
+        public List<RetiroModel> getRetiroByCuenta(CuentaModel cuenta)
         {
-            List<RetiroModel> retiros = new List<RetiroModel>();
-            return retiros;
+
+            List<RetiroModel> transf = new List<RetiroModel>();
+            DataTable dataCuentas = this.getRetiroDeBaseIdCuenta(cuenta.id);
+            foreach (DataRow cuentaBase in dataCuentas.Rows)
+            {
+                RetiroModel retiroModel = new RetiroModel(cuentaBase);
+                transf.Add(retiroModel);
+            }
+
+            return transf;
+        }
+
+
+        private DataTable getRetiroDeBaseIdCuenta(decimal p)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Top5Retiros"))
+            {
+                command.Parameters.Add("@Cuenta", System.Data.SqlDbType.Decimal).Value = p;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            if (dt.Rows.Count > 0)
+                return dt;
+            return null;
         }
 
         public override RetiroModel getModeloBasico(System.Data.DataRow fila)
