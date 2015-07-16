@@ -2506,7 +2506,7 @@ GO
 CREATE PROCEDURE [REZAGADOS].[Clientes_Mayor_Transacciones] (@FechaInic DATETIME, @FechaFin DATETIME)
 AS
 BEGIN
-SELECT TOP 5 Cliente.Id_Cliente
+SELECT TOP 5 Cliente.Apellido APELLIDO, Cliente.Nombre NOMBRE, COUNT(Transferencia.Id_Transferencia) CANTIDAD_TRANSFERENCIAS_PROPIAS
 FROM REZAGADOS.Transferencia, REZAGADOS.Cuenta AS C1, REZAGADOS.Cuenta AS C2, REZAGADOS.Cliente
 WHERE C1.Id_Usuario = Cliente.Id_Usuario
 AND C2.Id_Usuario = Cliente.Id_Usuario
@@ -2515,8 +2515,8 @@ AND Transferencia.Id_Cuenta_Dest = C2.Id_Cuenta
 AND C1.Id_Usuario = C2.Id_Usuario
 AND Transferencia.Fecha > @FechaInic
 AND Transferencia.Fecha < @FechaFin
-GROUP BY Cliente.Id_Cliente
-ORDER BY COUNT(Cliente.Id_Cliente) DESC
+GROUP BY Cliente.Apellido, Cliente.Nombre
+ORDER BY COUNT(Transferencia.Id_Transferencia) DESC
 END
 GO
 
@@ -2527,36 +2527,40 @@ GO
 CREATE PROCEDURE [REZAGADOS].[Paises_Mayor_Movimiento] (@FechaInic DATETIME, @FechaFin DATETIME)
 AS
 BEGIN
-SELECT TOP 5 C1.Id_Pais
+SELECT TOP 5 C1.Descripcion PAIS
 FROM(
-	SELECT Id_Pais, COUNT(Id_Pais) AS Cantidad
-	FROM REZAGADOS.Deposito
-	WHERE Deposito.Fecha > @FechaInic
-	AND Deposito.Fecha < @FechaFin
-	GROUP BY Id_Pais) AS C1
+	SELECT d.Id_Pais,p.Descripcion, COUNT(d.Id_Pais) AS Cantidad
+	FROM REZAGADOS.Deposito d, REZAGADOS.Pais p
+	WHERE d.Fecha >= @FechaInic
+	AND d.Fecha <= @FechaFin
+	AND p.Id_Pais = d.Id_Pais
+	GROUP BY d.Id_Pais,p.Descripcion) AS C1
 FULL OUTER JOIN(
-	SELECT Id_Pais, COUNT(Id_Pais) AS Cantidad
-	FROM REZAGADOS.Retiro, REZAGADOS.Cuenta
-	WHERE Cuenta.Id_Cuenta=Retiro.Id_Cuenta
-	AND Retiro.Fecha > @FechaInic
-	AND Retiro.Fecha < @FechaFin
-	GROUP BY Id_Pais) AS C2
+	SELECT c.Id_Pais, p.Descripcion, COUNT(c.Id_Pais) AS Cantidad
+	FROM REZAGADOS.Retiro r , REZAGADOS.Cuenta c, REZAGADOS.Pais p
+	WHERE c.Id_Cuenta=r.Id_Cuenta
+	AND c.Id_Pais = p.Id_Pais
+	AND r.Fecha > @FechaInic
+	AND r.Fecha < @FechaFin
+	GROUP BY c.Id_Pais, p.Descripcion) AS C2
 ON C1.Id_Pais =  C2.Id_Pais
 FULL OUTER JOIN(
-	SELECT Id_Pais, COUNT(Id_Pais) AS Cantidad
-	FROM REZAGADOS.Transferencia, REZAGADOS.Cuenta
-	WHERE Cuenta.Id_Cuenta=Transferencia.Id_Cuenta_Dest
-	AND Transferencia.Fecha > @FechaInic
-	AND Transferencia.Fecha < @FechaFin
-	GROUP BY Id_Pais) AS C3
+	SELECT c.Id_Pais, p.Descripcion, COUNT(c.Id_Pais) AS Cantidad
+	FROM REZAGADOS.Transferencia t, REZAGADOS.Cuenta c, REZAGADOS.Pais p
+	WHERE c.Id_Cuenta=t.Id_Cuenta_Dest
+	AND c.Id_Pais = p.Id_Pais
+	AND t.Fecha > @FechaInic
+	AND t.Fecha < @FechaFin
+	GROUP BY c.Id_Pais, p.Descripcion) AS C3
 ON C2.Id_Pais = C3.Id_Pais
 FULL OUTER JOIN(
-	SELECT Id_Pais, COUNT(Id_Pais) AS Cantidad
-	FROM REZAGADOS.Transferencia, REZAGADOS.Cuenta
-	WHERE Cuenta.Id_Cuenta=Transferencia.Id_Cuenta_Emi
-	AND Transferencia.Fecha > @FechaInic
-	AND Transferencia.Fecha < @FechaFin
-	GROUP BY Id_Pais) AS C4
+	SELECT c.Id_Pais, COUNT(c.Id_Pais) AS Cantidad
+	FROM REZAGADOS.Transferencia t, REZAGADOS.Cuenta c, REZAGADOS.Pais p
+	WHERE c.Id_Cuenta=t.Id_Cuenta_Emi
+	AND c.Id_Pais = p.Id_Pais
+	AND t.Fecha > @FechaInic
+	AND t.Fecha < @FechaFin
+	GROUP BY c.Id_Pais, p.Descripcion) AS C4
 ON C3.Id_Pais=C4.Id_Pais
 ORDER BY C1.Cantidad+C2.Cantidad+C3.Cantidad+C4.Cantidad DESC
 END
@@ -2569,14 +2573,14 @@ GO
 CREATE PROCEDURE [REZAGADOS].[Total_Facturado_Cuentas] (@FechaInic DATETIME, @FechaFin DATETIME)
 AS
 BEGIN
-SELECT Categoria, SUM(Item.Importe) Cantidad
-FROM REZAGADOS.Item, REZAGADOS.Cuenta, REZAGADOS.TipoCuenta
-WHERE Cuenta.Id_Cuenta=Item.Id_Cuenta
-AND Item.Id_Factura IS NOT NULL
-AND TipoCuenta.Id_Tipo_Cuenta=Cuenta.Id_Tipo_Cuenta
-AND Item.Fecha > @FechaInic
-AND Item.Fecha < @FechaFin
-GROUP BY Categoria
+SELECT TOP 5 ti.Categoria TIPO_CUENTA, SUM(i.Importe) TOTAL_FACTURADO
+FROM REZAGADOS.Item i, REZAGADOS.Cuenta cu, REZAGADOS.TipoCuenta ti
+WHERE cu.Id_Cuenta=i.Id_Cuenta
+AND i.Id_Factura IS NOT NULL
+AND ti.Id_Tipo_Cuenta=cu.Id_Tipo_Cuenta
+AND i.Fecha >= @FechaInic
+AND i.Fecha <= @FechaFin
+GROUP BY ti.Categoria
 END
 GO
 

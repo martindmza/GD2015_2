@@ -125,5 +125,20 @@ namespace DAO
             return "Listar_Cuenta_Cliente";
         }
 
+        public DataTable getTotalFacturadoCuenta(DateTime inicial, DateTime final)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Total_Facturado_Cuentas"))
+            {
+                command.Parameters.Add("@FechaInic", System.Data.SqlDbType.DateTime).Value = inicial;
+                command.Parameters.Add("@FechaFin", System.Data.SqlDbType.DateTime).Value = final;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+           // if (dt.Rows.Count > 0)
+                return dt;
+           // return null;
+        }
+
     }
 }

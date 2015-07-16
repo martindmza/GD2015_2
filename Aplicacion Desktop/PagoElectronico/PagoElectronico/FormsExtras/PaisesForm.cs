@@ -14,7 +14,6 @@ namespace FormsExtras
 {
     public partial class PaisesForm : Form
     {
-        private ExtraDao extraDao;
         private List<PaisModel> paises;
         private Int32 paisActivoIndex;
         private PaisModel paisActivo;

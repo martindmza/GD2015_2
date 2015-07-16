@@ -32,7 +32,6 @@ namespace DAO
                 da.Fill(dt);
                 Decimal value = Convert.IsDBNull(pOut.Value) ? 0 : (Decimal)(pOut.Value);
                 String mensaje = Convert.IsDBNull(pOut2.Value) ? null : (string)pOut2.Value;
-
                 return new Respuesta(value, mensaje);
             }
             catch (Exception excepcion)
@@ -43,7 +42,6 @@ namespace DAO
 
         public List<RetiroModel> getRetiroByCuenta(CuentaModel cuenta)
         {
-
             List<RetiroModel> transf = new List<RetiroModel>();
             DataTable dataCuentas = this.getRetiroDeBaseIdCuenta(cuenta.id);
             foreach (DataRow cuentaBase in dataCuentas.Rows)
@@ -51,7 +49,6 @@ namespace DAO
                 RetiroModel retiroModel = new RetiroModel(cuentaBase);
                 transf.Add(retiroModel);
             }
-
             return transf;
         }
 
@@ -119,34 +116,6 @@ namespace DAO
         {
             return "Baja_Retiro";
         }
-
-
-        protected List<RetiroModel> getListadoByCliente(ClienteModel cliente)
-        {
-            List<RetiroModel> lista = new List<RetiroModel>();
-            DataTable data = this.getListaDeBaseByCliente(cliente);
-            foreach (DataRow fila in data.Rows)
-            {
-                RetiroModel model = this.getModeloBasico(fila);
-                lista.Add(model);
-            }
-            return lista;
-        }
-
-        private DataTable getListaDeBaseByCliente(ClienteModel cliente)
-        {
-            DataTable dt = new DataTable();
-            using (SqlCommand command = InitializeConnection("Listar_Retiros_By_Cliente"))
-            {
-                command.Parameters.Add("@Id", System.Data.SqlDbType.Int).Value = cliente.id;
-                SqlDataAdapter da = new SqlDataAdapter(command);
-                da.Fill(dt);
-            }
-            if (dt.Rows.Count > 0)
-                return dt;
-            return null; 
-        }
-
 
         protected override string getProcedureListarByCliente()
         {

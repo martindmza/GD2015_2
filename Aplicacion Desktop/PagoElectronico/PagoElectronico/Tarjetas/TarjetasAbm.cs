@@ -16,7 +16,6 @@ namespace Tarjetas
 {
     public partial class TarjetasAbm : Form
     {
-        private Boolean openedToSelect;
         private const int AGREGAR = 0;
         private const int MODIFICAR = 1;
         private const int DESHABILITAR = 2;
@@ -56,7 +55,6 @@ namespace Tarjetas
         {
             InitializeComponent();
 
-            openedToSelect = false;
             dao = new TarjetaDeCreditoDao();
             UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
             cliente = new ClienteDao().getClienteByUser(usuario);
@@ -82,7 +80,7 @@ namespace Tarjetas
         {
             InitializeComponent();
 
-            openedToSelect = false;
+          
             dao = new TarjetaDeCreditoDao();
             UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
             cliente = usuario.cliente;

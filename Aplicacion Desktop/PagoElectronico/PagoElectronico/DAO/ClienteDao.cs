@@ -293,5 +293,46 @@ namespace DAO
             throw new NotImplementedException();
         }
 
+
+        public DataTable getClientInhabilitados(DateTime inicial, DateTime final)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Clientes_Cuentas_Inhabilitadas"))
+            {
+                command.Parameters.Add("@FechaInic", System.Data.SqlDbType.DateTime).Value = inicial;
+                command.Parameters.Add("@FechaFin", System.Data.SqlDbType.DateTime).Value = final;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            return dt;
+        }
+
+        public DataTable getClientComisiones(DateTime inicial, DateTime final)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Clientes_Mayor_Facturados"))
+            {
+                command.Parameters.Add("@FechaInic", System.Data.SqlDbType.DateTime).Value = inicial;
+                command.Parameters.Add("@FechaFin", System.Data.SqlDbType.DateTime).Value = final;
+
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            return dt;
+        }
+        public DataTable getClientTransacciones(DateTime inicial, DateTime final)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Clientes_Mayor_Transacciones"))
+            {
+                command.Parameters.Add("@FechaInic", System.Data.SqlDbType.DateTime).Value = inicial;
+                command.Parameters.Add("@FechaFin", System.Data.SqlDbType.DateTime).Value = final;
+
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            return dt;
+        }
+
     }
 }
