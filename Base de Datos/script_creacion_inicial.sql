@@ -530,7 +530,6 @@ DECLARE @Begin_Retiro NUMERIC(18,0)
 SET @Begin_Retiro = (SELECT TOP 1 Id_Retiro FROM REZAGADOS.Retiro ORDER BY Id_Retiro DESC)+ 1
 DBCC checkident ('REZAGADOS.Retiro', reseed, @Begin_Retiro)
 
-
 ----------------------------------------TRANSFERENCIA-------------------------------------------------
 
 INSERT INTO REZAGADOS.Transferencia (Id_Cuenta_Emi, Id_Cuenta_Dest, Fecha, Importe)
@@ -544,8 +543,8 @@ INSERT INTO REZAGADOS.Deposito (Codigo, Id_Cuenta, Id_Tarjeta, Id_Pais, Fecha, I
 SELECT Deposito_Codigo, Cuenta_Numero, Tarjeta.Id_Tarjeta, Cuenta_Pais_Codigo, Deposito_Fecha, Deposito_Importe
 FROM gd_esquema.Maestra, REZAGADOS.Tarjeta
 WHERE Deposito_Codigo IS NOT NULL
-AND Tarjeta.Numero = gd_esquema.Maestra.Tarjeta_Numero
---EXPLOTA EL DEPOSITOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+AND Tarjeta.Numero = HashBytes('SHA1',gd_esquema.Maestra.Tarjeta_Numero)
+
 --------------------------------------------CHEQUE----------------------------------------------------
 
 SET IDENTITY_INSERT REZAGADOS.Cheque ON
@@ -1495,7 +1494,7 @@ BEGIN
 D.Codigo NOMBRE, D.Id_Cuenta CUENTA_DESTINO, D.Id_Tarjeta TARJETA, 
 D. Id_Pais PAIS,
  D.Id_Moneda MONEDA, D.Fecha FECHA, D.Importe IMPORTE, 
- T.Numero TARJETA 
+ T.Numero_Ultimos_Digitos TARJETA 
     FROM REZAGADOS.Deposito d 
     JOIN REZAGADOS.Moneda m ON d.Id_Moneda = m.Id_Moneda
     JOIN REZAGADOS.Tarjeta t ON d.Id_Tarjeta = t.Id_Tarjeta
@@ -1727,14 +1726,14 @@ AS
 BEGIN
 
 SELECT	t.Id_Tarjeta ID,
-t.Id_Cliente		ID_CLIENTE,
-t.Numero			NUMERO,
-t.Id_Emisor			EMISOR_ID,
-e.Nombre			EMISOR_NOMBRE,
-t.Codigo_Seguridad	CODIGO,
-t.Fecha_Emision		EMISION,
-t.Vencimiento		VENCIMIENTO,
-t.Habilitada		HABILITADA
+t.Id_Cliente						ID_CLIENTE,
+t.Numero_Ultimos_Digitos			NUMERO,
+t.Id_Emisor							EMISOR_ID,
+e.Nombre							EMISOR_NOMBRE,
+t.Codigo_Seguridad					CODIGO,
+t.Fecha_Emision						EMISION,
+t.Vencimiento						VENCIMIENTO,
+t.Habilitada						HABILITADA
 FROM REZAGADOS.Tarjeta t
 JOIN REZAGADOS.Emisor e ON t.Id_Emisor = e.ID_Emisor
 
@@ -1752,14 +1751,14 @@ AS
 BEGIN
 
 SELECT	t.Id_Tarjeta ID,
-t.Id_Cliente		ID_CLIENTE,
-t.Numero			NUMERO,
-t.Id_Emisor			EMISOR_ID,
-e.Nombre			EMISOR_NOMBRE,
-t.Codigo_Seguridad	CODIGO,
-t.Fecha_Emision		EMISION,
-t.Vencimiento		VENCIMIENTO,
-t.Habilitada		HABILITADA
+t.Id_Cliente						ID_CLIENTE,
+t.Numero_Ultimos_Digitos			NUMERO,
+t.Id_Emisor							EMISOR_ID,
+e.Nombre							EMISOR_NOMBRE,
+t.Codigo_Seguridad					CODIGO,
+t.Fecha_Emision						EMISION,
+t.Vencimiento						VENCIMIENTO,
+t.Habilitada						HABILITADA
 FROM REZAGADOS.Tarjeta t
 JOIN REZAGADOS.Emisor e ON t.Id_Emisor = e.ID_Emisor
 WHERE t.Id_Tarjeta = @Id   
@@ -2382,7 +2381,7 @@ AS
 BEGIN
 
 SELECT D.Id_Deposito ID,C.Id_Cliente DEPOSITANTE, D.Codigo NOMBRE, D.Id_Cuenta CUENTA_DESTINO, D.Id_Tarjeta TARJETA, D. Id_Pais PAIS,
- D.Id_Moneda MONEDA, D.Fecha FECHA, D.Importe IMPORTE, T.Numero TARJETA 
+ D.Id_Moneda MONEDA, D.Fecha FECHA, D.Importe IMPORTE, T.Numero_Ultimos_Digitos TARJETA 
 FROM REZAGADOS.Deposito D, REZAGADOS.Tarjeta T, REZAGADOS.Cliente C, REZAGADOS.Cuenta cu, REZAGADOS.Usuario u
 WHERE C.Id_Cliente = @Id_Cliente
 AND D.Id_Cuenta = Cu.Id_Cuenta
