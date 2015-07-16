@@ -42,6 +42,7 @@
             this.buttonCancelar = new System.Windows.Forms.Button();
             this.buttonElegir = new System.Windows.Forms.Button();
             this.buttonCerrar = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -124,7 +125,7 @@
             // 
             // buttonBuscar
             // 
-            this.buttonBuscar.Location = new System.Drawing.Point(171, 17);
+            this.buttonBuscar.Location = new System.Drawing.Point(239, 17);
             this.buttonBuscar.Name = "buttonBuscar";
             this.buttonBuscar.Size = new System.Drawing.Size(75, 20);
             this.buttonBuscar.TabIndex = 3;
@@ -134,9 +135,10 @@
             // 
             // numeroText
             // 
-            this.numeroText.Location = new System.Drawing.Point(65, 17);
+            this.numeroText.Location = new System.Drawing.Point(169, 17);
+            this.numeroText.MaxLength = 4;
             this.numeroText.Name = "numeroText";
-            this.numeroText.Size = new System.Drawing.Size(100, 20);
+            this.numeroText.Size = new System.Drawing.Size(62, 20);
             this.numeroText.TabIndex = 4;
             // 
             // label1
@@ -179,11 +181,21 @@
             this.buttonCerrar.Visible = false;
             this.buttonCerrar.Click += new System.EventHandler(this.buttonCerrar_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(65, 21);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(100, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "XXXX-XXXX-XXXX-";
+            // 
             // TarjetasAbm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(610, 381);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.buttonCerrar);
             this.Controls.Add(this.buttonElegir);
             this.Controls.Add(this.buttonCancelar);
@@ -223,5 +235,6 @@
         private System.Windows.Forms.Button buttonCancelar;
         private System.Windows.Forms.Button buttonElegir;
         private System.Windows.Forms.Button buttonCerrar;
+        private System.Windows.Forms.Label label2;
     }
 }

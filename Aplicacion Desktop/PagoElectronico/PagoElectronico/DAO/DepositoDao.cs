@@ -70,7 +70,7 @@ namespace DAO
             }
             if (dt.Rows.Count > 0)
                 return dt;
-            return null;
+            return new DataTable();
         }
 
 

@@ -34,8 +34,9 @@ namespace Tarjetas
             init();
         }
 
-        public TarjetasAbm(ClienteForm parentClienteForm)
+        public TarjetasAbm(ClienteForm parentClienteForm,ClienteModel cliente)
         {
+            this.cliente = cliente;
             init();
             this.buttonCerrar.Visible = true;
             this.parentClienteForm = parentClienteForm;
@@ -56,12 +57,16 @@ namespace Tarjetas
             InitializeComponent();
 
             dao = new TarjetaDeCreditoDao();
-            UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
-            cliente = new ClienteDao().getClienteByUser(usuario);
+            if (cliente == null) {
+                UserModel usuario = UsuarioSingleton.getInstance().getUsuario();
+                cliente = new ClienteDao().getClienteByUser(usuario);
+            }
+
             if (cliente != null)
             {
                 tarjetas = dao.getListadoByCliente(cliente);
             }
+
             else
             {
                 buttonBuscar.Enabled = false;

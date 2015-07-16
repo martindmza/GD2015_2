@@ -53,6 +53,7 @@ namespace ABM
                 case 0:
                     button3.Enabled = false;
                     this.Text = "Crear Nuevo Cliente";
+                    buttonTarjetas.Visible = false;
                     break;
                 case 1:
                     button3.Enabled = false;
@@ -438,7 +439,7 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private void buttonTarjetas_Click(object sender, EventArgs e)
         {
-            Form f = new TarjetasAbm(this);
+            Form f = new TarjetasAbm(this,cliente);
             f.MdiParent = this.MdiParent;
             f.Show();
         }

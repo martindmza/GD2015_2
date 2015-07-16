@@ -1485,7 +1485,7 @@ D.Codigo NOMBRE, D.Id_Cuenta CUENTA_DESTINO, D.Id_Tarjeta TARJETA,
 D. Id_Pais PAIS,
  D.Id_Moneda MONEDA, D.Fecha FECHA, D.Importe IMPORTE, 
  T.Numero TARJETA 
-    FROM REZAGADOS.Deposito d
+    FROM REZAGADOS.Deposito d 
     JOIN REZAGADOS.Moneda m ON d.Id_Moneda = m.Id_Moneda
     JOIN REZAGADOS.Tarjeta t ON d.Id_Tarjeta = t.Id_Tarjeta
     JOIN REZAGADOS.Cuenta cu ON d.Id_Cuenta = cu.Id_Cuenta
@@ -2647,7 +2647,7 @@ BEGIN
 
 	IF(@Numero IS NOT NULL)
 	BEGIN
-		SET @SqlQuery = @SqlQuery + ' AND t.Numero LIKE  ''%'+@Numero+'%'''
+		SET @SqlQuery = @SqlQuery + ' AND t.Numero_Ultimos_Digitos LIKE  ''%'+@Numero+'%'''
 	END
 	EXEC(@SqlQuery)
 
