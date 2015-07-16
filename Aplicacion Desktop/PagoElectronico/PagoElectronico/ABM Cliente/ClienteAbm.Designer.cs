@@ -29,20 +29,6 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.documentoTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.documentoNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.email = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nacimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nacionalidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionNumeroCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionPiso = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.direccionDepto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.localidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.paisId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
@@ -61,6 +47,21 @@
             this.button5 = new System.Windows.Forms.Button();
             this.elegir = new System.Windows.Forms.Button();
             this.buttonCancelar = new System.Windows.Forms.Button();
+            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.apellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.documentoTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.documentoNumero = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.email = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nacimiento = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nacionalidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionNumeroCalle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionPiso = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.direccionDepto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.localidadId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.paisId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Habilitado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -84,7 +85,8 @@
             this.direccionPiso,
             this.direccionDepto,
             this.localidadId,
-            this.paisId});
+            this.paisId,
+            this.Habilitado});
             this.dataGridView1.Location = new System.Drawing.Point(12, 139);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -92,90 +94,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(673, 346);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
-            // 
-            // id
-            // 
-            this.id.HeaderText = "Código";
-            this.id.Name = "id";
-            this.id.ReadOnly = true;
-            // 
-            // apellido
-            // 
-            this.apellido.HeaderText = "Apellido";
-            this.apellido.Name = "apellido";
-            this.apellido.ReadOnly = true;
-            // 
-            // nombre
-            // 
-            this.nombre.HeaderText = "Nombre";
-            this.nombre.Name = "nombre";
-            this.nombre.ReadOnly = true;
-            // 
-            // documentoTipo
-            // 
-            this.documentoTipo.HeaderText = "Doc Tipo";
-            this.documentoTipo.Name = "documentoTipo";
-            this.documentoTipo.ReadOnly = true;
-            // 
-            // documentoNumero
-            // 
-            this.documentoNumero.HeaderText = "Documento";
-            this.documentoNumero.Name = "documentoNumero";
-            this.documentoNumero.ReadOnly = true;
-            // 
-            // email
-            // 
-            this.email.HeaderText = "E-Mail";
-            this.email.Name = "email";
-            this.email.ReadOnly = true;
-            // 
-            // nacimiento
-            // 
-            this.nacimiento.HeaderText = "Nacimiento";
-            this.nacimiento.Name = "nacimiento";
-            this.nacimiento.ReadOnly = true;
-            // 
-            // nacionalidadId
-            // 
-            this.nacionalidadId.HeaderText = "Nacionalidad";
-            this.nacionalidadId.Name = "nacionalidadId";
-            this.nacionalidadId.ReadOnly = true;
-            // 
-            // direccionCalle
-            // 
-            this.direccionCalle.HeaderText = "Calle";
-            this.direccionCalle.Name = "direccionCalle";
-            this.direccionCalle.ReadOnly = true;
-            // 
-            // direccionNumeroCalle
-            // 
-            this.direccionNumeroCalle.HeaderText = "N°";
-            this.direccionNumeroCalle.Name = "direccionNumeroCalle";
-            this.direccionNumeroCalle.ReadOnly = true;
-            // 
-            // direccionPiso
-            // 
-            this.direccionPiso.HeaderText = "Piso";
-            this.direccionPiso.Name = "direccionPiso";
-            this.direccionPiso.ReadOnly = true;
-            // 
-            // direccionDepto
-            // 
-            this.direccionDepto.HeaderText = "Departamento";
-            this.direccionDepto.Name = "direccionDepto";
-            this.direccionDepto.ReadOnly = true;
-            // 
-            // localidadId
-            // 
-            this.localidadId.HeaderText = "Localidad";
-            this.localidadId.Name = "localidadId";
-            this.localidadId.ReadOnly = true;
-            // 
-            // paisId
-            // 
-            this.paisId.HeaderText = "Pais";
-            this.paisId.Name = "paisId";
-            this.paisId.ReadOnly = true;
             // 
             // groupBox1
             // 
@@ -349,6 +267,96 @@
             this.buttonCancelar.Visible = false;
             this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
             // 
+            // id
+            // 
+            this.id.HeaderText = "Código";
+            this.id.Name = "id";
+            this.id.ReadOnly = true;
+            // 
+            // apellido
+            // 
+            this.apellido.HeaderText = "Apellido";
+            this.apellido.Name = "apellido";
+            this.apellido.ReadOnly = true;
+            // 
+            // nombre
+            // 
+            this.nombre.HeaderText = "Nombre";
+            this.nombre.Name = "nombre";
+            this.nombre.ReadOnly = true;
+            // 
+            // documentoTipo
+            // 
+            this.documentoTipo.HeaderText = "Doc Tipo";
+            this.documentoTipo.Name = "documentoTipo";
+            this.documentoTipo.ReadOnly = true;
+            // 
+            // documentoNumero
+            // 
+            this.documentoNumero.HeaderText = "Documento";
+            this.documentoNumero.Name = "documentoNumero";
+            this.documentoNumero.ReadOnly = true;
+            // 
+            // email
+            // 
+            this.email.HeaderText = "E-Mail";
+            this.email.Name = "email";
+            this.email.ReadOnly = true;
+            // 
+            // nacimiento
+            // 
+            this.nacimiento.HeaderText = "Nacimiento";
+            this.nacimiento.Name = "nacimiento";
+            this.nacimiento.ReadOnly = true;
+            // 
+            // nacionalidadId
+            // 
+            this.nacionalidadId.HeaderText = "Nacionalidad";
+            this.nacionalidadId.Name = "nacionalidadId";
+            this.nacionalidadId.ReadOnly = true;
+            // 
+            // direccionCalle
+            // 
+            this.direccionCalle.HeaderText = "Calle";
+            this.direccionCalle.Name = "direccionCalle";
+            this.direccionCalle.ReadOnly = true;
+            // 
+            // direccionNumeroCalle
+            // 
+            this.direccionNumeroCalle.HeaderText = "N°";
+            this.direccionNumeroCalle.Name = "direccionNumeroCalle";
+            this.direccionNumeroCalle.ReadOnly = true;
+            // 
+            // direccionPiso
+            // 
+            this.direccionPiso.HeaderText = "Piso";
+            this.direccionPiso.Name = "direccionPiso";
+            this.direccionPiso.ReadOnly = true;
+            // 
+            // direccionDepto
+            // 
+            this.direccionDepto.HeaderText = "Departamento";
+            this.direccionDepto.Name = "direccionDepto";
+            this.direccionDepto.ReadOnly = true;
+            // 
+            // localidadId
+            // 
+            this.localidadId.HeaderText = "Localidad";
+            this.localidadId.Name = "localidadId";
+            this.localidadId.ReadOnly = true;
+            // 
+            // paisId
+            // 
+            this.paisId.HeaderText = "Pais";
+            this.paisId.Name = "paisId";
+            this.paisId.ReadOnly = true;
+            // 
+            // Habilitado
+            // 
+            this.Habilitado.HeaderText = "Estado";
+            this.Habilitado.Name = "Habilitado";
+            this.Habilitado.ReadOnly = true;
+            // 
             // ClienteAbm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -409,6 +417,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn direccionDepto;
         private System.Windows.Forms.DataGridViewTextBoxColumn localidadId;
         private System.Windows.Forms.DataGridViewTextBoxColumn paisId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Habilitado;
 
     }
 }

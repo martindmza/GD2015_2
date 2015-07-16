@@ -21,6 +21,7 @@ namespace ABM
         private Int32 rolActivoIndex;
         private RolModel rolActivo;
         private RolDao rolDao;
+        private ClienteForm parent;
 
         private List<RolModel> roles;
         private Decimal idFilter;
@@ -36,6 +37,28 @@ namespace ABM
             //sets
             button1.Enabled = false;
             button2.Enabled = false;
+            buttonElegir.Visible = false;
+            buttonCancelar.Visible = false;
+        }
+
+        public RolAbm(ClienteForm parent)
+        {
+            this.parent = parent;
+            this.parent.Enabled = false;
+            this.rolDao = new RolDao();
+            this.roles = rolDao.getListado();
+
+            InitializeComponent();
+            fillRolesTable();
+
+            //sets
+            button1.Visible = false;
+            button2.Visible = false;
+            button3.Visible = false;
+            buttonElegir.Visible = true;
+            buttonCancelar.Visible = true;
+            buttonElegir.Enabled = false;
+            ControlBox = false;
         }
 
         //-----------------------------------------------------------------------------------------------------------------
@@ -105,6 +128,7 @@ namespace ABM
 
                 button1.Enabled = true;
                 button2.Enabled = true;
+                buttonElegir.Enabled = true;
             } catch (NullReferenceException err) {
                 button1.Enabled = true;
                 button2.Enabled = true;
@@ -205,6 +229,27 @@ namespace ABM
         {
             textBox1.Text = "";
             textBox2.Text = "";
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonCancelar_Click(object sender, EventArgs e)
+        {
+            parent.Enabled = true;
+            this.Close();
+            this.Dispose();
+            GC.Collect();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private void buttonElegir_Click(object sender, EventArgs e)
+        {
+            parent.setRol(rolActivo);
+            parent.Enabled = true;
+            this.Close();
+            this.Dispose();
+            GC.Collect();
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

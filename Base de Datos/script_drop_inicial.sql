@@ -362,14 +362,16 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].
 	DROP PROCEDURE [REZAGADOS].[Buscar_Tarjeta_Cliente_Id];
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Modificar_Tarjeta]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [REZAGADOS].Modificar_Tarjeta;	
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Buscar_Tipo_Item_ID]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [REZAGADOS].[Buscar_Tipo_Item_ID];	
+IF OBJECT_ID ('[REZAGADOS].[Buscar_Tipo_Item_ID]') IS NOT NULL
+    DROP PROCEDURE [REZAGADOS].Buscar_Tipo_Item_ID
 IF OBJECT_ID ('[REZAGADOS].[Listar_Items_Deuda]') IS NOT NULL
-    DROP PROCEDURE [REZAGADOS].Listar_Items_Deuda	
-
+    DROP PROCEDURE [REZAGADOS].Listar_Items_Deuda
 IF OBJECT_ID ('[REZAGADOS].[Listar_Tipo_Items]') IS NOT NULL
-    DROP PROCEDURE [REZAGADOS].Listar_Tipo_Items    
+    DROP PROCEDURE [REZAGADOS].Listar_Tipo_Items
+IF OBJECT_ID ('[REZAGADOS].[Buscar_Tipo_Item_ID]') IS NOT NULL
+    DROP PROCEDURE [REZAGADOS].Buscar_Tipo_Item_ID 
     
+
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;
 	

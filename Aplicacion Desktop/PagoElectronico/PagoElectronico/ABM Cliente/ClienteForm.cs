@@ -21,6 +21,7 @@ namespace ABM
         private TarjetaDeCreditoDao tarjDao;
         private ClienteAbm parent;
         private ExtraDao extraDao;
+        private RolModel rolSelected;
 
         private PaisModel pais;
         private PaisModel nacionalidad;
@@ -56,13 +57,23 @@ namespace ABM
                 case 1:
                     button3.Enabled = false;
                     this.Text = "Modificar Cliente";
+                    tabControl1.TabPages.Remove(tabPage2);
                     break;
                 case 2:
                     this.Text = "Dar de Baja Cliente";
                     this.button2.Visible = false;
                     this.button3.Text = "Dar de Baja";
+                    tabControl1.TabPages.Remove(tabPage2);
                     disableInputs();
                     break;
+                case 3:
+                    this.Text = "Dar de Alta Cliente";
+                    this.button2.Visible = false;
+                    this.button3.Text = "Dar de Alta";
+                    tabControl1.TabPages.Remove(tabPage2);
+                    disableInputs();
+                    break;
+
             }
             id.Enabled = false;
             parent.Enabled = false;
@@ -84,6 +95,7 @@ namespace ABM
             domNumero.Enabled = false;
             domPiso.Enabled = false;
             localidadText.Enabled = false;
+            buttonTarjetas.Enabled = false;
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -178,18 +190,28 @@ namespace ABM
         }
         //-----------------------------------------------------------------------------------------------------------------
 
+        //-----------------------------------------------------------------------------------------------------------------
+        public void setRol(RolModel rol)
+        {
+            this.rolText.Text = rol.nombre;
+            this.rolSelected = rol;
+        }
+        //-----------------------------------------------------------------------------------------------------------------
 
         //EVENT HANDLER***
         //cambian los campos de texto
         //-----------------------------------------------------------------------------------------------------------------
         private void requireds_TextChanged(object sender, EventArgs e)
         {
-            if (docNumero.Text.Length != 0 && 
-                apellido.Text.Length != 0  && nombre.Text.Length != 0           && 
-                email.Text.Length != 0     && nacionalidadText.Text.Length != 0 &&
-                paisText.Text.Length != 0  && localidadText.Text.Length != 0    &&
-                domCalle.Text.Length != 0  && domNumero.Text.Length != 0        &&
-                domPiso.Text.Length != 0   && domDepartamento.Text.Length != 0)
+            if (docNumero.Text.Trim().Length != 0       && 
+                apellido.Text.Trim().Length != 0        &&      nombre.Text.Trim().Length != 0              && 
+                email.Text.Trim().Length != 0           &&      nacionalidadText.Text.Trim().Length != 0    &&
+                paisText.Text.Trim().Length != 0        &&      localidadText.Text.Trim().Length != 0       &&
+                domCalle.Text.Length != 0               &&      domNumero.Text.Trim().Length != 0           &&
+                domPiso.Text.Trim().Length != 0         &&      domDepartamento.Text.Trim().Length != 0     &&
+                usuarioText.Text.Trim().Length != 0     &&      contraText.Text.Trim().Length != 0          &&
+                preguntaText.Text.Trim().Length != 0    &&      respuestaText.Text.Trim().Length != 0       &&
+                rolText.Text.Trim().Length != 0 )
             {
                 button3.Enabled = true;
             }
@@ -216,13 +238,20 @@ namespace ABM
             {
                 //agregar Cliente
                 case 0:
+                    //agregar Cliente y usuario
                     cliente = new ClienteModel(apellido.Text,nombre.Text,documentoToSend,Decimal.Parse(docNumero.Text),
                                                 nacimiento.Value,email.Text,nacionalidad,domCalle.Text,
                                                Decimal.Parse(domNumero.Text),Decimal.Parse(domPiso.Text),
                                                domDepartamento.Text,localidadText.Text,pais);
+                    
+                    UserModel usuario = new UserModel(usuarioText.Text,UserDao.hash(contraText.Text));
+                    usuario.pregunta = preguntaText.Text;
+                    usuario.respuesta = respuestaText.Text;
+                    usuario.roles.Add(rolSelected);
+
                     try
                     {
-                        Respuesta respuesta = clienteDao.addNewCliente(cliente);
+                        Respuesta respuesta = clienteDao.addNewCliente(cliente,usuario);
                         MessageBox.Show(respuesta.mensaje);
                         if (respuesta.codigo > 0)
                         {
@@ -273,7 +302,27 @@ namespace ABM
                         if (respuesta.codigo > 0)
                         {
                             cliente.habilitado = false;
-                            parent.formResponseDisable();
+                            parent.formResponseDisable(cliente);
+                            parent.Enabled = true;
+                            this.Close();
+                            this.Dispose();
+                            GC.Collect();
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
+                    }
+                    break;
+                case 3:
+                    try
+                    {
+                        Respuesta respuesta = clienteDao.habilitarCliente(cliente);
+                        MessageBox.Show(respuesta.mensaje);
+                        if (respuesta.codigo > 0)
+                        {
+                            cliente.habilitado = true;
+                            parent.formResponseEnable(cliente);
                             parent.Enabled = true;
                             this.Close();
                             this.Dispose();
@@ -390,6 +439,15 @@ namespace ABM
         private void buttonTarjetas_Click(object sender, EventArgs e)
         {
             Form f = new TarjetasAbm(this);
+            f.MdiParent = this.MdiParent;
+            f.Show();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+        
+        //-----------------------------------------------------------------------------------------------------------------
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form f = new RolAbm(this);
             f.MdiParent = this.MdiParent;
             f.Show();
         }
