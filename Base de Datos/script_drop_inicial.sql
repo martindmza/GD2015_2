@@ -148,15 +148,6 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[REZAGA
 	AND parent_object_id = OBJECT_ID(N'[REZAGADOS].[HistorialUsuario]'))
 	ALTER TABLE REZAGADOS.HistorialUsuario DROP CONSTRAINT FK_Historial_Usuario_to_Usuario;
 
-IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Cuentas]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_Historial_Cuentas]
-
-IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones]
-    
-IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
-
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Rol]') AND type in (N'U'))
 	DROP TABLE REZAGADOS.Rol;
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[REZAGADOS].[Funcionalidad]') AND type in (N'U'))	
@@ -371,12 +362,19 @@ IF OBJECT_ID ('[REZAGADOS].[Listar_Tipo_Items]') IS NOT NULL
 IF OBJECT_ID ('[REZAGADOS].[Buscar_Tipo_Item_ID]') IS NOT NULL
     DROP PROCEDURE [REZAGADOS].Buscar_Tipo_Item_ID 
     
-
 IF TYPE_ID('REZAGADOS.IdLista') IS NOT NULL
 	DROP TYPE REZAGADOS.IdLista;
 	
 IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
+IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Estado_Cuenta]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Estado_Cuenta]
+IF OBJECT_ID ('[REZAGADOS].[Trig_Historial_Cuentas]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Historial_Cuentas]
+IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones] 
+IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]') IS NOT NULL
+    DROP TRIGGER [REZAGADOS].[Trig_Tipo_Cuenta_Transaccion]
 
 USE [GD1C2015]
 GO
