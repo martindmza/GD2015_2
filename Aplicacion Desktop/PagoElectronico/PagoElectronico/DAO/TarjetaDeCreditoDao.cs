@@ -32,7 +32,7 @@ namespace DAO
                 command.Parameters.Add("@Id_Emisor", System.Data.SqlDbType.Decimal).Value = tarjeta.emisor.id;
                 command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = tarjeta.emision;
                 command.Parameters.Add("@Fecha_Venc", System.Data.SqlDbType.DateTime).Value = tarjeta.vencimiento;
-                command.Parameters.Add("@Codigo", System.Data.SqlDbType.NVarChar, 255).Value = hash(tarjeta.codigoSeguridad);
+                command.Parameters.Add("@Codigo", System.Data.SqlDbType.NVarChar, 255).Value = tarjeta.codigoSeguridad;
 
                 return operacionDml(command);
             }
@@ -50,7 +50,6 @@ namespace DAO
             {
                 SqlCommand command = InitializeConnection("Modificar_Tarjeta");
                 command.Parameters.Add("@Id_Tarjeta", System.Data.SqlDbType.Decimal).Value = tarjeta.id;
-                command.Parameters.Add("@Nro_Tarjeta", System.Data.SqlDbType.NVarChar, 255).Value = tarjeta.numero;
                 command.Parameters.Add("@Id_Emisor", System.Data.SqlDbType.Decimal).Value = tarjeta.emisor.id;
                 command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime).Value = tarjeta.emision;
                 command.Parameters.Add("@Fecha_Venc", System.Data.SqlDbType.DateTime).Value = tarjeta.vencimiento;
@@ -153,23 +152,6 @@ namespace DAO
                 throw excepcion;
             }
         }
-
-
-        //--------------------------------------------------------------------
-        public static string hash(string input)
-        {
-
-            System.Security.Cryptography.SHA256 sha256 = new System.Security.Cryptography.SHA256Managed();
-            byte[] sha256Bytes = System.Text.Encoding.Default.GetBytes(input);
-            byte[] cryString = sha256.ComputeHash(sha256Bytes);
-            string resultEncriptado = string.Empty;
-            for (int i = 0; i < cryString.Length; i++)
-            {
-                resultEncriptado += cryString[i].ToString("X");
-            }
-            return resultEncriptado;
-        }
-        //--------------------------------------------------------------------
 
 
         protected override SqlCommand addParametrosParaBaja(SqlCommand command, object entity)

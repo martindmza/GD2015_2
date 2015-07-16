@@ -394,6 +394,7 @@
             this.email.TabIndex = 5;
             this.email.Text = "m@gmail.com";
             this.email.TextChanged += new System.EventHandler(this.requireds_TextChanged);
+            this.email.Leave += new System.EventHandler(this.email_Leave);
             // 
             // button2
             // 

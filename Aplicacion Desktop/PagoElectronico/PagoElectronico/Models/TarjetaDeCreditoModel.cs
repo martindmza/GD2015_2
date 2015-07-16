@@ -70,9 +70,7 @@ namespace Models
         public override void mapeoFilaAModel(System.Data.DataRow fila)
         {
             base.mapeoFilaAModel(fila);
-            String cadenaNumero = this.mapearValor(fila[NUMERO]);
-            int lcadenaNumero = cadenaNumero.Length-4;
-            this.numero = "XXXX-XXXX-XXXX-" + cadenaNumero.Substring(lcadenaNumero, 4);
+            this.numero = "XXXX-XXXX-XXXX-" + this.mapearValor(fila[NUMERO]);
             this.codigoSeguridad = this.mapearValor(fila[CODIGO]);
             this.emision = this.mapearFecha(fila[EMISION]);
             this.vencimiento = this.mapearFecha(fila[VENCIMIENTO]);

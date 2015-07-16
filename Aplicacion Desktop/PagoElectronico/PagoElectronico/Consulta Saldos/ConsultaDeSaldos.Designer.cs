@@ -52,14 +52,14 @@
             this.banco2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabTransferencias = new System.Windows.Forms.TabPage();
             this.dataGridViewTransferencias = new System.Windows.Forms.DataGridView();
-            this.labelSaldo = new System.Windows.Forms.Label();
-            this.labelSaldoText = new System.Windows.Forms.Label();
             this.id3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cuentaOrigen = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.destino = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.importe3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.moneda3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fecha3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.labelSaldo = new System.Windows.Forms.Label();
+            this.labelSaldoText = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabDepositos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDepositos)).BeginInit();
@@ -140,6 +140,8 @@
             // 
             // dataGridViewDepositos
             // 
+            this.dataGridViewDepositos.AllowUserToAddRows = false;
+            this.dataGridViewDepositos.AllowUserToDeleteRows = false;
             this.dataGridViewDepositos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewDepositos.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id,
@@ -150,6 +152,7 @@
             this.Fecha});
             this.dataGridViewDepositos.Location = new System.Drawing.Point(6, 6);
             this.dataGridViewDepositos.Name = "dataGridViewDepositos";
+            this.dataGridViewDepositos.ReadOnly = true;
             this.dataGridViewDepositos.Size = new System.Drawing.Size(643, 328);
             this.dataGridViewDepositos.TabIndex = 0;
             // 
@@ -157,31 +160,37 @@
             // 
             this.id.HeaderText = "Id";
             this.id.Name = "id";
+            this.id.ReadOnly = true;
             // 
             // Depositante
             // 
             this.Depositante.HeaderText = "Depositante";
             this.Depositante.Name = "Depositante";
+            this.Depositante.ReadOnly = true;
             // 
             // importe
             // 
             this.importe.HeaderText = "Importe";
             this.importe.Name = "importe";
+            this.importe.ReadOnly = true;
             // 
             // Moneda
             // 
             this.Moneda.HeaderText = "Moneda";
             this.Moneda.Name = "Moneda";
+            this.Moneda.ReadOnly = true;
             // 
             // Tarjeta
             // 
             this.Tarjeta.HeaderText = "Tarjeta";
             this.Tarjeta.Name = "Tarjeta";
+            this.Tarjeta.ReadOnly = true;
             // 
             // Fecha
             // 
             this.Fecha.HeaderText = "Fecha";
             this.Fecha.Name = "Fecha";
+            this.Fecha.ReadOnly = true;
             // 
             // tabRetiros
             // 
@@ -196,6 +205,8 @@
             // 
             // dataGridViewRetiros
             // 
+            this.dataGridViewRetiros.AllowUserToAddRows = false;
+            this.dataGridViewRetiros.AllowUserToDeleteRows = false;
             this.dataGridViewRetiros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewRetiros.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id2,
@@ -206,6 +217,7 @@
             this.banco2});
             this.dataGridViewRetiros.Location = new System.Drawing.Point(6, 6);
             this.dataGridViewRetiros.Name = "dataGridViewRetiros";
+            this.dataGridViewRetiros.ReadOnly = true;
             this.dataGridViewRetiros.Size = new System.Drawing.Size(644, 328);
             this.dataGridViewRetiros.TabIndex = 0;
             // 
@@ -213,31 +225,37 @@
             // 
             this.id2.HeaderText = "Id";
             this.id2.Name = "id2";
+            this.id2.ReadOnly = true;
             // 
             // importe2
             // 
             this.importe2.HeaderText = "Importe";
             this.importe2.Name = "importe2";
+            this.importe2.ReadOnly = true;
             // 
             // Moneda2
             // 
             this.Moneda2.HeaderText = "Moneda";
             this.Moneda2.Name = "Moneda2";
+            this.Moneda2.ReadOnly = true;
             // 
             // fecha2
             // 
             this.fecha2.HeaderText = "Fecha";
             this.fecha2.Name = "fecha2";
+            this.fecha2.ReadOnly = true;
             // 
             // cheque
             // 
             this.cheque.HeaderText = "Cheque";
             this.cheque.Name = "cheque";
+            this.cheque.ReadOnly = true;
             // 
             // banco2
             // 
             this.banco2.HeaderText = "Banco";
             this.banco2.Name = "banco2";
+            this.banco2.ReadOnly = true;
             // 
             // tabTransferencias
             // 
@@ -251,6 +269,8 @@
             // 
             // dataGridViewTransferencias
             // 
+            this.dataGridViewTransferencias.AllowUserToAddRows = false;
+            this.dataGridViewTransferencias.AllowUserToDeleteRows = false;
             this.dataGridViewTransferencias.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewTransferencias.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id3,
@@ -261,8 +281,45 @@
             this.fecha3});
             this.dataGridViewTransferencias.Location = new System.Drawing.Point(6, 6);
             this.dataGridViewTransferencias.Name = "dataGridViewTransferencias";
+            this.dataGridViewTransferencias.ReadOnly = true;
             this.dataGridViewTransferencias.Size = new System.Drawing.Size(647, 331);
             this.dataGridViewTransferencias.TabIndex = 0;
+            // 
+            // id3
+            // 
+            this.id3.HeaderText = "Id";
+            this.id3.Name = "id3";
+            this.id3.ReadOnly = true;
+            // 
+            // cuentaOrigen
+            // 
+            this.cuentaOrigen.HeaderText = "Origen";
+            this.cuentaOrigen.Name = "cuentaOrigen";
+            this.cuentaOrigen.ReadOnly = true;
+            // 
+            // destino
+            // 
+            this.destino.HeaderText = "Destino";
+            this.destino.Name = "destino";
+            this.destino.ReadOnly = true;
+            // 
+            // importe3
+            // 
+            this.importe3.HeaderText = "Importe";
+            this.importe3.Name = "importe3";
+            this.importe3.ReadOnly = true;
+            // 
+            // moneda3
+            // 
+            this.moneda3.HeaderText = "Moneda";
+            this.moneda3.Name = "moneda3";
+            this.moneda3.ReadOnly = true;
+            // 
+            // fecha3
+            // 
+            this.fecha3.HeaderText = "Fecha";
+            this.fecha3.Name = "fecha3";
+            this.fecha3.ReadOnly = true;
             // 
             // labelSaldo
             // 
@@ -283,36 +340,6 @@
             this.labelSaldoText.TabIndex = 3;
             this.labelSaldoText.Text = "$$$$$$$$$$$$$$$";
             this.labelSaldoText.Visible = false;
-            // 
-            // id3
-            // 
-            this.id3.HeaderText = "Id";
-            this.id3.Name = "id3";
-            // 
-            // cuentaOrigen
-            // 
-            this.cuentaOrigen.HeaderText = "Origen";
-            this.cuentaOrigen.Name = "cuentaOrigen";
-            // 
-            // destino
-            // 
-            this.destino.HeaderText = "Destino";
-            this.destino.Name = "destino";
-            // 
-            // importe3
-            // 
-            this.importe3.HeaderText = "Importe";
-            this.importe3.Name = "importe3";
-            // 
-            // moneda3
-            // 
-            this.moneda3.HeaderText = "Moneda";
-            this.moneda3.Name = "moneda3";
-            // 
-            // fecha3
-            // 
-            this.fecha3.HeaderText = "Fecha";
-            this.fecha3.Name = "fecha3";
             // 
             // ConsultaDeSaldos
             // 

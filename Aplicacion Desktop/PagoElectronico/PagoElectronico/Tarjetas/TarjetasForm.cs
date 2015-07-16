@@ -60,6 +60,7 @@ namespace Tarjetas
                 case 1:
                     buttonAceptar.Enabled = true;
                     this.Text = "Modificar Tarjeta";
+                    numeroText.Enabled = false;
                     codigoSeguridadText.Visible = false;
                     label5.Visible = false;
                     break;
@@ -207,6 +208,10 @@ namespace Tarjetas
                         if (respuesta.codigo > 0)
                         {
                             tarjeta.id = respuesta.codigo;
+
+                            int lcadenaNumero = tarjeta.numero.Length - 4;
+                            tarjeta.numero = "XXXX-XXXX-XXXX-" + tarjeta.numero.Substring(lcadenaNumero, 4);
+
                             parent.formResponseAdd(tarjeta);
                             parent.Enabled = true;
                             this.Close();

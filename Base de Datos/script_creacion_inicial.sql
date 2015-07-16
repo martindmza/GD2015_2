@@ -144,7 +144,8 @@ ALTER TABLE REZAGADOS.Deposito ADD CONSTRAINT PK_Id_Deposito PRIMARY KEY (Id_Dep
 CREATE TABLE REZAGADOS.Tarjeta (
 Id_Tarjeta numeric (18,0) IDENTITY (1,1) NOT NULL,
 Id_Cliente numeric(18,0) NOT NULL,
-Numero varchar(20) NOT NULL,
+Numero VARCHAR(255) NOT NULL,
+Numero_Ultimos_Digitos VARCHAR(4),
 Id_Emisor NUMERIC (18,0) NOT NULL,
 Codigo_Seguridad varchar(255) NOT NULL,
 Fecha_Emision datetime,
@@ -501,9 +502,9 @@ FROM  GD1C2015.gd_esquema.Maestra
 WHERE Tarjeta_Emisor_Descripcion IS NOT NULL
 
 -----------------------------------------TARJETA--------------------------------------------------
-
-INSERT INTO REZAGADOS.Tarjeta ( Numero,Id_Cliente,Id_Emisor,Codigo_Seguridad, Fecha_Emision, Vencimiento)
-SELECT  DISTINCT g.Tarjeta_Numero, 
+INSERT INTO REZAGADOS.Tarjeta ( Numero, Numero_Ultimos_Digitos,Id_Cliente,Id_Emisor,Codigo_Seguridad, Fecha_Emision, Vencimiento)
+SELECT  DISTINCT HashBytes('SHA1',g.Tarjeta_Numero),
+		SUBSTRING(g.Tarjeta_Numero,13,4),
 		c.Id_Cliente,
 		(	SELECT Id_Emisor FROM REZAGADOS.Emisor 
 			WHERE  Nombre = g.Tarjeta_Emisor_Descripcion) AS 'Id_Emisor',
@@ -1046,7 +1047,7 @@ CREATE PROCEDURE REZAGADOS.Crear_Tarjeta(	@Id_Cliente NUMERIC(18,0),
 AS
 BEGIN
 
-	IF EXISTS (SELECT 1 FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta)
+	IF EXISTS (SELECT 1 FROM REZAGADOS.Tarjeta WHERE Numero = HashBytes('SHA1',@Nro_Tarjeta))
 	BEGIN
 		SET @RespuestaMensaje = 'Ya existe la tarjeta'
 		SET @Respuesta = -1
@@ -1054,9 +1055,10 @@ BEGIN
 	ELSE
 		BEGIN TRY
 			BEGIN TRANSACTION
-				INSERT INTO REZAGADOS.Tarjeta (Id_Cliente, Numero, Id_Emisor ,Codigo_Seguridad, Fecha_Emision, Vencimiento)
-				VALUES (@Id_Cliente, @Nro_Tarjeta, @Id_Emisor ,@Codigo, @Fecha, @Fecha_Venc)
+				INSERT INTO REZAGADOS.Tarjeta (Id_Cliente, Numero,Numero_Ultimos_Digitos, Id_Emisor ,Codigo_Seguridad, Fecha_Emision, Vencimiento)
+				VALUES (@Id_Cliente, HashBytes('SHA1',@Nro_Tarjeta),SUBSTRING(@Nro_Tarjeta,13,4), @Id_Emisor , HashBytes('SHA1',@Codigo), @Fecha, @Fecha_Venc)
 				SET @Respuesta = (SELECT @@IDENTITY)
+				
 				SET @RespuestaMensaje = 'Se ingresó Exitosamente'
 			COMMIT
 		END TRY
@@ -1073,7 +1075,6 @@ GO
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Modificar_Tarjeta(	@Id_Tarjeta NUMERIC(18,0),
-												@Nro_Tarjeta VARCHAR(255),
 												@Id_Emisor NUMERIC(18,0),
 												@Fecha DATETIME,
 												@Fecha_Venc DATETIME,
@@ -1081,30 +1082,23 @@ CREATE PROCEDURE REZAGADOS.Modificar_Tarjeta(	@Id_Tarjeta NUMERIC(18,0),
 												@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM REZAGADOS.Tarjeta WHERE Numero=@Nro_Tarjeta AND Id_Tarjeta <> @Id_Tarjeta)
-	BEGIN
-		SET @RespuestaMensaje = 'Ya existe la tarjeta'
-		SET @Respuesta = -1
-	END
-	ELSE
-		BEGIN TRY
-			BEGIN TRANSACTION
-				PRINT @Nro_Tarjeta
-				UPDATE REZAGADOS.Tarjeta SET	Numero = @Nro_Tarjeta,
-												Fecha_Emision = @Fecha,
-												Vencimiento = @Fecha_Venc,
-												Id_Emisor = @Id_Emisor
-				WHERE Id_Tarjeta = @Id_Tarjeta
-				SET @Respuesta = 1
-				SET @RespuestaMensaje = 'Datos Modificados Exitosamente'
-			COMMIT
-		END TRY
-		BEGIN CATCH
+
+	BEGIN TRY
+		BEGIN TRANSACTION
+			UPDATE REZAGADOS.Tarjeta SET	Fecha_Emision = @Fecha,
+											Vencimiento = @Fecha_Venc,
+											Id_Emisor = @Id_Emisor
+			WHERE Id_Tarjeta = @Id_Tarjeta
 			SET @Respuesta = 1
-			SET @RespuestaMensaje = ERROR_MESSAGE()
-			ROLLBACK TRANSACTION
-		END CATCH
-	END
+			SET @RespuestaMensaje = 'Datos Modificados Exitosamente'
+		COMMIT
+	END TRY
+	BEGIN CATCH
+		SET @Respuesta = 1
+		SET @RespuestaMensaje = ERROR_MESSAGE()
+		ROLLBACK TRANSACTION
+	END CATCH
+END
 GO
 
 ---------------------------------------DEPOSITAR---------------------------------------------------------------
@@ -2635,7 +2629,7 @@ BEGIN
 
 	SET @SqlQuery =	'SELECT	t.Id_Tarjeta		ID,
 							t.Id_Cliente		ID_CLIENTE,
-							t.Numero			NUMERO,
+							t.Numero_Ultimos_Digitos			NUMERO,
 							t.Id_Emisor			EMISOR_ID,
 							e.Nombre			EMISOR_NOMBRE,
 							t.Codigo_Seguridad	CODIGO,
@@ -2845,3 +2839,5 @@ BEGIN TRANSACTION
 	DEALLOCATE D
 	COMMIT
 GO
+
+

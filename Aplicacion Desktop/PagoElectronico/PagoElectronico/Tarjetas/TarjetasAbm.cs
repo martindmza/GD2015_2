@@ -117,7 +117,6 @@ namespace Tarjetas
             foreach (TarjetaDeCreditoModel tarjeta in tarjetas)
             {
                 row = new String[] {    tarjeta.numero.ToString(),
-                                        //tarjeta.codigoSeguridad.ToString(),
                                         (tarjeta.emisor != null)? tarjeta.emisor.nombre : "",
                                         tarjeta.emision.ToShortDateString(),
                                         tarjeta.vencimiento.ToShortDateString()

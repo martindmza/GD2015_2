@@ -53,7 +53,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(622, 4);
+            this.label1.Location = new System.Drawing.Point(785, 5);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(141, 16);
             this.label1.TabIndex = 6;
@@ -63,7 +63,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(536, 3);
+            this.label2.Location = new System.Drawing.Point(713, 4);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(66, 16);
             this.label2.TabIndex = 7;
@@ -80,7 +80,7 @@
             this.estadisticasToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(900, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1025, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -92,14 +92,14 @@
             this.rolesToolStripMenuItem,
             this.cuentasToolStripMenuItem1});
             this.abmsToolStripMenuItem.Name = "abmsToolStripMenuItem";
-            this.abmsToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
+            this.abmsToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.abmsToolStripMenuItem.Text = "Abms";
             this.abmsToolStripMenuItem.Visible = false;
             // 
             // clientesToolStripMenuItem
             // 
             this.clientesToolStripMenuItem.Name = "clientesToolStripMenuItem";
-            this.clientesToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+            this.clientesToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.clientesToolStripMenuItem.Text = "Clientes";
             this.clientesToolStripMenuItem.Visible = false;
             this.clientesToolStripMenuItem.Click += new System.EventHandler(this.clientesToolStripMenuItem_Click);
@@ -107,7 +107,7 @@
             // usuariosToolStripMenuItem1
             // 
             this.usuariosToolStripMenuItem1.Name = "usuariosToolStripMenuItem1";
-            this.usuariosToolStripMenuItem1.Size = new System.Drawing.Size(115, 22);
+            this.usuariosToolStripMenuItem1.Size = new System.Drawing.Size(119, 22);
             this.usuariosToolStripMenuItem1.Text = "Usuarios";
             this.usuariosToolStripMenuItem1.Visible = false;
             this.usuariosToolStripMenuItem1.Click += new System.EventHandler(this.usuariosToolStripMenuItem1_Click);
@@ -115,7 +115,7 @@
             // rolesToolStripMenuItem
             // 
             this.rolesToolStripMenuItem.Name = "rolesToolStripMenuItem";
-            this.rolesToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+            this.rolesToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.rolesToolStripMenuItem.Text = "Roles";
             this.rolesToolStripMenuItem.Visible = false;
             this.rolesToolStripMenuItem.Click += new System.EventHandler(this.rolesToolStripMenuItem_Click);
@@ -123,7 +123,7 @@
             // cuentasToolStripMenuItem1
             // 
             this.cuentasToolStripMenuItem1.Name = "cuentasToolStripMenuItem1";
-            this.cuentasToolStripMenuItem1.Size = new System.Drawing.Size(115, 22);
+            this.cuentasToolStripMenuItem1.Size = new System.Drawing.Size(119, 22);
             this.cuentasToolStripMenuItem1.Text = "Cuentas";
             this.cuentasToolStripMenuItem1.Visible = false;
             this.cuentasToolStripMenuItem1.Click += new System.EventHandler(this.cuentasToolStripMenuItem1_Click);
@@ -135,14 +135,14 @@
             this.retiroToolStripMenuItem,
             this.transferenciaToolStripMenuItem});
             this.movimientosToolStripMenuItem.Name = "movimientosToolStripMenuItem";
-            this.movimientosToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.movimientosToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
             this.movimientosToolStripMenuItem.Text = "Movimientos";
             this.movimientosToolStripMenuItem.Visible = false;
             // 
             // depositoToolStripMenuItem
             // 
             this.depositoToolStripMenuItem.Name = "depositoToolStripMenuItem";
-            this.depositoToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.depositoToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.depositoToolStripMenuItem.Text = "Depósito";
             this.depositoToolStripMenuItem.Visible = false;
             this.depositoToolStripMenuItem.Click += new System.EventHandler(this.depositoToolStripMenuItem_Click);
@@ -150,7 +150,7 @@
             // retiroToolStripMenuItem
             // 
             this.retiroToolStripMenuItem.Name = "retiroToolStripMenuItem";
-            this.retiroToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.retiroToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.retiroToolStripMenuItem.Text = "Retiro";
             this.retiroToolStripMenuItem.Visible = false;
             this.retiroToolStripMenuItem.Click += new System.EventHandler(this.retiroToolStripMenuItem_Click);
@@ -158,7 +158,7 @@
             // transferenciaToolStripMenuItem
             // 
             this.transferenciaToolStripMenuItem.Name = "transferenciaToolStripMenuItem";
-            this.transferenciaToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.transferenciaToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.transferenciaToolStripMenuItem.Text = "Transferencia";
             this.transferenciaToolStripMenuItem.Visible = false;
             this.transferenciaToolStripMenuItem.Click += new System.EventHandler(this.transferenciaToolStripMenuItem_Click);
@@ -166,7 +166,7 @@
             // facturacionDeCostosToolStripMenuItem
             // 
             this.facturacionDeCostosToolStripMenuItem.Name = "facturacionDeCostosToolStripMenuItem";
-            this.facturacionDeCostosToolStripMenuItem.Size = new System.Drawing.Size(126, 20);
+            this.facturacionDeCostosToolStripMenuItem.Size = new System.Drawing.Size(136, 20);
             this.facturacionDeCostosToolStripMenuItem.Text = "Facturación de Costos";
             this.facturacionDeCostosToolStripMenuItem.Visible = false;
             this.facturacionDeCostosToolStripMenuItem.Click += new System.EventHandler(this.facturaciónDeCostosToolStripMenuItem_Click);
@@ -174,7 +174,7 @@
             // tarjetasToolStripMenuItem
             // 
             this.tarjetasToolStripMenuItem.Name = "tarjetasToolStripMenuItem";
-            this.tarjetasToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.tarjetasToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             this.tarjetasToolStripMenuItem.Text = "Tarjetas";
             this.tarjetasToolStripMenuItem.Visible = false;
             this.tarjetasToolStripMenuItem.Click += new System.EventHandler(this.tarjetasToolStripMenuItem_Click);
@@ -182,7 +182,7 @@
             // consultaDeSaldosToolStripMenuItem
             // 
             this.consultaDeSaldosToolStripMenuItem.Name = "consultaDeSaldosToolStripMenuItem";
-            this.consultaDeSaldosToolStripMenuItem.Size = new System.Drawing.Size(110, 20);
+            this.consultaDeSaldosToolStripMenuItem.Size = new System.Drawing.Size(119, 20);
             this.consultaDeSaldosToolStripMenuItem.Text = "Consulta de Saldos";
             this.consultaDeSaldosToolStripMenuItem.Visible = false;
             this.consultaDeSaldosToolStripMenuItem.Click += new System.EventHandler(this.consultaDeSaldosToolStripMenuItem_Click);
@@ -190,7 +190,7 @@
             // estadisticasToolStripMenuItem
             // 
             this.estadisticasToolStripMenuItem.Name = "estadisticasToolStripMenuItem";
-            this.estadisticasToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
+            this.estadisticasToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
             this.estadisticasToolStripMenuItem.Text = "Estadísticas";
             this.estadisticasToolStripMenuItem.Visible = false;
             this.estadisticasToolStripMenuItem.Click += new System.EventHandler(this.estadisticasToolStripMenuItem_Click);
@@ -199,7 +199,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(775, 6);
+            this.label3.Location = new System.Drawing.Point(932, 7);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(11, 13);
             this.label3.TabIndex = 9;
@@ -209,7 +209,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(790, 4);
+            this.label4.Location = new System.Drawing.Point(949, 4);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(64, 16);
             this.label4.TabIndex = 6;
@@ -220,7 +220,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(900, 508);
+            this.ClientSize = new System.Drawing.Size(1025, 508);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label4);

@@ -36,7 +36,7 @@ namespace DAO
             }
             if (dt.Rows.Count > 0)
                 return dt;
-            return null;
+            return new DataTable();
         }
 
         protected abstract string getProcedureListarByCliente();
@@ -94,7 +94,7 @@ namespace DAO
             }
             if (dt.Rows.Count > 0)
                 return dt;
-            return null;
+            return new DataTable();
         }
 
         protected DataTable getBasicaDeBasePorID(Decimal id)
@@ -108,7 +108,7 @@ namespace DAO
             }
             if (dt.Rows.Count > 0)
                 return dt;
-            return null;
+            return new DataTable();
         }
 
         public TEntity modificarBasica(TEntity entity){

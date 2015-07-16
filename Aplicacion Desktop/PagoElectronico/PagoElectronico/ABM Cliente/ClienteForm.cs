@@ -453,5 +453,22 @@ namespace ABM
         }
         //-----------------------------------------------------------------------------------------------------------------
 
+        //-----------------------------------------------------------------------------------------------------------------
+        private void email_Leave(object sender, EventArgs e)
+        {
+            email.Text.Replace(" ","");
+            try{
+                if (email.Text.IndexOf('@') != 0)
+                {
+                    MessageBox.Show("Ingrese un email válido");
+                    email.Text = "";
+                }
+            }
+            catch (FormatException erf) { }
+            catch (NullReferenceException eru) { }
+            catch (Exception erg) { }
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
     }
 }
