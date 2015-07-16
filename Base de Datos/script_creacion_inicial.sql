@@ -457,7 +457,7 @@ GROUP BY Banco_Cogido, Banco_Nombre, Banco_Direccion
 ----------------------------------------TIPO CUENTA------------------------------------------------
 
 INSERT INTO REZAGADOS.TipoCuenta (Categoria, Costo, Dias_Vigencia)
-VALUES ('Oro', 10, 10), ('Plata', 5, 20), ('Bronce', 5, 30), ('Gratuita', 0, 0);
+VALUES ('Oro', 100, 30), ('Plata', 80, 30), ('Bronce', 40, 30), ('Gratuita', 30, 0);
 
 -----------------------------------------CUENTA---------------------------------------------------
 
@@ -471,6 +471,7 @@ WHERE u.Nombre = g.Cli_Mail AND g.Cuenta_Dest_Fecha_Creacion IS NOT NULL
 GROUP BY g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
 
 ------------------------------------------FACUTRA--------------------------------------------------
+
 SET IDENTITY_INSERT REZAGADOS.Factura ON
 INSERT INTO REZAGADOS.Factura (Id_Factura, Id_Usuario, Fecha)
 SELECT g.Factura_Numero, u.Id_Usuario, g.Factura_Fecha
@@ -502,6 +503,7 @@ FROM  GD1C2015.gd_esquema.Maestra
 WHERE Tarjeta_Emisor_Descripcion IS NOT NULL
 
 -----------------------------------------TARJETA--------------------------------------------------
+
 INSERT INTO REZAGADOS.Tarjeta ( Numero, Numero_Ultimos_Digitos,Id_Cliente,Id_Emisor,Codigo_Seguridad, Fecha_Emision, Vencimiento)
 SELECT  DISTINCT HashBytes('SHA1',g.Tarjeta_Numero),
 		SUBSTRING(g.Tarjeta_Numero,13,4),
@@ -543,7 +545,7 @@ SELECT Deposito_Codigo, Cuenta_Numero, Tarjeta.Id_Tarjeta, Cuenta_Pais_Codigo, D
 FROM gd_esquema.Maestra, REZAGADOS.Tarjeta
 WHERE Deposito_Codigo IS NOT NULL
 AND Tarjeta.Numero = gd_esquema.Maestra.Tarjeta_Numero
-
+--EXPLOTA EL DEPOSITOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 --------------------------------------------CHEQUE----------------------------------------------------
 
 SET IDENTITY_INSERT REZAGADOS.Cheque ON
@@ -946,6 +948,7 @@ IF (@Tipo = 'Gratuito')
 	SET @RespuestaMensaje = 'Creación exitosa'
 	END
 ELSE
+BEGIN
 INSERT INTO REZAGADOS.Cuenta(Id_Cuenta, Id_Pais, Id_Tipo_Cuenta, Id_Usuario,Id_Moneda, Id_Estado, Fecha_Creacion)
 VALUES ((SELECT MAX(c1.Id_Cuenta)+1 FROM REZAGADOS.Cuenta c1 ),
 @Pais, 
@@ -955,8 +958,13 @@ VALUES ((SELECT MAX(c1.Id_Cuenta)+1 FROM REZAGADOS.Cuenta c1 ),
 (SELECT e.Id_Estado 
 	 FROM REZAGADOS.Estado_Cuenta e 
 	 WHERE e.Nombre LIKE 'Pendiente de activación'), @Fecha)
+INSERT INTO REZAGADOS.Item (Id_Cuenta, Id_Tipo_Item, Fecha, Importe)
+VALUES ((SELECT MAX(Id_Cuenta) FROM REZAGADOS.Cuenta), 2, GETDATE(), (SELECT Importe FROM REZAGADOS.TipoItem WHERE Id_Tipo_Item = 2 ))
+INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Id_Estado, Estado)
+VALUES ((SELECT MAX(Id_Cuenta) FROM REZAGADOS.Cuenta), GETDATE(), 1, 'Pendiente de activación')
 SET @RespuestaMensaje = 'Creación exitosa'
 SET @Respuesta =  (SELECT Max(c1.Id_Cuenta) FROM REZAGADOS.Cuenta c1)
+END
 END
 GO
 
@@ -2685,7 +2693,7 @@ BEGIN
 	WHERE Id_Emisor = @Id_Emisor
 END
 GO
----------------------------------------------------------------------------------------------------------------
+--------------------------------------------------LISTAR TRANSFERENCIA-------------------------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -2698,7 +2706,7 @@ BEGIN
     FROM REZAGADOS.Transferencia T
 END
 GO
---------------------------------------------------------------------
+------------------------------------------------------BUSCAR TRANSFERENCIA ID---------------------------------------------------------
 USE [GD1C2015]
 GO
 
@@ -2719,7 +2727,7 @@ GO
 ------------------------------------------5 TRANSACCIONES---------------------------------------------------------
 
 IF OBJECT_ID ('[REZAGADOS].[Trig_5_Transacciones]') IS NOT NULL
-    DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones]
+DROP TRIGGER [REZAGADOS].[Trig_5_Transacciones]
 
 USE [GD1C2015]
 GO
@@ -2735,10 +2743,14 @@ BEGIN TRANSACTION
 		FETCH A INTO @Cuenta
 		WHILE @@FETCH_STATUS = 0
 			BEGIN
-				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta) < 5 AND (SELECT Id_Estado_Cuenta FROM Cuenta WHERE Id_Cuenta=@Cuenta) <> 2
-				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada')
+								
+				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Id_Tipo_Item = 2 AND Id_Cuenta = @Cuenta AND Id_Factura IS NULL) = 0
+				UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta
+				
+				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta) < 5
+				UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta
 				ELSE
-				UPDATE Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada')
+				UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada') WHERE Id_Cuenta = @Cuenta
 				FETCH A INTO @Cuenta
 			END
 	CLOSE A
@@ -2748,9 +2760,10 @@ GO
 
 ----------------------------------------INSERTA ITEM TRANSFERENCIA---------------------------------------------------------
 
-USE [GD1C2015]
 IF OBJECT_ID ('[REZAGADOS].[Trig_Inserta_Item_Transf]') IS NOT NULL 
 	DROP TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
+
+USE [GD1C2015]
 GO
 CREATE TRIGGER [REZAGADOS].[Trig_Inserta_Item_Transf]
 ON [REZAGADOS].[Transferencia]
@@ -2765,21 +2778,20 @@ BEGIN TRANSACTION
 	DECLARE @Fecha DATETIME
 	OPEN B
 		FETCH B INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
-		
 		WHILE @@FETCH_STATUS = 0
 			IF ((SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Emi) <> (SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Dest))
-			BEGIN
-				-- IF (SELECT Categoria FROM REZAGADOS.TipoCuenta JOIN Cuenta ON Cuenta.Id_Tipo_Cuenta = TipoCuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi ) <> 'Gratuita'
 				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), CAST(ROUND(@Importe,1)/(SELECT Costo FROM TipoCuenta JOIN Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi) AS NUMERIC (18,2)), GETDATE())
-				FETCH B INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
-			END
+				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), (SELECT Costo FROM REZAGADOS.TipoCuenta JOIN REZAGADOS.Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi), GETDATE())
+			ELSE
+				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
+				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), 0, GETDATE())
+			FETCH B INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
 	CLOSE B
 	DEALLOCATE B
 	COMMIT
 GO
 
-----------------------------------------TIPO ESTADO CUENTA---------------------------------------------------------
+---------------------------------------TIPO ESTADO CUENTA---------------------------------------------------------
 
 IF OBJECT_ID ('[REZAGADOS].[Trig_Tipo_Estado_Cuenta]') IS NOT NULL
     DROP TRIGGER [REZAGADOS].[Trig_Tipo_Estado_Cuenta]
@@ -2788,7 +2800,7 @@ USE [GD1C2015]
 GO
 CREATE TRIGGER [REZAGADOS].[Trig_Tipo_Estado_Cuenta]
 ON [REZAGADOS].[Cuenta]
-AFTER INSERT, UPDATE
+AFTER UPDATE
 AS
 BEGIN TRANSACTION
 	DECLARE C CURSOR
@@ -2802,19 +2814,18 @@ BEGIN TRANSACTION
 		WHILE @@FETCH_STATUS = 0
 			BEGIN
 				PRINT 'Controlar'
-				IF EXISTS(select Id_Tipo_Cuenta from REZAGADOS.TipoCuenta where NOT Categoria like 'Gratuita' and Id_Tipo_Cuenta = @Tipo)
+				IF UPDATE (Id_Tipo_Cuenta)
 				BEGIN
 					PRINT 'TRIGGER Tipo Cuenta Transacción'+CAST(@Cuenta as varchar) +' - '+ CAST(@Tipo as varchar)
 					INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-					VALUES (@Cuenta, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Cambio de cuenta.'), 
-					(SELECT Costo FROM REZAGADOS.TipoCuenta t WHERE t.Id_Tipo_Cuenta=@Tipo), GETDATE())
+					VALUES (@Cuenta, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Cambio de cuenta.'), (SELECT Importe FROM REZAGADOS.TipoItem WHERE Id_Tipo_Item = 2), GETDATE())
 				END
-				
-				IF UPDATE(Id_Estado)
+				IF UPDATE (Id_Estado)
 				BEGIN
-					PRINT CAST(@Cuenta as varchar) +' - '+ @Estado 
-					INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Id_Estado,Estado) VALUES (@Cuenta, GETDATE(),@Id_Estado, @Estado)
-				END			
+					PRINT CAST(@Cuenta as varchar) +' - '+ @Estado
+					INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Id_Estado, Estado)
+					VALUES (@Cuenta, GETDATE(),@Id_Estado, @Estado)
+				END
 				FETCH C INTO @Cuenta, @Tipo, @Id_Estado, @Estado
 			END
   CLOSE C
