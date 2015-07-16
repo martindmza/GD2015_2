@@ -16,9 +16,7 @@ namespace Retiros
 {
     public partial class RetirosAbm : Form
     {
-        private TarjetaDeCreditoModel tarjeta;
         private CuentaModel cuenta;
-        private ClienteModel cliente;
         private ExtraDao extraDao;
         private TipoDocumentoDAO docDao;
         private RetiroDao retiroDao;

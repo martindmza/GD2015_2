@@ -55,10 +55,12 @@ namespace Tarjetas
             {
                 case 0:
                     buttonAceptar.Enabled = false;
+                    
                     this.Text = "Agregar nueva Tarjeta";
                     break;
                 case 1:
                     buttonAceptar.Enabled = true;
+                    numeroText.Enabled = false;
                     this.Text = "Modificar Tarjeta";
                     numeroText.Enabled = false;
                     codigoSeguridadText.Visible = false;
@@ -66,8 +68,8 @@ namespace Tarjetas
                     break;
                 case 2:
                     buttonAceptar.Enabled = true;
-                    this.Text = "Dar de Baja Tarjeta";
-                    this.buttonAceptar.Text = "Dar de Baja";
+                    this.Text = "Desasociar la Tarjeta";
+                    this.buttonAceptar.Text = "Desasociar";
                     codigoSeguridadText.Visible = false;
                     label5.Visible = false;
                     disableInputs();

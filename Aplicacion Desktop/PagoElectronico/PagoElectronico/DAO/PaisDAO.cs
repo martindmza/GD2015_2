@@ -59,5 +59,19 @@ namespace DAO
         {
             throw new NotImplementedException();
         }
+
+        public DataTable getPaisConMasMovimientos(DateTime inicial, DateTime final)
+        {
+            DataTable dt = new DataTable();
+            using (SqlCommand command = InitializeConnection("Paises_Mayor_Movimiento"))
+            {
+                command.Parameters.Add("@FechaInic", System.Data.SqlDbType.DateTime).Value = inicial;
+                command.Parameters.Add("@FechaFin", System.Data.SqlDbType.DateTime).Value = final;
+                SqlDataAdapter da = new SqlDataAdapter(command);
+                da.Fill(dt);
+            }
+            return dt;
+        }
+
     }
 }

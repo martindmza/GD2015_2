@@ -26,13 +26,7 @@ namespace ABM
 
         public ConsultaDeSaldos()
         {
-            ClienteModel cliente = Logins.UsuarioSingleton.getInstance().getUsuario().cliente;
-            if (cliente != null)
-            {
-                retiros = new RetiroDao().getListadoByCliente(cliente);
-                depositos = new DepositoDao().getListadoByCliente(cliente);
-                transferencias = new TransferenciaDao().getListadoByCliente(cliente);
-            }
+            
             InitializeComponent();
         }
 
