@@ -22,7 +22,7 @@ namespace ABM
         private Int32 funcActivoIndex;
         private FuncionalidadModel funcionalidadActiva;
 
-        public List<FuncionalidadModel> funcionalidades;
+        public List<FuncionalidadModel> funcionalidades = new List<FuncionalidadModel>();
 
         public RolForm(int operacionTipo, RolModel rol, RolDao rolDao, RolAbm parent)
         {
@@ -48,17 +48,22 @@ namespace ABM
             switch (operacionTipo)
             {
                 case 0:
-                    this.button1.Enabled = false;
                     this.Text = "Crear Nuevo Rol";
-                    panel1.Visible = false;
-                    this.Size = new Size(286, 140);
-                    button1.Location = new Point(181, 60);
-                    button2.Location = new Point(100, 60);
+                   // panel1.Visible = false;
+                    //this.Size = new Size(286, 140);
+                    //button1.Location = new Point(181, 60);
+                    //button2.Location = new Point(100, 60);
                     checkBox1.Visible = false;
                     break;
                 case 1:
                     this.Text = "Modificar Rol";
-                    checkBox1.Visible = true;
+                    if (!rol.habilitado)
+                    {
+                        checkBox1.Visible = true;
+                    }
+                    else {
+                        checkBox1.Visible = false;
+                    }
                     break;
                 case 2:
                     this.Text = "Dar de Alta Rol";
@@ -117,102 +122,108 @@ namespace ABM
         //aceptar
         private void button1_Click(object sender, EventArgs e)
         {
-            Respuesta respuesta;
 
-            switch (operacionTipo)
+            if (puedeAceptar())
             {
-                //crear el rol
-                case 0:
-                    rol = new RolModel(textBox1.Text);
-                    try
-                    {
-                        respuesta = rolDao.createRol(rol);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
+
+                Respuesta respuesta;
+
+                switch (operacionTipo)
+                {
+                    //crear el rol
+                    case 0:
+                        rol = new RolModel(textBox1.Text);
+                        rol.funcionalidades = funcionalidades;
+                        try
                         {
-                            rol.id = respuesta.codigo;
-                            parent.formResponseAdd(rol);
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
+                            respuesta = rolDao.createRol(rol);
+                            MessageBox.Show(respuesta.mensaje);
+                            if (respuesta.codigo > 0)
+                            {
+                                rol.id = respuesta.codigo;
+                                parent.formResponseAdd(rol);
+                                this.Close();
+                                this.Dispose();
+                                GC.Collect();
+                            }
                         }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(EXCEPTION_MESSAGE);
-                    }
-                    break;
-                //modificar el rol
-                case 1:
-                    Boolean activar = false ;
-
-                    rol.nombre = textBox1.Text;
-                    rol.funcionalidades = funcionalidades;
-
-                    if(rol.habilitado == false && checkBox1.Checked){
-                        rol.habilitado = true;
-                        activar = true;
-                    }
-
-                    try
-                    {
-                        respuesta = rolDao.updateRol(rol,activar);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
+                        catch (Exception er)
                         {
-                            parent.formResponseUpdate(rol);
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
+                            MessageBox.Show(EXCEPTION_MESSAGE);
                         }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(EXCEPTION_MESSAGE);
-                    }
-                    break;
-                //dar de alta el rol
-                case 2:
-                     try
-                    {
-                        respuesta = rolDao.enableRol(rol);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
+                        break;
+                    //modificar el rol
+                    case 1:
+                        Boolean activar = false;
+
+                        rol.nombre = textBox1.Text;
+                        rol.funcionalidades = funcionalidades;
+
+                        if (rol.habilitado == false && checkBox1.Checked)
                         {
                             rol.habilitado = true;
-                            parent.formResponseUpdate(rol);
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
+                            activar = true;
                         }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(EXCEPTION_MESSAGE);
-                    }
-                    break;
-                //dar de baja el rol
-                default:
-                    try
-                    {
-                        respuesta = rolDao.disableRol(rol);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
-                        {
-                            rol.habilitado = false;
-                            parent.formResponseUpdate(rol);
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
-                        }
-                    }
-                    catch (Exception er){
-                        MessageBox.Show(EXCEPTION_MESSAGE);
-                    }
-                    break;
-            }
 
-           
+                        try
+                        {
+                            respuesta = rolDao.updateRol(rol, activar);
+                            MessageBox.Show(respuesta.mensaje);
+                            if (respuesta.codigo > 0)
+                            {
+                                parent.formResponseUpdate(rol);
+                                this.Close();
+                                this.Dispose();
+                                GC.Collect();
+                            }
+                        }
+                        catch (Exception er)
+                        {
+                            MessageBox.Show(EXCEPTION_MESSAGE);
+                        }
+                        break;
+                    //dar de alta el rol
+                    case 2:
+                        try
+                        {
+                            respuesta = rolDao.enableRol(rol);
+                            MessageBox.Show(respuesta.mensaje);
+                            if (respuesta.codigo > 0)
+                            {
+                                rol.habilitado = true;
+                                parent.formResponseUpdate(rol);
+                                this.Close();
+                                this.Dispose();
+                                GC.Collect();
+                            }
+                        }
+                        catch (Exception er)
+                        {
+                            MessageBox.Show(EXCEPTION_MESSAGE);
+                        }
+                        break;
+                    //dar de baja el rol
+                    default:
+                        try
+                        {
+                            respuesta = rolDao.disableRol(rol);
+                            MessageBox.Show(respuesta.mensaje);
+                            if (respuesta.codigo > 0)
+                            {
+                                rol.habilitado = false;
+                                parent.formResponseUpdate(rol);
+                                this.Close();
+                                this.Dispose();
+                                GC.Collect();
+                            }
+                        }
+                        catch (Exception er)
+                        {
+                            MessageBox.Show(EXCEPTION_MESSAGE);
+                        }
+                        break;
+                }
+            }
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -303,6 +314,23 @@ namespace ABM
             {
                 buttonQuitar.Enabled = false;
             }
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private Boolean puedeAceptar() {
+
+            if (textBox1.Text.Trim().Length == 0) {
+                MessageBox.Show("Debe insertar un Nombre para el Rol ");
+                return false;
+            }
+            if (funcionalidades.Count == 0)
+            {
+                MessageBox.Show("Debe insertar Funcionalidades");
+                return false;
+            }
+
+            return true;
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

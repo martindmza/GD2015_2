@@ -59,8 +59,17 @@ namespace DAO
         {
             try
             {
+                //Seteo la tabla de las funcionalidades
+                DataTable funcionalidadesLista = new DataTable();
+                funcionalidadesLista.Columns.Add("Id_Funcionalidad", typeof(decimal));
+                foreach (FuncionalidadModel f in entity.funcionalidades)
+                {
+                    funcionalidadesLista.Rows.Add(f.id);
+                }
+
                 SqlCommand command = InitializeConnection("Crear_Rol");
                 command.Parameters.Add("Nombre_Rol", System.Data.SqlDbType.NVarChar, 255).Value = entity.nombre;
+                command.Parameters.Add("@Funcionalidades", System.Data.SqlDbType.Structured).Value = funcionalidadesLista;
                 return operacionDml(command);
             }
             catch (Exception excepcion)

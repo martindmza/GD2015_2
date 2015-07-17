@@ -1806,6 +1806,7 @@ IF OBJECT_ID ('REZAGADOS.Crear_Rol') IS NOT NULL
 USE [GD1C2015]
 GO
 CREATE PROCEDURE REZAGADOS.Crear_Rol(	@Nombre_Rol NVARCHAR(255),
+										@Funcionalidades IdLista READONLY,
 										@Respuesta NUMERIC(18,0) OUTPUT,
 										@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
@@ -1819,6 +1820,11 @@ BEGIN
 	BEGIN
 		BEGIN TRY
 			INSERT INTO REZAGADOS.Rol VALUES (@Nombre_Rol, 1)
+			
+			-- asigno las funcionalidaes enviadas
+			INSERT INTO REZAGADOS.FuncionalidadXRol (Id_Rol,Id_Funcionalidad) 
+				SELECT @@IDENTITY,Id_Fila FROM @Funcionalidades;
+			
 			SET @Respuesta = (SELECT Id_Rol FROM REZAGADOS.Rol WHERE Rol.Nombre = @Nombre_Rol)
 			SET @RespuestaMensaje = 'Rol Creado exitosamente'
 		END TRY
