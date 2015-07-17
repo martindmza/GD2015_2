@@ -2758,22 +2758,16 @@ BEGIN TRANSACTION
 		FETCH A INTO @Cuenta
 		WHILE @@FETCH_STATUS = 0
 			BEGIN
-				-- si no se acaba de crear
-				
 				SELECT @Id_Estado = Id_Estado FROM REZAGADOS.Cuenta WHERE Id_Cuenta = @Cuenta
-				
-				IF (@Id_Estado <> 1) BEGIN	
-					IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Id_Tipo_Item = 2 AND Id_Cuenta = @Cuenta AND Id_Factura IS NULL) = 0
--					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta
--					
--					IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta) < 5
--					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta	
+				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Id_Tipo_Item = 2 AND Id_Cuenta = @Cuenta AND Id_Factura IS NULL) = 0
+					IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta) < 5
+						UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta	
 					ELSE
-					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada') WHERE Id_Cuenta = @Cuenta
-				END
-				
-				FETCH A INTO @Cuenta
+						UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada') WHERE Id_Cuenta = @Cuenta
+				ELSE
+					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Pendiente de activación') WHERE Id_Cuenta = @Cuenta
 			END
+	FETCH A INTO @Cuenta
 	CLOSE A
 	DEALLOCATE A
 	COMMIT
