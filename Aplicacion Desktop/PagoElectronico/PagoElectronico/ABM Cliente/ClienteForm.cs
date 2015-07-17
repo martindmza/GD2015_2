@@ -499,32 +499,35 @@ namespace ABM
                 MessageBox.Show("Debe ingresar un país");
                 return false;
             }
-           if (usuarioText.Text.Trim().Length == 0)
+
+           if (operacionTipo == 0)
            {
-               MessageBox.Show("Debe ingresar un nombre de usuario");
-               return false;
+               if (usuarioText.Text.Trim().Length == 0)
+               {
+                   MessageBox.Show("Debe ingresar un nombre de usuario");
+                   return false;
+               }
+               if (contraText.Text.Trim().Length == 0)
+               {
+                   MessageBox.Show("Debe ingresar la clave del usuario");
+                   return false;
+               }
+               if (preguntaText.Text.Trim().Length == 0)
+               {
+                   MessageBox.Show("Debe ingresar una pregunta secreta");
+                   return false;
+               }
+               if (respuestaText.Text.Trim().Length == 0)
+               {
+                   MessageBox.Show("Debe ingresar una respuesta de la pregunta secreta");
+                   return false;
+               }
+               if (rolText.Text.Trim().Length == 0)
+               {
+                   MessageBox.Show("Debe ingresar una rol para el usuario");
+                   return false;
+               }
            }
-           if (contraText.Text.Trim().Length == 0)
-           {
-               MessageBox.Show("Debe ingresar la clave del usuario");
-               return false;
-           }
-           if (preguntaText.Text.Trim().Length == 0)
-           {
-               MessageBox.Show("Debe ingresar una pregunta secreta");
-               return false;
-           }
-           if (respuestaText.Text.Trim().Length == 0)
-           {
-               MessageBox.Show("Debe ingresar una respuesta de la pregunta secreta");
-               return false;
-           }
-           if (rolText.Text.Trim().Length == 0)
-           {
-               MessageBox.Show("Debe ingresar una rol para el usuario");
-               return false;
-           }
-           
            return true;
         }
         //-----------------------------------------------------------------------------------------------------------------
