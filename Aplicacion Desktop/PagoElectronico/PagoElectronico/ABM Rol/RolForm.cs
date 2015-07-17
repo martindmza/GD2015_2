@@ -54,9 +54,11 @@ namespace ABM
                     this.Size = new Size(286, 140);
                     button1.Location = new Point(181, 60);
                     button2.Location = new Point(100, 60);
+                    checkBox1.Visible = false;
                     break;
                 case 1:
                     this.Text = "Modificar Rol";
+                    checkBox1.Visible = true;
                     break;
                 case 2:
                     this.Text = "Dar de Alta Rol";
@@ -67,6 +69,7 @@ namespace ABM
                     break;
                 default:
                     this.Text = "Dar de Baja Rol";
+                    checkBox1.Visible = false;
                     this.textBox1.Enabled = false;
                     this.buttonQuitar.Enabled = false;
                     this.buttonAgregar.Enabled = false;
@@ -141,11 +144,19 @@ namespace ABM
                     break;
                 //modificar el rol
                 case 1:
+                    Boolean activar = false ;
+
                     rol.nombre = textBox1.Text;
                     rol.funcionalidades = funcionalidades;
+
+                    if(rol.habilitado == false && checkBox1.Checked){
+                        rol.habilitado = true;
+                        activar = true;
+                    }
+
                     try
                     {
-                        respuesta = rolDao.updateRol(rol);
+                        respuesta = rolDao.updateRol(rol,activar);
                         MessageBox.Show(respuesta.mensaje);
                         if (respuesta.codigo > 0)
                         {

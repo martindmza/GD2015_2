@@ -69,9 +69,9 @@ namespace ABM
             string[] row;
             foreach (RolModel rol in roles)
             {
-                String estado = "Deshabilitado";
+                String estado = "No Activo";
                 if (rol.habilitado) {
-                    estado = "Habilitado";
+                    estado = "Activo";
                 }
 
                 row = new String[] {    rol.id.ToString(),
@@ -96,6 +96,11 @@ namespace ABM
         public void formResponseUpdate(RolModel rol)
         {
             roles[rolActivoIndex] = rol;
+
+            if (!rol.habilitado) {
+                button2.Enabled = false;
+            }
+
             fillRolesTable();
          }
         //-----------------------------------------------------------------------------------------------------------------
@@ -120,14 +125,15 @@ namespace ABM
                     count++;
                 }
 
-                button2.Text = "Dar de Alta";
-                if (rolActivo.habilitado)
+                if (!rolActivo.habilitado)
                 {
-                    button2.Text = "Dar de Baja";
+                    button2.Enabled = false;
+                }
+                else {
+                    button2.Enabled = true;
                 }
 
-                button1.Enabled = true;
-                button2.Enabled = true;
+                button1.Enabled = true;                
                 buttonElegir.Enabled = true;
             } catch (NullReferenceException err) {
                 button1.Enabled = true;

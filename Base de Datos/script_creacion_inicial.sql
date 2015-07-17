@@ -556,7 +556,7 @@ GROUP BY Cheque_Numero, Retiro_Codigo, Banco_Cogido, Cheque_Fecha, Cheque_Import
 SET IDENTITY_INSERT REZAGADOS.Cheque OFF
 DECLARE @Begin_Cheque NUMERIC(18,0)
 SET @Begin_Cheque = (SELECT TOP 1 Id_Cheque FROM REZAGADOS.Cheque ORDER BY Id_Cheque DESC)+ 1
-DBCC checkident ('REZAGADOS.Retiro', reseed, @Begin_Cheque)
+DBCC checkident ('REZAGADOS.Cheque', reseed, @Begin_Cheque)
 
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -1887,6 +1887,7 @@ GO
 CREATE PROCEDURE REZAGADOS.Modificar_Rol (
 	@Id_Rol NUMERIC(18,0),
 	@Nombre_Rol VARCHAR(255),
+	@Activar BIT,
 	@Funcionalidades IdLista READONLY,
 	@Respuesta NUMERIC(18,0) OUTPUT,
 	@RespuestaMensaje VARCHAR(255) OUTPUT)
@@ -1903,7 +1904,11 @@ BEGIN TRY
 				SELECT @Id_Rol,Id_Fila FROM @Funcionalidades;
 			
 			-- modifico el nombre del Rol
-			UPDATE REZAGADOS.Rol SET Nombre = @Nombre_Rol WHERE Id_Rol = @Id_Rol
+			IF (@Activar = 1) BEGIN
+				UPDATE REZAGADOS.Rol SET Nombre = @Nombre_Rol, Habilitada = 1 WHERE Id_Rol = @Id_Rol	
+			END
+			ELSE 
+				UPDATE REZAGADOS.Rol SET Nombre = @Nombre_Rol WHERE Id_Rol = @Id_Rol	
 			
 			SET @Respuesta = 1
 			SET @RespuestaMensaje = 'Rol Modificado exitosamente'

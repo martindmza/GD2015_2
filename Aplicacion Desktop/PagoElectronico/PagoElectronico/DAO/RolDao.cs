@@ -72,7 +72,7 @@ namespace DAO
         //-------------------------------------------------------------------------------------------------------------
 
         //-------------------------------------------------------------------------------------------------------------
-        public Respuesta updateRol(RolModel rol)
+        public Respuesta updateRol(RolModel rol,Boolean activar)
         {
             try
             {
@@ -89,6 +89,7 @@ namespace DAO
 
                 command.Parameters.Add("@Id_Rol", System.Data.SqlDbType.Decimal).Value = rol.id;
                 command.Parameters.Add("@Nombre_Rol", System.Data.SqlDbType.NVarChar,255).Value = rol.nombre;
+                command.Parameters.Add("@Activar", System.Data.SqlDbType.Bit).Value = activar;
                 command.Parameters.Add("@Funcionalidades", System.Data.SqlDbType.Structured).Value = funcionalidadesLista;
                 return operacionDml(command);
             }
