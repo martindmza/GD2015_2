@@ -1227,12 +1227,13 @@ AND type in (N'P', N'PC'))
 USE [GD1C2015]
 GO
 
-CREATE PROCEDURE REZAGADOS.RetiroEfectivo(	@Id_Cuenta NUMERIC(18,0),
+CREATE PROCEDURE [REZAGADOS].[RetiroEfectivo](	@Id_Cuenta NUMERIC(18,0),
 											@Id_Tipo_Documento NUMERIC(18,0),
 											@Nro_Documento NUMERIC(18,0),
 											@Importe NUMERIC(18,0),
 											@Id_Moneda NUMERIC(18,0),
 											@Fecha DATETIME,
+											@Id_Banco NUMERIC(18,0),
 											@Respuesta NUMERIC(18,0) OUTPUT,
 											@RespuestaMensaje VARCHAR(255) OUTPUT)
 AS
@@ -1324,8 +1325,8 @@ BEGIN
 			SET @Respuesta = @@IDENTITY
 
 			-- Creo el cheque
-			INSERT INTO REZAGADOS.Cheque (Id_Retiro,Fecha, Id_Moneda, Importe)
-			VALUES ( @@IDENTITY,@Fecha, @Id_Moneda, @Importe)
+			INSERT INTO REZAGADOS.Cheque (Id_Retiro,Fecha, Id_Moneda, Importe,Id_Banco)
+			VALUES ( @@IDENTITY,@Fecha, @Id_Moneda, @Importe,@Id_Banco)
 			
 			--Modifico el saldo
 			SET @Saldo = (SELECT Saldo FROM Cuenta WHERE Id_Cuenta = @Id_Cuenta) - @Importe
@@ -1340,6 +1341,7 @@ BEGIN
 		ROLLBACK TRANSACTION
 	END CATCH
 END
+
 GO
 
 ----------------------------------------------TRANSFERENCIA ENTRE CUENTAS-------------------------------------------------------

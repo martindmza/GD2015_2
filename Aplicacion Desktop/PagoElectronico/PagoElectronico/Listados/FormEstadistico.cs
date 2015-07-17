@@ -60,11 +60,11 @@ namespace PagoElectronico.Listados
             switch (operacionItem)
             {
                 case 0:
-                    this.setTablaClientesConComisionesFacturadas(periodoInicial,periodoFinal);
+                    this.setTablaClientesConCuentasInhabilitadas(periodoInicial, periodoFinal);
                     mensaje = mensaje +" Acción: " + cbListado.SelectedItem.ToString();
                     break;
                 case 1:
-                    this.setTablaClientesConCuentasInhabilitadas(periodoInicial, periodoFinal);
+                    this.setTablaClientesConComisionesFacturadas(periodoInicial, periodoFinal);
                     mensaje = mensaje + " Acción: " + cbListado.SelectedItem.ToString();
                     break;
                 case 2:

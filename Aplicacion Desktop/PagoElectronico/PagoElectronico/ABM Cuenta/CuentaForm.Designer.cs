@@ -157,6 +157,7 @@
             // 
             // apertura
             // 
+            this.apertura.Enabled = false;
             this.apertura.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.apertura.Location = new System.Drawing.Point(112, 174);
             this.apertura.Name = "apertura";

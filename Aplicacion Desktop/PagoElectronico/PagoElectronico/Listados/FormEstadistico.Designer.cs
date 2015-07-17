@@ -105,9 +105,8 @@
             this.etiMensaje.AutoSize = true;
             this.etiMensaje.Location = new System.Drawing.Point(12, 120);
             this.etiMensaje.Name = "etiMensaje";
-            this.etiMensaje.Size = new System.Drawing.Size(35, 13);
+            this.etiMensaje.Size = new System.Drawing.Size(0, 13);
             this.etiMensaje.TabIndex = 6;
-            this.etiMensaje.Text = "label1";
             // 
             // etiAnio
             // 
