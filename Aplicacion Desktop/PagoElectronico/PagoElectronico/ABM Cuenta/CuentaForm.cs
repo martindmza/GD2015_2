@@ -36,6 +36,7 @@ namespace ABM
         public CuentaForm(int operacionTipo, CuentaModel cuenta,CuentaAbm parentCuenta)
         {
             InitializeComponent();
+            clienteNameLabel.Text = "";
             this.apertura.Value = new ExtraDao().getDayToday();
             if (cuenta != null)
             {
@@ -83,8 +84,7 @@ namespace ABM
             }
 
             parentCuenta.Enabled = false;
-            //clienteNameLabel.Text = "";
-
+            apertura.Enabled = false;
         }
 
 
@@ -135,7 +135,8 @@ namespace ABM
             }
             else
             {
-                clienteText.Text = cuenta.propietario.apellido + ", " + cuenta.propietario.nombre;
+                clienteNameLabel.Text = cuenta.propietario.apellido + ", " + cuenta.propietario.nombre;
+                clienteText.Text = cuenta.propietario.id.ToString();
                 estadoText.Text = cuenta.estado.nombre;
                 numero.Text = cuenta.id.ToString();
                 paisText.Text = cuenta.pais.nombre;
