@@ -2766,9 +2766,8 @@ BEGIN TRANSACTION
 					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta
 					ELSE
 					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada') WHERE Id_Cuenta = @Cuenta
-					
-					FETCH A INTO @Cuenta
 				END
+				FETCH A INTO @Cuenta
 			END
 	CLOSE A
 	DEALLOCATE A
