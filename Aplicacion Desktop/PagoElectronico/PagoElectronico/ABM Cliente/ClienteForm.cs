@@ -51,12 +51,10 @@ namespace ABM
             switch (operacionTipo)
             {
                 case 0:
-                    button3.Enabled = false;
                     this.Text = "Crear Nuevo Cliente";
                     buttonTarjetas.Visible = false;
                     break;
                 case 1:
-                    button3.Enabled = false;
                     this.Text = "Modificar Cliente";
                     tabControl1.TabPages.Remove(tabPage2);
                     break;
@@ -200,141 +198,120 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
 
         //EVENT HANDLER***
-        //cambian los campos de texto
-        //-----------------------------------------------------------------------------------------------------------------
-        private void requireds_TextChanged(object sender, EventArgs e)
-        {
-            if (docNumero.Text.Trim().Length != 0       && 
-                apellido.Text.Trim().Length != 0        &&      nombre.Text.Trim().Length != 0              && 
-                email.Text.Trim().Length != 0           &&      nacionalidadText.Text.Trim().Length != 0    &&
-                paisText.Text.Trim().Length != 0        &&      localidadText.Text.Trim().Length != 0       &&
-                domCalle.Text.Length != 0               &&      domNumero.Text.Trim().Length != 0           &&
-                domPiso.Text.Trim().Length != 0         &&      domDepartamento.Text.Trim().Length != 0     &&
-                usuarioText.Text.Trim().Length != 0     &&      contraText.Text.Trim().Length != 0          &&
-                preguntaText.Text.Trim().Length != 0    &&      respuestaText.Text.Trim().Length != 0       &&
-                rolText.Text.Trim().Length != 0 )
-            {
-                button3.Enabled = true;
-            }
-            else {
-                if(operacionTipo < 2){
-                    button3.Enabled = false;
-                }
-            }
-        }
-        //-----------------------------------------------------------------------------------------------------------------
-
         //aceptar
         //-----------------------------------------------------------------------------------------------------------------
         private void button3_Click(object sender, EventArgs e)
         {
-            String[] result = docTipo.SelectedItem.ToString().Split(',');
-            String[] valueString = result[0].Split('[');
-            UInt32 docTipoSelected = UInt32.Parse(valueString[1]);
-            TipoDocumentoDAO docDao = new TipoDocumentoDAO();
-           
-            TipoDocumentoModel documentoToSend = docDao.dameTuModelo(docTipoSelected.ToString());
+            if(puedeAceptar()){
 
-            switch (operacionTipo)
-            {
-                //agregar Cliente
-                case 0:
-                    //agregar Cliente y usuario
-                    cliente = new ClienteModel(apellido.Text,nombre.Text,documentoToSend,Decimal.Parse(docNumero.Text),
-                                                nacimiento.Value,email.Text,nacionalidad,domCalle.Text,
-                                               Decimal.Parse(domNumero.Text),Decimal.Parse(domPiso.Text),
-                                               domDepartamento.Text,localidadText.Text,pais);
-                    
-                    UserModel usuario = new UserModel(usuarioText.Text,UserDao.hash(contraText.Text));
-                    usuario.pregunta = preguntaText.Text;
-                    usuario.respuesta = respuestaText.Text;
-                    usuario.roles.Add(rolSelected);
+                String[] result = docTipo.SelectedItem.ToString().Split(',');
+                String[] valueString = result[0].Split('[');
+                UInt32 docTipoSelected = UInt32.Parse(valueString[1]);
+                TipoDocumentoDAO docDao = new TipoDocumentoDAO();
 
-                    try
-                    {
-                        Respuesta respuesta = clienteDao.addNewCliente(cliente,usuario);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
-                        {
-                            cliente.id = respuesta.codigo;
-                            parent.formResponseAdd(cliente);
-                            parent.Enabled = true;
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
-                        }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
-                    }
-                    break;
-                //modificar Cliente
-                case 1:
-                    cliente = new ClienteModel(cliente.id,apellido.Text, nombre.Text, documentoToSend, 
-                                                Decimal.Parse(docNumero.Text),
-                                                nacimiento.Value, email.Text, nacionalidad, domCalle.Text,
-                                                Decimal.Parse(domNumero.Text), Decimal.Parse(domPiso.Text),
-                                                domDepartamento.Text, localidadText.Text, pais);
+                TipoDocumentoModel documentoToSend = docDao.dameTuModelo(docTipoSelected.ToString());
 
-                    try
-                    {
-                        Respuesta respuesta = clienteDao.updateCliente(cliente);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
+                switch (operacionTipo)
+                {
+                    //agregar Cliente
+                    case 0:
+                        //agregar Cliente y usuario
+                        cliente = new ClienteModel(apellido.Text, nombre.Text, documentoToSend, Decimal.Parse(docNumero.Text),
+                                                    nacimiento.Value, email.Text, nacionalidad, domCalle.Text,
+                                                   Decimal.Parse(domNumero.Text), Decimal.Parse(domPiso.Text),
+                                                   domDepartamento.Text, localidadText.Text, pais);
+
+                        UserModel usuario = new UserModel(usuarioText.Text, UserDao.hash(contraText.Text));
+                        usuario.pregunta = preguntaText.Text;
+                        usuario.respuesta = respuestaText.Text;
+                        usuario.roles.Add(rolSelected);
+
+                        try
                         {
-                            parent.formResponseUpdate(cliente);
-                            parent.Enabled = true;
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
+                            Respuesta respuesta = clienteDao.addNewCliente(cliente, usuario);
+                            MessageBox.Show(respuesta.mensaje);
+                            if (respuesta.codigo > 0)
+                            {
+                                cliente.id = respuesta.codigo;
+                                parent.formResponseAdd(cliente);
+                                parent.Enabled = true;
+                                this.Close();
+                                this.Dispose();
+                                GC.Collect();
+                            }
                         }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
-                    }
-                    break;
-                case 2:
-                    try
-                    {
-                        Respuesta respuesta = clienteDao.unsubscribeCliente(cliente);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
+                        catch (Exception er)
                         {
-                            cliente.habilitado = false;
-                            parent.formResponseDisable(cliente);
-                            parent.Enabled = true;
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
+                            MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
                         }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
-                    }
-                    break;
-                case 3:
-                    try
-                    {
-                        Respuesta respuesta = clienteDao.habilitarCliente(cliente);
-                        MessageBox.Show(respuesta.mensaje);
-                        if (respuesta.codigo > 0)
+                        break;
+                    //modificar Cliente
+                    case 1:
+                        cliente = new ClienteModel(cliente.id, apellido.Text, nombre.Text, documentoToSend,
+                                                    Decimal.Parse(docNumero.Text),
+                                                    nacimiento.Value, email.Text, nacionalidad, domCalle.Text,
+                                                    Decimal.Parse(domNumero.Text), Decimal.Parse(domPiso.Text),
+                                                    domDepartamento.Text, localidadText.Text, pais);
+
+                        try
                         {
-                            cliente.habilitado = true;
-                            parent.formResponseEnable(cliente);
-                            parent.Enabled = true;
-                            this.Close();
-                            this.Dispose();
-                            GC.Collect();
+                            Respuesta respuesta = clienteDao.updateCliente(cliente);
+                            MessageBox.Show(respuesta.mensaje);
+                            if (respuesta.codigo > 0)
+                            {
+                                parent.formResponseUpdate(cliente);
+                                parent.Enabled = true;
+                                this.Close();
+                                this.Dispose();
+                                GC.Collect();
+                            }
                         }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
-                    }
-                    break;
+                        catch (Exception er)
+                        {
+                            MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
+                        }
+                        break;
+                    case 2:
+                        try
+                        {
+                            Respuesta respuesta = clienteDao.unsubscribeCliente(cliente);
+                            MessageBox.Show(respuesta.mensaje);
+                            if (respuesta.codigo > 0)
+                            {
+                                cliente.habilitado = false;
+                                parent.formResponseDisable(cliente);
+                                parent.Enabled = true;
+                                this.Close();
+                                this.Dispose();
+                                GC.Collect();
+                            }
+                        }
+                        catch (Exception er)
+                        {
+                            MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
+                        }
+                        break;
+                    case 3:
+                        try
+                        {
+                            Respuesta respuesta = clienteDao.habilitarCliente(cliente);
+                            MessageBox.Show(respuesta.mensaje);
+                            if (respuesta.codigo > 0)
+                            {
+                                cliente.habilitado = true;
+                                parent.formResponseEnable(cliente);
+                                parent.Enabled = true;
+                                this.Close();
+                                this.Dispose();
+                                GC.Collect();
+                            }
+                        }
+                        catch (Exception er)
+                        {
+                            MessageBox.Show(EXCEPTION_MESSAGE + " : " + er);
+                        }
+                        break;
+                }
             }
         }
         //-----------------------------------------------------------------------------------------------------------------
@@ -471,5 +448,85 @@ namespace ABM
         }
         //-----------------------------------------------------------------------------------------------------------------
 
+        //-----------------------------------------------------------------------------------------------------------------
+        private Boolean puedeAceptar() {
+
+            if(docNumero.Text.Trim().Length == 0){
+                MessageBox.Show("Debe ingresar un número de documento");
+                return false;
+            }
+            if(apellido.Text.Trim().Length == 0){
+                MessageBox.Show("Debe ingresar Nombre");
+                return false;
+            }
+            if(nombre.Text.Trim().Length == 0){
+                MessageBox.Show("Debe ingresar un Apellido");
+                return false;
+            }
+            if(nacimiento.Text.Trim().Length == 0){
+                MessageBox.Show("Debe ingresar la fecha de Nacimiento");
+                return false;
+            }
+            if(email.Text.Trim().Length == 0){
+                MessageBox.Show("Debe ingresar el Email");
+                return false;
+            }
+            if(nacionalidadText.Text.Trim().Length == 0){
+                MessageBox.Show("Debe ingresar la Nacionalidad");
+                return false;
+            }
+            if(domPiso.Text.Trim().Length == 0){
+                 MessageBox.Show("Debe completar los datos del domicilio");
+                return false;
+            }
+            if(domCalle.Text.Trim().Length == 0){
+                MessageBox.Show("Debe completar los datos del domicilio");
+                return false;
+            }
+            if(domNumero.Text.Trim().Length == 0){
+                 MessageBox.Show("Debe completar los datos del domicilio");
+                return false;
+            }
+            if(domDepartamento.Text.Trim().Length == 0){
+                MessageBox.Show("Debe completar los datos del domicilio");
+                return false;
+            }
+            if(localidadText.Text.Trim().Length == 0){
+                MessageBox.Show("Debe ingresar una Localidad");
+                return false;
+            }
+           if(paisText.Text.Trim().Length == 0){
+                MessageBox.Show("Debe ingresar un país");
+                return false;
+            }
+           if (usuarioText.Text.Trim().Length == 0)
+           {
+               MessageBox.Show("Debe ingresar un nombre de usuario");
+               return false;
+           }
+           if (contraText.Text.Trim().Length == 0)
+           {
+               MessageBox.Show("Debe ingresar la clave del usuario");
+               return false;
+           }
+           if (preguntaText.Text.Trim().Length == 0)
+           {
+               MessageBox.Show("Debe ingresar una pregunta secreta");
+               return false;
+           }
+           if (respuestaText.Text.Trim().Length == 0)
+           {
+               MessageBox.Show("Debe ingresar una respuesta de la pregunta secreta");
+               return false;
+           }
+           if (rolText.Text.Trim().Length == 0)
+           {
+               MessageBox.Show("Debe ingresar una rol para el usuario");
+               return false;
+           }
+           
+           return true;
+        }
+        //-----------------------------------------------------------------------------------------------------------------
     }
 }

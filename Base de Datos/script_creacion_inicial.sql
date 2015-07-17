@@ -411,7 +411,7 @@ FROM gd_esquema.Maestra
 WHERE Cli_Mail IS NOT NULL
 
 INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
-VALUES ('admin','E6B87050BFCB8143FCB8DB170A4DC9ED0D904DDD3E2A4AD1B1E8DCFDC9BE7', GETDATE(), GETDATE())
+VALUES ('Administrador General','E6B87050BFCB8143FCB8DB170A4DC9ED0D904DDD3E2A4AD1B1E8DCFDC9BE7', GETDATE(), GETDATE())
 
 ----------------------------------------ADMINISTRADOR-----------------------------------------------
 
@@ -979,7 +979,7 @@ AS
 BEGIN
 IF EXISTS (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Categoria)
 UPDATE REZAGADOS.TipoCuenta SET Costo = @Costo WHERE Categoria=@Categoria
-SET @RespuestaMensaje = 'Moficación exitosa'
+SET @RespuestaMensaje = 'Modificación exitosa'
 SET @Respuesta = 1
 END
 GO
@@ -2330,7 +2330,7 @@ CREATE PROCEDURE [REZAGADOS].[Modificar_Tipo_Cuenta] (		@Numero_Cuenta NUMERIC(1
 															@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	UPDATE REZAGADOS.Cuenta SET Id_Tipo_Cuenta = @Id_Tipo WHERE Id_Cuenta=@Numero_Cuenta
-	SET @RespuestaMensaje = 'Moficación exitosa'
+	SET @RespuestaMensaje = 'Modificación exitosa'
 	SET @Respuesta = 1
 GO
 ---------------------------------------------------MODIFICAR CUENTA----------------------------------------

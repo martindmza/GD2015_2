@@ -117,7 +117,6 @@
             this.docNumero.Size = new System.Drawing.Size(122, 20);
             this.docNumero.TabIndex = 1;
             this.docNumero.Text = "34284430";
-            this.docNumero.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.docNumero.Leave += new System.EventHandler(this.docNumero_Leave);
             // 
             // label2
@@ -234,7 +233,6 @@
             this.apellido.Size = new System.Drawing.Size(122, 20);
             this.apellido.TabIndex = 2;
             this.apellido.Text = "Amaya";
-            this.apellido.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // nombre
             // 
@@ -244,7 +242,6 @@
             this.nombre.Size = new System.Drawing.Size(122, 20);
             this.nombre.TabIndex = 3;
             this.nombre.Text = "Martin";
-            this.nombre.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // nacionalidadText
             // 
@@ -253,7 +250,6 @@
             this.nacionalidadText.Name = "nacionalidadText";
             this.nacionalidadText.Size = new System.Drawing.Size(122, 20);
             this.nacionalidadText.TabIndex = 6;
-            this.nacionalidadText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // domNumero
             // 
@@ -263,7 +259,6 @@
             this.domNumero.TabIndex = 1;
             this.domNumero.Tag = "";
             this.domNumero.Text = "123";
-            this.domNumero.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.domNumero.Leave += new System.EventHandler(this.domNumero_Leave);
             // 
             // groupBox1
@@ -322,7 +317,6 @@
             this.paisText.Name = "paisText";
             this.paisText.Size = new System.Drawing.Size(122, 20);
             this.paisText.TabIndex = 4;
-            this.paisText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // label20
             // 
@@ -352,7 +346,6 @@
             this.domPiso.TabIndex = 2;
             this.domPiso.Tag = "";
             this.domPiso.Text = "1";
-            this.domPiso.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.domPiso.Leave += new System.EventHandler(this.domPiso_Leave);
             // 
             // localidadText
@@ -363,7 +356,6 @@
             this.localidadText.TabIndex = 4;
             this.localidadText.Tag = "";
             this.localidadText.Text = "Haedo";
-            this.localidadText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // domDepartamento
             // 
@@ -374,7 +366,6 @@
             this.domDepartamento.TabIndex = 3;
             this.domDepartamento.Tag = "";
             this.domDepartamento.Text = "A";
-            this.domDepartamento.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // domCalle
             // 
@@ -383,7 +374,6 @@
             this.domCalle.Size = new System.Drawing.Size(122, 20);
             this.domCalle.TabIndex = 0;
             this.domCalle.Text = "asdasd";
-            this.domCalle.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // email
             // 
@@ -393,7 +383,6 @@
             this.email.Size = new System.Drawing.Size(122, 20);
             this.email.TabIndex = 5;
             this.email.Text = "m@gmail.com";
-            this.email.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             this.email.Leave += new System.EventHandler(this.email_Leave);
             // 
             // button2
@@ -638,7 +627,6 @@
             this.respuestaText.Name = "respuestaText";
             this.respuestaText.Size = new System.Drawing.Size(122, 20);
             this.respuestaText.TabIndex = 3;
-            this.respuestaText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // preguntaText
             // 
@@ -648,7 +636,6 @@
             this.preguntaText.Name = "preguntaText";
             this.preguntaText.Size = new System.Drawing.Size(122, 20);
             this.preguntaText.TabIndex = 3;
-            this.preguntaText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // rolText
             // 
@@ -659,7 +646,6 @@
             this.rolText.Name = "rolText";
             this.rolText.Size = new System.Drawing.Size(122, 20);
             this.rolText.TabIndex = 3;
-            this.rolText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // contraText
             // 
@@ -669,7 +655,6 @@
             this.contraText.Name = "contraText";
             this.contraText.Size = new System.Drawing.Size(122, 20);
             this.contraText.TabIndex = 3;
-            this.contraText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // usuarioText
             // 
@@ -679,7 +664,6 @@
             this.usuarioText.Name = "usuarioText";
             this.usuarioText.Size = new System.Drawing.Size(122, 20);
             this.usuarioText.TabIndex = 3;
-            this.usuarioText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // label24
             // 
