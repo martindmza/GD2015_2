@@ -942,7 +942,7 @@ IF (@Id_Tipo = 4)
 		INSERT INTO REZAGADOS.Cuenta(Id_Pais, Id_Tipo_Cuenta, Id_Usuario ,Id_Moneda, Id_Estado, Fecha_Creacion)
 		VALUES ( @Id_Pais, @Id_Tipo, @Propietario, @Id_Moneda, 4, @Fecha)
 	SET @Respuesta = 1
-	SET @RespuestaMensaje = 'Creación exitosa'
+	SET @RespuestaMensaje = 'Creación de Cuenta Gratuita exitosa'
 	RETURN
 	END
 ELSE
@@ -959,7 +959,7 @@ BEGIN
 	
 	INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Id_Estado, Estado)
 	VALUES (@Id_Cuenta, @Fecha, 1, 'Pendiente de activación')
-	SET @RespuestaMensaje = 'Creación exitosa'
+	SET @RespuestaMensaje = 'Creación de Cuenta con Costo exitosa'
 	SET @Respuesta =  @Id_Cuenta
 END
 END
@@ -2749,18 +2749,24 @@ BEGIN TRANSACTION
 	DECLARE A CURSOR
 	FOR SELECT Id_Cuenta FROM INSERTED
 	DECLARE @Cuenta NUMERIC(18,0)
+	DECLARE @Id_Estado NUMERIC(18,0)
 		OPEN A
 		FETCH A INTO @Cuenta
 		WHILE @@FETCH_STATUS = 0
 			BEGIN
-								
-				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Id_Tipo_Item = 2 AND Id_Cuenta = @Cuenta AND Id_Factura IS NULL) = 0
-				UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta
+				-- si no se acaba de crear
 				
-				IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta) < 5
-				UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta
-				ELSE
-				UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada') WHERE Id_Cuenta = @Cuenta
+				SELECT @Id_Estado = Id_Estado FROM REZAGADOS.Cuenta WHERE Id_Cuenta = @Cuenta
+				
+				IF (@Id_Estado <> 1) BEGIN	
+					IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Id_Tipo_Item = 2 AND Id_Cuenta = @Cuenta AND Id_Factura IS NULL) = 0
+					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta
+					
+					IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Cuenta = Item.Id_Cuenta) < 5
+					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Habilitada') WHERE Id_Cuenta = @Cuenta
+					ELSE
+					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada') WHERE Id_Cuenta = @Cuenta
+				END
 				FETCH A INTO @Cuenta
 			END
 	CLOSE A
