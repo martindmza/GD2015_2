@@ -66,7 +66,6 @@
             this.clienteText.Name = "clienteText";
             this.clienteText.Size = new System.Drawing.Size(90, 20);
             this.clienteText.TabIndex = 1;
-            this.clienteText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // button1
             // 
@@ -109,7 +108,6 @@
             this.paisText.Name = "paisText";
             this.paisText.Size = new System.Drawing.Size(121, 20);
             this.paisText.TabIndex = 1;
-            this.paisText.TextChanged += new System.EventHandler(this.requireds_TextChanged);
             // 
             // button2
             // 
