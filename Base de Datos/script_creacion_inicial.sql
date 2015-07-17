@@ -979,7 +979,7 @@ AS
 BEGIN
 IF EXISTS (SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria=@Categoria)
 UPDATE REZAGADOS.TipoCuenta SET Costo = @Costo WHERE Categoria=@Categoria
-SET @RespuestaMensaje = 'Modifición exitosa'
+SET @RespuestaMensaje = 'Moficación exitosa'
 SET @Respuesta = 1
 END
 GO
@@ -2324,7 +2324,7 @@ CREATE PROCEDURE [REZAGADOS].[Modificar_Tipo_Cuenta] (		@Numero_Cuenta NUMERIC(1
 															@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 	UPDATE REZAGADOS.Cuenta SET Id_Tipo_Cuenta = @Id_Tipo WHERE Id_Cuenta=@Numero_Cuenta
-	SET @RespuestaMensaje = 'Modifición exitosa'
+	SET @RespuestaMensaje = 'Moficación exitosa'
 	SET @Respuesta = 1
 GO
 ---------------------------------------------------MODIFICAR CUENTA----------------------------------------
