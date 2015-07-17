@@ -413,6 +413,14 @@ WHERE Cli_Mail IS NOT NULL
 INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
 VALUES ('admin','E6B87050BFCB8143FCB8DB170A4DC9ED0D904DDD3E2A4AD1B1E8DCFDC9BE7', GETDATE(), GETDATE())
 
+INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
+VALUES ('matias.hurling@gmail.com','E6B87050BFCB8143FCB8DB170A4DC9ED0D904DDD3E2A4AD1B1E8DCFDC9BE7', GETDATE(), GETDATE())
+INSERT INTO REZAGADOS.UsuarioXRol SELECT @@IDENTITY,Id_Rol FROM REZAGADOS.Rol
+
+INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
+VALUES ('martin.d.mza@gmail.com','E6B87050BFCB8143FCB8DB170A4DC9ED0D904DDD3E2A4AD1B1E8DCFDC9BE7', GETDATE(), GETDATE())
+INSERT INTO REZAGADOS.UsuarioXRol SELECT @@IDENTITY,Id_Rol FROM REZAGADOS.Rol
+
 ----------------------------------------ADMINISTRADOR-----------------------------------------------
 
 INSERT INTO REZAGADOS.Administrador(Id_Usuario)
@@ -875,22 +883,18 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Baja_Cuenta(		@Nro_Cuenta VARCHAR(255),
+CREATE PROCEDURE REZAGADOS.Baja_Cuenta(		@Nro_Cuenta NUMERIC(18,0),
+											@Fecha DATETIME,
 											@RespuestaMensaje VARCHAR(255) OUTPUT,
 											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
 IF (SELECT COUNT(*) FROM REZAGADOS.Item WHERE Item.Id_Factura IS NULL AND @Nro_Cuenta = Item.Id_Cuenta) = 0 AND (SELECT Fecha_Cierre FROM REZAGADOS.Cuenta WHERE Id_Cuenta=@Nro_Cuenta) IS NULL
 BEGIN
-UPDATE REZAGADOS.Cuenta 
-SET Id_Estado=
-	(SELECT e.Id_Estado 
-	 FROM REZAGADOS.Estado_Cuenta e 
-	 WHERE e.Nombre LIKE 'Cerrada') 
-WHERE Cuenta.Id_Cuenta = @Nro_Cuenta
-		UPDATE Cuenta SET Fecha_Cierre = GETDATE() WHERE Cuenta.Id_Cuenta = @Nro_Cuenta
-		SET @Respuesta = 1
-		SET @RespuestaMensaje = 'Baja exitosa'
+UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT e.Id_Estado FROM REZAGADOS.Estado_Cuenta e WHERE e.Nombre LIKE 'Cerrada') WHERE Cuenta.Id_Cuenta = @Nro_Cuenta
+UPDATE REZAGADOS.Cuenta SET Fecha_Cierre = @Fecha WHERE Cuenta.Id_Cuenta = @Nro_Cuenta
+SET @Respuesta = 1
+SET @RespuestaMensaje = 'Baja exitosa'
 END
 ELSE
 BEGIN
@@ -904,7 +908,7 @@ GO
 
 USE [GD1C2015]
 GO
-CREATE PROCEDURE REZAGADOS.Alta_Cuenta(		@Nro_Cuenta VARCHAR(255),
+CREATE PROCEDURE REZAGADOS.Alta_Cuenta(		@Nro_Cuenta NUMERIC(18,0),
 											@RespuestaMensaje VARCHAR(255) OUTPUT,
 											@Respuesta NUMERIC(18,0) OUTPUT)
 AS
@@ -2767,6 +2771,7 @@ BEGIN TRANSACTION
 					ELSE
 					UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Inhabilitada') WHERE Id_Cuenta = @Cuenta
 				END
+				
 				FETCH A INTO @Cuenta
 			END
 	CLOSE A
