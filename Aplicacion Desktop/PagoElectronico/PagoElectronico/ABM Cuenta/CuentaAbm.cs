@@ -153,7 +153,7 @@ namespace ABM
                                        (cuenta.propietario != null)? cuenta.propietario.apellido + ", " +
                                                                     cuenta.propietario.nombre : "",
                                         cuenta.fechaCreacion.ToString(),
-                                        cuenta.fechaCierre.ToString(),
+                                        (cuenta.fechaCierre!= null)? cuenta.fechaCierre.ToShortTimeString():"",
                                        (cuenta.estado != null)? cuenta.estado.nombre : ""
                                         };
                 dataGridView1.Rows.Add(row);

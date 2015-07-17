@@ -249,9 +249,10 @@ namespace ABM
                         MessageBox.Show("Cliente modificado exitosamente");
                         break;
                     default:
-                        MessageBox.Show("Cuenta dada de Baja Exitosamente");
+                        
                         cuenta = cuentaDao.unsubscribeCuenta(cuenta);
                         parentCuenta.formResponseDisable(cuenta);
+                        MessageBox.Show("Cuenta dada de Baja Exitosamente");
                         break;
                 }
                 parentCuenta.Enabled = true;

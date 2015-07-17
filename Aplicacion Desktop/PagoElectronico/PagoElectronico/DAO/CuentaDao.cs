@@ -112,6 +112,7 @@ namespace DAO
 
         protected override SqlCommand addParametrosParaBaja(SqlCommand command, object entity)
         {
+            command.Parameters.Add("@Fecha", System.Data.SqlDbType.Date).Value = new ExtraDao().getDayToday();
             return command;
         }
 
