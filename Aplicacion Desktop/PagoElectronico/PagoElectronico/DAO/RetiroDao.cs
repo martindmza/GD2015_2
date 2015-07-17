@@ -16,7 +16,7 @@ namespace DAO
             try
             {
                 SqlCommand command = InitializeConnection(RETIRAR);
-                this.addParametrosParaAgregar(command,retiro);
+                command = this.addParametrosParaAgregar(command,retiro);
                 command.Parameters.Add("@Id_Tipo_Documento", System.Data.SqlDbType.Decimal).Value = docTipo.id;
                 command.Parameters.Add("@Nro_Documento", System.Data.SqlDbType.Decimal).Value = docNum;
 
