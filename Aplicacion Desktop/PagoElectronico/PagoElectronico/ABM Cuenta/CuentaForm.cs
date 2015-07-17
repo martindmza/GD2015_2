@@ -283,6 +283,7 @@ namespace ABM
             if (paisText.Text.Trim().Length == 0)
             {
                 MessageBox.Show("Debe elegir un País");
+                return false;
             }
 
             return true;
