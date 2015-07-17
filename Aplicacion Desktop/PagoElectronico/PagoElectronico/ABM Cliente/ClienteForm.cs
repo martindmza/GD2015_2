@@ -451,83 +451,99 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
         private Boolean puedeAceptar() {
 
-            if(docNumero.Text.Trim().Length == 0){
-                MessageBox.Show("Debe ingresar un número de documento");
-                return false;
-            }
-            if(apellido.Text.Trim().Length == 0){
-                MessageBox.Show("Debe ingresar Nombre");
-                return false;
-            }
-            if(nombre.Text.Trim().Length == 0){
-                MessageBox.Show("Debe ingresar un Apellido");
-                return false;
-            }
-            if(nacimiento.Text.Trim().Length == 0){
-                MessageBox.Show("Debe ingresar la fecha de Nacimiento");
-                return false;
-            }
-            if(email.Text.Trim().Length == 0){
-                MessageBox.Show("Debe ingresar el Email");
-                return false;
-            }
-            if(nacionalidadText.Text.Trim().Length == 0){
-                MessageBox.Show("Debe ingresar la Nacionalidad");
-                return false;
-            }
-            if(domPiso.Text.Trim().Length == 0){
-                 MessageBox.Show("Debe completar los datos del domicilio");
-                return false;
-            }
-            if(domCalle.Text.Trim().Length == 0){
-                MessageBox.Show("Debe completar los datos del domicilio");
-                return false;
-            }
-            if(domNumero.Text.Trim().Length == 0){
-                 MessageBox.Show("Debe completar los datos del domicilio");
-                return false;
-            }
-            if(domDepartamento.Text.Trim().Length == 0){
-                MessageBox.Show("Debe completar los datos del domicilio");
-                return false;
-            }
-            if(localidadText.Text.Trim().Length == 0){
-                MessageBox.Show("Debe ingresar una Localidad");
-                return false;
-            }
-           if(paisText.Text.Trim().Length == 0){
-                MessageBox.Show("Debe ingresar un país");
-                return false;
-            }
+            if (operacionTipo != 2 && operacionTipo != 3)
+            {
 
-           if (operacionTipo == 0)
-           {
-               if (usuarioText.Text.Trim().Length == 0)
-               {
-                   MessageBox.Show("Debe ingresar un nombre de usuario");
-                   return false;
-               }
-               if (contraText.Text.Trim().Length == 0)
-               {
-                   MessageBox.Show("Debe ingresar la clave del usuario");
-                   return false;
-               }
-               if (preguntaText.Text.Trim().Length == 0)
-               {
-                   MessageBox.Show("Debe ingresar una pregunta secreta");
-                   return false;
-               }
-               if (respuestaText.Text.Trim().Length == 0)
-               {
-                   MessageBox.Show("Debe ingresar una respuesta de la pregunta secreta");
-                   return false;
-               }
-               if (rolText.Text.Trim().Length == 0)
-               {
-                   MessageBox.Show("Debe ingresar una rol para el usuario");
-                   return false;
-               }
-           }
+                if (docNumero.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe ingresar un número de documento");
+                    return false;
+                }
+                if (apellido.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe ingresar Nombre");
+                    return false;
+                }
+                if (nombre.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe ingresar un Apellido");
+                    return false;
+                }
+                if (nacimiento.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe ingresar la fecha de Nacimiento");
+                    return false;
+                }
+                if (email.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe ingresar el Email");
+                    return false;
+                }
+                if (nacionalidadText.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe ingresar la Nacionalidad");
+                    return false;
+                }
+                if (domPiso.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe completar los datos del domicilio");
+                    return false;
+                }
+                if (domCalle.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe completar los datos del domicilio");
+                    return false;
+                }
+                if (domNumero.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe completar los datos del domicilio");
+                    return false;
+                }
+                if (domDepartamento.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe completar los datos del domicilio");
+                    return false;
+                }
+                if (localidadText.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe ingresar una Localidad");
+                    return false;
+                }
+                if (paisText.Text.Trim().Length == 0)
+                {
+                    MessageBox.Show("Debe ingresar un país");
+                    return false;
+                }
+
+                if (operacionTipo == 0)
+                {
+                    if (usuarioText.Text.Trim().Length == 0)
+                    {
+                        MessageBox.Show("Debe ingresar un nombre de usuario");
+                        return false;
+                    }
+                    if (contraText.Text.Trim().Length == 0)
+                    {
+                        MessageBox.Show("Debe ingresar la clave del usuario");
+                        return false;
+                    }
+                    if (preguntaText.Text.Trim().Length == 0)
+                    {
+                        MessageBox.Show("Debe ingresar una pregunta secreta");
+                        return false;
+                    }
+                    if (respuestaText.Text.Trim().Length == 0)
+                    {
+                        MessageBox.Show("Debe ingresar una respuesta de la pregunta secreta");
+                        return false;
+                    }
+                    if (rolText.Text.Trim().Length == 0)
+                    {
+                        MessageBox.Show("Debe ingresar una rol para el usuario");
+                        return false;
+                    }
+                }
+            }
            return true;
         }
         //-----------------------------------------------------------------------------------------------------------------
