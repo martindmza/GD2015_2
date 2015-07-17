@@ -435,8 +435,10 @@ namespace ABM
         private void email_Leave(object sender, EventArgs e)
         {
             email.Text.Replace(" ","");
+
+            int arroba = email.Text.IndexOf('@');
             try{
-                if (email.Text.IndexOf('@') != 0)
+                if (arroba == -1)
                 {
                     MessageBox.Show("Ingrese un email válido");
                     email.Text = "";
