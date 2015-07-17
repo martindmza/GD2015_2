@@ -40,7 +40,7 @@ namespace ABM
 
         public CuentaAbm(DepositosAbm parentDepositos)
         {
-            initToSelect(true);
+            initToSelect(false);
             this.parentDepositos = parentDepositos;
             this.parentDepositos.Enabled = false;
             button1.Enabled = false;
@@ -50,7 +50,7 @@ namespace ABM
 
         public CuentaAbm(ConsultaDeSaldos parentConsultaDeSaldos)
         {
-            initToSelect(true);
+            initToSelect(false);
             this.parentConsultaDeSaldos = parentConsultaDeSaldos;
             this.parentConsultaDeSaldos.Enabled = false;
         }
@@ -87,16 +87,16 @@ namespace ABM
             InitializeComponent();
             button3.Enabled = false;
             button4.Enabled = false;
-            cargarCuentasSiTieneCliente();
+            cargarCuentasSiTieneCliente(false);
             
         }
 
-        private void cargarCuentasSiTieneCliente()
+        private void cargarCuentasSiTieneCliente(bool destino)
         {
             UserModel usuario = Logins.UsuarioSingleton.getInstance().getUsuario();
 
             //si es administrador
-            if (Logins.Login.rolSelected.id == 1)
+            if (Logins.Login.rolSelected.id == 1 || destino)
             {
                 this.cuentas = new CuentaDao().getCuentas();
                 this.nombreLabel.Text = "";
@@ -114,7 +114,7 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
 
         //-----------------------------------------------------------------------------------------------------------------
-        private void initToSelect(Boolean doFillTable)
+        private void initToSelect(Boolean isDestino)
         {
             InitializeComponent();
 
@@ -126,7 +126,7 @@ namespace ABM
             else {
                 this.cargarCuentasSiTieneCliente();
             }*/
-            this.cargarCuentasSiTieneCliente();
+            this.cargarCuentasSiTieneCliente(isDestino);
             this.Text = "Seleccionar una Cuenta";
             buttonElegir.Visible = true;
             buttonElegir.Enabled = false;

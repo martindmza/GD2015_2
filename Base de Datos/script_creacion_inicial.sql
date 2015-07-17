@@ -2797,14 +2797,15 @@ BEGIN TRANSACTION
 		WHILE @@FETCH_STATUS = 0
 			IF ((SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Emi) <> (SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Dest))
 				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), (SELECT Costo FROM REZAGADOS.TipoCuenta JOIN REZAGADOS.Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi), GETDATE())
+				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), (SELECT Costo FROM REZAGADOS.TipoCuenta JOIN REZAGADOS.Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi), @Fecha )
 			ELSE
 				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
-				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), 0, GETDATE())
+				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), 0, @Fecha )
 			FETCH B INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
 	CLOSE B
 	DEALLOCATE B
 	COMMIT
+
 GO
 
 ---------------------------------------TIPO ESTADO CUENTA---------------------------------------------------------
