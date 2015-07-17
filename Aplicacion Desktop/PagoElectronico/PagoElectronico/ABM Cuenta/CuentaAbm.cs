@@ -94,18 +94,20 @@ namespace ABM
         private void cargarCuentasSiTieneCliente()
         {
             UserModel usuario = Logins.UsuarioSingleton.getInstance().getUsuario();
-            if (usuario.cliente != null)
+
+            //si es administrador
+            if (Logins.Login.rolSelected.id == 1)
+            {
+                this.cuentas = new CuentaDao().getCuentas();
+                this.nombreLabel.Text = "";
+            }
+            else
             {
                 this.formResponseCliente(usuario.cliente);
                 cuentas = new CuentaDao().getListadoByCliente(usuario.cliente);
                 button1.Visible = false;
                 button5.Visible = false;
                 buttonLimpiar.Visible = false;
-            }
-            else
-            {
-                this.cuentas = new CuentaDao().getCuentas();
-                this.nombreLabel.Text = "";
             }
             fillTable();
         }

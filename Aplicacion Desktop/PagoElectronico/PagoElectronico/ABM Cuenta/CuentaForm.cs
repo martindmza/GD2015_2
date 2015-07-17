@@ -36,6 +36,7 @@ namespace ABM
         public CuentaForm(int operacionTipo, CuentaModel cuenta,CuentaAbm parentCuenta)
         {
             InitializeComponent();
+            clienteNameLabel.Text = "";
             this.apertura.Value = new ExtraDao().getDayToday();
             if (cuenta != null)
             {
@@ -58,7 +59,6 @@ namespace ABM
             switch (operacionTipo)
             {
                 case 0:
-                    aceptar.Enabled = false;
                     estadoText.Visible = false;
                     estadoLabel.Visible = false;
                     if (cliente != null)
@@ -84,8 +84,7 @@ namespace ABM
             }
 
             parentCuenta.Enabled = false;
-            //clienteNameLabel.Text = "";
-
+            apertura.Enabled = false;
         }
 
 
@@ -136,7 +135,8 @@ namespace ABM
             }
             else
             {
-                clienteText.Text = cuenta.propietario.apellido + ", " + cuenta.propietario.nombre;
+                clienteNameLabel.Text = cuenta.propietario.apellido + ", " + cuenta.propietario.nombre;
+                clienteText.Text = cuenta.propietario.id.ToString();
                 estadoText.Text = cuenta.estado.nombre;
                 numero.Text = cuenta.id.ToString();
                 paisText.Text = cuenta.pais.nombre;
@@ -185,21 +185,6 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
 
         //EVENT HANDLER***
-        //cambian los campos de texto
-        //-----------------------------------------------------------------------------------------------------------------
-        private void requireds_TextChanged(object sender, EventArgs e)
-        {
-            if (clienteText.Text.Length != 0 && paisText.Text.Length != 0 )
-            {
-                aceptar.Enabled = true;
-            }
-            else
-            {
-                aceptar.Enabled = false;
-            }
-        }
-        //-----------------------------------------------------------------------------------------------------------------
-
         //-----------------------------------------------------------------------------------------------------------------
         //Seleccionar un cliente
         private void button1_Click(object sender, EventArgs e)
@@ -221,57 +206,59 @@ namespace ABM
         //-----------------------------------------------------------------------------------------------------------------
 
 
-        //-----------------------------------------------------------------------------------------------------------------
+         //-----------------------------------------------------------------------------------------------------------------
         private void aceptar_Click(object sender, EventArgs e)
         {
-            //set Moneda id
-            String[] result = moneda.SelectedItem.ToString().Split(',');
-            String[] monedaIdString = result[0].Split('[');
-            UInt32 monedaId = UInt32.Parse(monedaIdString[1]);
+            if(puedeAceptar()){
+                //set Moneda id
+                String[] result = moneda.SelectedItem.ToString().Split(',');
+                String[] monedaIdString = result[0].Split('[');
+                UInt32 monedaId = UInt32.Parse(monedaIdString[1]);
 
-            //set Moneda Nombre
-            String[] monedaNombreString = result[1].Split(']');
-            String monedaNombre = monedaNombreString[0];
+                //set Moneda Nombre
+                String[] monedaNombreString = result[1].Split(']');
+                String monedaNombre = monedaNombreString[0];
 
-            //set Cuenta Tipo
-            String[] result2 = tipoCuenta.SelectedItem.ToString().Split(',');
-            String[] tipoCuentaString = result2[0].Split('[');
-            
-            tipoActivo = new CuentaTipoDAO().dameTuModelo(tipoCuentaString[1]);
-           
-            switch (operacionTipo)
-            {
-                case 0:
-                    cuenta = new CuentaModel();
-                    cuenta.pais = this.paisCuenta;
-                    cuenta.tipo = this.tipoActivo;
-                    cuenta.moneda = this.monedaModel;
-                    cuenta.estado = this.estado;
-                    cuenta.fechaCreacion = apertura.Value;
-                    cuenta.propietario = this.cliente;
-                    cuenta.moneda = new MonedaModel();
-                    cuenta.propietario = cliente;
-                    cuenta = cuentaDao.agregarBasica(cuenta);
-                    parentCuenta.formResponseAdd(cuenta);
-                    MessageBox.Show("Cuenta creada exitosamente");
-                    break;
-                case 1:
-                    this.cuenta.tipo = this.tipoActivo;
-                    this.cuenta.estado = this.estado;
-                    cuenta = cuentaDao.updateCuenta(this.cuenta);
-                    parentCuenta.formResponseUpdate(cuenta);
-                    MessageBox.Show("Cliente modificado exitosamente");
-                    break;
-                default:
-                    MessageBox.Show("Cuenta dada de Baja Exitosamente");
-                    cuenta = cuentaDao.unsubscribeCuenta(cuenta);
-                    parentCuenta.formResponseDisable(cuenta);
-                    break;
+                //set Cuenta Tipo
+                String[] result2 = tipoCuenta.SelectedItem.ToString().Split(',');
+                String[] tipoCuentaString = result2[0].Split('[');
+
+                tipoActivo = new CuentaTipoDAO().dameTuModelo(tipoCuentaString[1]);
+
+                switch (operacionTipo)
+                {
+                    case 0:
+                        cuenta = new CuentaModel();
+                        cuenta.pais = this.paisCuenta;
+                        cuenta.tipo = this.tipoActivo;
+                        cuenta.moneda = this.monedaModel;
+                        cuenta.estado = this.estado;
+                        cuenta.fechaCreacion = extraDao.getDayToday();
+                        cuenta.propietario = this.cliente;
+                        cuenta.moneda = new MonedaModel();
+                        cuenta.propietario = cliente;
+                        cuenta = cuentaDao.agregarBasica(cuenta);
+                        parentCuenta.formResponseAdd(cuenta);
+                        MessageBox.Show("Cuenta creada exitosamente");
+                        break;
+                    case 1:
+                        this.cuenta.tipo = this.tipoActivo;
+                        this.cuenta.estado = this.estado;
+                        cuenta = cuentaDao.updateCuenta(this.cuenta);
+                        parentCuenta.formResponseUpdate(cuenta);
+                        MessageBox.Show("Cliente modificado exitosamente");
+                        break;
+                    default:
+                        MessageBox.Show("Cuenta dada de Baja Exitosamente");
+                        cuenta = cuentaDao.unsubscribeCuenta(cuenta);
+                        parentCuenta.formResponseDisable(cuenta);
+                        break;
+                }
+                parentCuenta.Enabled = true;
+                this.Close();
+                this.Dispose();
+                GC.Collect();
             }
-            parentCuenta.Enabled = true;
-            this.Close();
-            this.Dispose();
-            GC.Collect();
         }
         //-----------------------------------------------------------------------------------------------------------------
 
@@ -283,6 +270,22 @@ namespace ABM
             this.Close();
             this.Dispose();
             GC.Collect();
+        }
+        //-----------------------------------------------------------------------------------------------------------------
+
+        //-----------------------------------------------------------------------------------------------------------------
+        private Boolean puedeAceptar() {
+
+            if(clienteText.Text.Trim().Length == 0){
+                MessageBox.Show("Debe elegir un cliente");
+                return false;
+            }
+            if (paisText.Text.Trim().Length == 0)
+            {
+                MessageBox.Show("Debe elegir un País");
+            }
+
+            return true;
         }
         //-----------------------------------------------------------------------------------------------------------------
     }

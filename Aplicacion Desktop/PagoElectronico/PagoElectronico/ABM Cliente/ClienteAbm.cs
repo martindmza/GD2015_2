@@ -67,6 +67,7 @@ namespace ABM
             //sets
             button3.Enabled = false;
             button4.Enabled = false;
+            elegir.Enabled = false;
             comboBox1.SelectedItem = comboBox1.Items[0];
 
             if (operacionTipo == 0)

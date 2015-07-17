@@ -99,7 +99,7 @@ Descripcion varchar(250) UNIQUE,);
 ALTER TABLE REZAGADOS.Pais ADD CONSTRAINT PK_Id_Pais PRIMARY KEY (Id_Pais);
 
 CREATE TABLE REZAGADOS.Cuenta (
-Id_Cuenta numeric (18,0) NOT NULL,
+Id_Cuenta numeric (18,0) IDENTITY(1,1) NOT NULL,
 Id_Usuario numeric(18,0) NOT NULL,
 Id_Pais numeric(18,0),
 Id_Tipo_Cuenta numeric (18,0),
@@ -411,7 +411,7 @@ FROM gd_esquema.Maestra
 WHERE Cli_Mail IS NOT NULL
 
 INSERT INTO REZAGADOS.Usuario (Nombre, Contrasenia, Fecha_Creacion, Fecha_Ult_Modif)
-VALUES ('Administrador General','E6B87050BFCB8143FCB8DB170A4DC9ED0D904DDD3E2A4AD1B1E8DCFDC9BE7', GETDATE(), GETDATE())
+VALUES ('admin','E6B87050BFCB8143FCB8DB170A4DC9ED0D904DDD3E2A4AD1B1E8DCFDC9BE7', GETDATE(), GETDATE())
 
 ----------------------------------------ADMINISTRADOR-----------------------------------------------
 
@@ -460,7 +460,7 @@ INSERT INTO REZAGADOS.TipoCuenta (Categoria, Costo, Dias_Vigencia)
 VALUES ('Oro', 100, 30), ('Plata', 80, 30), ('Bronce', 40, 30), ('Gratuita', 30, 0);
 
 -----------------------------------------CUENTA---------------------------------------------------
-
+SET IDENTITY_INSERT REZAGADOS.Cuenta ON
 INSERT INTO REZAGADOS.Cuenta (Id_Cuenta, Id_Usuario, Id_Tipo_Cuenta, Id_Pais, Id_Estado, Fecha_Creacion, Fecha_Cierre)
 SELECT g.Cuenta_Numero, u.Id_Usuario, 
 	(SELECT Id_Tipo_Cuenta FROM REZAGADOS.TipoCuenta WHERE Categoria='Gratuita') , g.Cuenta_Pais_Codigo, 
@@ -469,6 +469,10 @@ SELECT g.Cuenta_Numero, u.Id_Usuario,
 FROM gd_esquema.Maestra g, REZAGADOS.Usuario u
 WHERE u.Nombre = g.Cli_Mail AND g.Cuenta_Dest_Fecha_Creacion IS NOT NULL
 GROUP BY g.Cuenta_Numero, u.Id_Usuario, g.Cuenta_Pais_Codigo, g.Cuenta_Estado, g.Cuenta_Fecha_Creacion, g.Cuenta_Fecha_Cierre
+SET IDENTITY_INSERT REZAGADOS.Cuenta OFF
+DECLARE @Begin_Cuenta NUMERIC(18,0)
+SET @Begin_Cuenta = (SELECT TOP 1 Id_Cuenta FROM REZAGADOS.Cuenta ORDER BY Id_Cuenta DESC)+ 1
+DBCC checkident ('REZAGADOS.Cuenta', reseed, @Begin_Cuenta)
 
 ------------------------------------------FACUTRA--------------------------------------------------
 
@@ -924,45 +928,39 @@ GO
 USE [GD1C2015]
 GO
 CREATE PROCEDURE [REZAGADOS].[Crear_Cuenta](
-										@Pais VARCHAR(255),
-										@Moneda VARCHAR(255),
+										@Id_Pais NUMERIC(18,0),
+										@Id_Moneda NUMERIC(18,0),
 										@Fecha DATETIME,
-										@Tipo VARCHAR(255),
+										@Id_Tipo NUMERIC(18,0),
 										@Propietario NUMERIC(18,0),
 										@RespuestaMensaje VARCHAR(255) OUTPUT,
 										@Respuesta NUMERIC(18,0) OUTPUT)
 AS
 BEGIN
-IF (@Tipo = 'Gratuito')
+IF (@Id_Tipo = 4)
 	BEGIN
-		INSERT INTO REZAGADOS.Cuenta(Id_Cuenta, Id_Pais, Id_Tipo_Cuenta, Id_Usuario ,Id_Moneda, Id_Estado, Fecha_Creacion)
-		VALUES ( (SELECT MAX(c1.Id_Cuenta)+1 FROM REZAGADOS.Cuenta c1 ),	
-					@Pais,
-					@Tipo,
-					@Propietario,
-					@Moneda,
-					(SELECT e.Id_Estado FROM REZAGADOS.Estado_Cuenta e	WHERE e.Nombre LIKE 'Habilitada'),
-					@Fecha)
+		INSERT INTO REZAGADOS.Cuenta(Id_Pais, Id_Tipo_Cuenta, Id_Usuario ,Id_Moneda, Id_Estado, Fecha_Creacion)
+		VALUES ( @Id_Pais, @Id_Tipo, @Propietario, @Id_Moneda, 4, @Fecha)
 	SET @Respuesta = 1
 	SET @RespuestaMensaje = 'Creación exitosa'
+	RETURN
 	END
 ELSE
 BEGIN
-INSERT INTO REZAGADOS.Cuenta(Id_Cuenta, Id_Pais, Id_Tipo_Cuenta, Id_Usuario,Id_Moneda, Id_Estado, Fecha_Creacion)
-VALUES ((SELECT MAX(c1.Id_Cuenta)+1 FROM REZAGADOS.Cuenta c1 ),
-@Pais, 
-@Tipo, 
-@Propietario,
-@Moneda, 
-(SELECT e.Id_Estado 
-	 FROM REZAGADOS.Estado_Cuenta e 
-	 WHERE e.Nombre LIKE 'Pendiente de activación'), @Fecha)
-INSERT INTO REZAGADOS.Item (Id_Cuenta, Id_Tipo_Item, Fecha, Importe)
-VALUES ((SELECT MAX(Id_Cuenta) FROM REZAGADOS.Cuenta), 2, GETDATE(), (SELECT Importe FROM REZAGADOS.TipoItem WHERE Id_Tipo_Item = 2 ))
-INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Id_Estado, Estado)
-VALUES ((SELECT MAX(Id_Cuenta) FROM REZAGADOS.Cuenta), GETDATE(), 1, 'Pendiente de activación')
-SET @RespuestaMensaje = 'Creación exitosa'
-SET @Respuesta =  (SELECT Max(c1.Id_Cuenta) FROM REZAGADOS.Cuenta c1)
+	INSERT INTO REZAGADOS.Cuenta( Id_Pais, Id_Tipo_Cuenta, Id_Usuario,Id_Moneda, Id_Estado, Fecha_Creacion)
+	VALUES (@Id_Pais, @Id_Tipo, @Propietario,@Id_Moneda, 1, @Fecha)
+
+	DECLARE @Id_Cuenta NUMERIC(18,0)
+	SET @Id_Cuenta = @@IDENTITY
+	
+	INSERT INTO REZAGADOS.Item (Id_Cuenta, Id_Tipo_Item, Fecha, Importe)
+	VALUES (@Id_Cuenta, 2, @Fecha, (SELECT Importe FROM REZAGADOS.TipoItem WHERE Id_Tipo_Item = 2 ))
+	
+	
+	INSERT INTO HistorialCuenta (Id_Cuenta, Fecha, Id_Estado, Estado)
+	VALUES (@Id_Cuenta, @Fecha, 1, 'Pendiente de activación')
+	SET @RespuestaMensaje = 'Creación exitosa'
+	SET @Respuesta =  @Id_Cuenta
 END
 END
 GO
