@@ -25,6 +25,7 @@ namespace DAO
 
             command.Parameters.Add("@Usuario", System.Data.SqlDbType.NVarChar, 50).Value = usuario;
             command.Parameters.Add("@Pass", System.Data.SqlDbType.NVarChar, 100).Value = passwordHash;
+            command.Parameters.Add("@Fecha", System.Data.SqlDbType.DateTime, 100).Value = new ExtraDao().getDayToday();
             var pOut = command.Parameters.Add("@Respuesta", SqlDbType.Decimal);
             var pOut2 = command.Parameters.Add("@RespuestaMensaje", SqlDbType.NVarChar, 255);
             pOut.Direction = ParameterDirection.Output;
