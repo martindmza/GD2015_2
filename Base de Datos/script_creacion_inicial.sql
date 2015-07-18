@@ -1680,8 +1680,6 @@ BEGIN
 END
 GO
 
-EXEC [REZAGADOS].[Listar_Cliente]
-
 ----------------------------------------------LISTAR CLIENTE----------------------------------------------------
 
 USE [GD1C2015]
@@ -2794,8 +2792,8 @@ BEGIN TRANSACTION
 					ELSE
 						UPDATE REZAGADOS.Cuenta SET Id_Estado = (SELECT Id_Estado FROM REZAGADOS.Estado_Cuenta WHERE Nombre = 'Pendiente de activación') WHERE Id_Cuenta = @Cuenta
 				END
+				FETCH A INTO @Cuenta
 			END
-	FETCH A INTO @Cuenta
 	CLOSE A
 	DEALLOCATE A
 	COMMIT
@@ -2822,6 +2820,7 @@ BEGIN TRANSACTION
 	OPEN B
 		FETCH B INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
 		WHILE @@FETCH_STATUS = 0
+			BEGIN
 			IF ((SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Emi) <> (SELECT Id_Usuario from Cuenta WHERE Id_Cuenta = @Id_Cuenta_Dest))
 				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
 				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), (SELECT Costo FROM REZAGADOS.TipoCuenta JOIN REZAGADOS.Cuenta ON TipoCuenta.Id_Tipo_Cuenta = Cuenta.Id_Tipo_Cuenta WHERE Cuenta.Id_Cuenta=@Id_Cuenta_Emi), @Fecha )
@@ -2829,6 +2828,7 @@ BEGIN TRANSACTION
 				INSERT INTO Item (Id_Cuenta, Id_Tipo_Item, Importe, Fecha)
 				VALUES (@Id_Cuenta_Emi, (SELECT Id_Tipo_Item FROM REZAGADOS.TipoItem WHERE Tipo = 'Comisión por transferencia.'), 0, @Fecha )
 			FETCH B INTO @Id_Cuenta_Emi, @Id_Cuenta_Dest, @Importe, @Fecha
+			END
 	CLOSE B
 	DEALLOCATE B
 	COMMIT
