@@ -95,20 +95,35 @@ namespace ABM
         {
             UserModel usuario = Logins.UsuarioSingleton.getInstance().getUsuario();
 
-            //si es administrador
-            if (Logins.Login.rolSelected.id == 1 || destino)
+            if (parentDepositos != null)
             {
-                this.cuentas = new CuentaDao().getCuentas();
-                this.nombreLabel.Text = "";
+                try
+                {
+                    this.formResponseCliente(usuario.cliente);
+                    cuentas = new CuentaDao().getListadoByCliente(usuario.cliente);
+                }
+                catch (Exception e) { }
+                
             }
-            else
-            {
-                this.formResponseCliente(usuario.cliente);
-                cuentas = new CuentaDao().getListadoByCliente(usuario.cliente);
-                button1.Visible = false;
-                button5.Visible = false;
-                buttonLimpiar.Visible = false;
+            else {
+
+                //si es administrador
+                if (Logins.Login.rolSelected.id == 1 || destino)
+                {
+                    this.cuentas = new CuentaDao().getCuentas();
+                    this.nombreLabel.Text = "";
+                }
+                else
+                {
+                    this.formResponseCliente(usuario.cliente);
+                    cuentas = new CuentaDao().getListadoByCliente(usuario.cliente);
+                    button1.Visible = false;
+                    button5.Visible = false;
+                    buttonLimpiar.Visible = false;
+                }
             }
+
+            
             fillTable();
         }
         //-----------------------------------------------------------------------------------------------------------------
